@@ -1,0 +1,26 @@
+name: "Test and Fix"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  tests:
+    name: "Unit tests"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm test
+
+  prittier:
+    name: "Fix"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm run fix
+      - uses: EndBug/add-and-commit@v7
+        with:
+          add: bin lib test
