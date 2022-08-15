@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { Stack, StackProps } from "aws-cdk-lib";
+import { Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
   Cluster,
@@ -17,6 +17,20 @@ import {
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
 import { HostedZone } from "aws-cdk-lib/aws-route53";
+import {
+  EcsEc2LaunchTarget,
+  EcsRunTask,
+  SnsPublish,
+} from "aws-cdk-lib/aws-stepfunctions-tasks";
+import {
+  Fail,
+  IntegrationPattern,
+  StateMachine,
+  TaskInput,
+} from "aws-cdk-lib/aws-stepfunctions";
+import { Subscription, SubscriptionProtocol, Topic } from "aws-cdk-lib/aws-sns";
+import { Rule, Schedule } from "aws-cdk-lib/aws-events";
+import { SfnStateMachine } from "aws-cdk-lib/aws-events-targets";
 
 export type EasyCerverProps = StackProps & {
   hostedZoneDomain: string;
@@ -143,6 +157,38 @@ export class EasyCerver extends Stack {
       sourceVolume: "certVolume",
       containerPath: "/etc/letsencrypt",
       readOnly: false,
+    });
+
+    /**
+     * Schedule Certbot certificate create/renew on Step Functions
+     * Sends email notification on certbot failure
+     */
+    const topic = new Topic(this, "Topic");
+    new Subscription(this, "EmailSubscription", {
+      topic: topic,
+      protocol: SubscriptionProtocol.EMAIL,
+      endpoint: conf.email,
+    });
+
+    const certbotRunTask = new EcsRunTask(this, "CreateCertificate", {
+      cluster: cluster,
+      taskDefinition: certbotTaskDefinition,
+      launchTarget: new EcsEc2LaunchTarget(),
+      integrationPattern: IntegrationPattern.RUN_JOB,
+    });
+    certbotRunTask.addCatch(
+      new SnsPublish(this, "SendEmailOnFailure", {
+        topic: topic,
+        message: TaskInput.fromJsonPathAt("$"),
+      }).next(new Fail(this, "Fail"))
+    );
+    const certbotStateMachine = new StateMachine(this, "StateMachine", {
+      definition: certbotRunTask,
+    });
+
+    new Rule(this, "CertbotScheduleRule", {
+      schedule: Schedule.rate(Duration.days(conf.certbotScheduleInterval)),
+      targets: [new SfnStateMachine(certbotStateMachine)],
     });
   }
 }
