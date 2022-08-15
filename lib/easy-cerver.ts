@@ -4,8 +4,11 @@ import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
   Cluster,
   ContainerImage,
+  Ec2Service,
   Ec2TaskDefinition,
   LogDriver,
+  LogDrivers,
+  Protocol,
 } from "aws-cdk-lib/aws-ecs";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import {
@@ -31,6 +34,7 @@ import {
 import { Subscription, SubscriptionProtocol, Topic } from "aws-cdk-lib/aws-sns";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { SfnStateMachine } from "aws-cdk-lib/aws-events-targets";
+import * as path from "path";
 
 export type EasyCerverProps = StackProps & {
   hostedZoneDomain: string;
@@ -189,6 +193,64 @@ export class EasyCerver extends Stack {
     new Rule(this, "CertbotScheduleRule", {
       schedule: Schedule.rate(Duration.days(conf.certbotScheduleInterval)),
       targets: [new SfnStateMachine(certbotStateMachine)],
+    });
+
+    /**
+     * Nginx proxy server task definition
+     */
+    const nginxTaskDefinition = new Ec2TaskDefinition(
+      this,
+      "NginxTaskDefinition"
+    );
+    const nginxContainer = nginxTaskDefinition.addContainer("NginxContainer", {
+      image: ContainerImage.fromAsset(
+        path.join(__dirname, "../containers/nginx-proxy")
+      ),
+      containerName: "nginx",
+      memoryReservationMiB: 64,
+      essential: true,
+      environment: {
+        SERVER_NAME: hostedZone.zoneName,
+      },
+      logging: LogDrivers.awsLogs({
+        streamPrefix: "nginx-proxy",
+        logRetention: RetentionDays.TWO_YEARS,
+      }),
+    });
+
+    nginxTaskDefinition.addVolume({
+      host: { sourcePath: "/etc/letsencrypt" },
+      name: "certVolume",
+    });
+    nginxContainer.addMountPoints({
+      sourceVolume: "certVolume",
+      containerPath: "/etc/letsencrypt",
+      readOnly: true,
+    });
+
+    nginxContainer.addPortMappings(
+      {
+        hostPort: 80,
+        containerPort: 80,
+        protocol: Protocol.TCP,
+      },
+      {
+        hostPort: 443,
+        containerPort: 443,
+        protocol: Protocol.TCP,
+      }
+    );
+
+    new Ec2Service(this, "nginxService", {
+      cluster: cluster,
+      taskDefinition: nginxTaskDefinition,
+      desiredCount: 1,
+      minHealthyPercent: 0,
+      maxHealthyPercent: 100,
+      circuitBreaker: {
+        rollback: true,
+      },
+      enableExecuteCommand: true,
     });
   }
 }
