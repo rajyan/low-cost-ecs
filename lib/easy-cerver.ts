@@ -242,7 +242,7 @@ export class EasyCerver extends Stack {
       memoryReservationMiB: 64,
       essential: true,
       environment: {
-        SERVER_NAME: hostedZone.zoneName,
+        SERVER_NAME: conf.recordDomainName,
       },
       logging: LogDrivers.awsLogs({
         streamPrefix: "nginx-proxy",
