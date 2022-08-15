@@ -12,6 +12,7 @@ import {
 } from "aws-cdk-lib/aws-ecs";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import {
+  CfnEIP,
   InstanceType,
   Peer,
   Port,
@@ -81,9 +82,6 @@ export class EasyCerver extends Stack {
       minCapacity: 1,
       maxCapacity: 1,
     });
-    hostAutoScalingGroup.role.addManagedPolicy(
-      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")
-    );
     const tcpSecurityGroup = new SecurityGroup(this, "HostSecurityGroup", {
       vpc: vpc,
     });
@@ -92,6 +90,39 @@ export class EasyCerver extends Stack {
     tcpSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(443));
     tcpSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.tcp(443));
     hostAutoScalingGroup.addSecurityGroup(tcpSecurityGroup);
+    hostAutoScalingGroup.role.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")
+    );
+    hostAutoScalingGroup.role.addToPrincipalPolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["ec2:DescribeAddresses", "ec2:AssociateAddress"],
+        resources: ["*"],
+      })
+    );
+    const hostInstanceIp = new CfnEIP(this, "HostInstanceIp", {
+      tags: [
+        {
+          key: "Name",
+          value: "easy-cerver-ip",
+        },
+      ],
+    });
+    hostAutoScalingGroup.addUserData(
+      ...`
+        yum install -y unzip jq
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        ./aws/install
+        INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
+        ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=easy-cerver-ip \\
+          | grep AllocationId \\
+          | sed -E 's/\\s+"AllocationId":\\s+"(.+)",/\\1/' \\
+          | head
+        )
+        aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation
+        `.split("\n")
+    );
 
     /**
      * Certbot Task Definition
