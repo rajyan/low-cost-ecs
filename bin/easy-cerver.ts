@@ -8,6 +8,6 @@ new EasyCerver(app, "EasyCerverStack", {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
-  hostedZoneDomain: 'rajyan.net',
-  email: 'kitakita7617@gmail.com',
+  hostedZoneDomain: "rajyan.net",
+  email: "kitakita7617@gmail.com",
 });
