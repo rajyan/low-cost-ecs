@@ -5,6 +5,10 @@ import { EasyCerver } from "../lib/easy-cerver";
 test("Template matches snapshot", () => {
   const app = new App();
   const stack = new EasyCerver(app, "MyTestStack", {
+    env: {
+      account: "dummy-id",
+      region: "dummy-region",
+    },
     hostedZoneDomain: "test.example.com",
     email: "test@example.com",
   });
