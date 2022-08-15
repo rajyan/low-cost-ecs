@@ -10,4 +10,5 @@ new EasyCerver(app, "EasyCerverStack", {
   },
   hostedZoneDomain: "rajyan.net",
   email: "kitakita7617@gmail.com",
+  hostInstanceSpotPrice: "0.0050"
 });

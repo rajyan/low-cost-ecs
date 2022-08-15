@@ -20,7 +20,7 @@ import {
   SubnetType,
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
-import { HostedZone } from "aws-cdk-lib/aws-route53";
+import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import {
   EcsEc2LaunchTarget,
   EcsRunTask,
@@ -39,25 +39,24 @@ import * as path from "path";
 
 export type EasyCerverProps = StackProps & {
   hostedZoneDomain: string;
+  recordDomainName?: string;
   email: string;
-  certificateDomains?: string[];
   certbotDockerTag?: string;
   certbotScheduleInterval?: number;
   hostInstanceType?: string;
   hostInstanceSpotPrice?: string;
 };
 
-const defaultProps = {
-  certbotDockerTag: "v1.29.0",
-  certbotScheduleInterval: 60,
-  hostInstanceType: "t2.micro",
-  hostInstanceSpotPrice: "0.0050",
-};
-
 export class EasyCerver extends Stack {
   constructor(scope: Construct, id: string, props: EasyCerverProps) {
     super(scope, id, props);
 
+    const defaultProps = {
+      recordDomainName: props.hostedZoneDomain,
+      certbotDockerTag: "v1.29.0",
+      certbotScheduleInterval: 60,
+      hostInstanceType: "t2.micro",
+    };
     const conf: EasyCerverProps & typeof defaultProps = {
       ...defaultProps,
       ...props,
@@ -124,14 +123,20 @@ export class EasyCerver extends Stack {
         `.split("\n")
     );
 
+    const hostedZone = HostedZone.fromLookup(this, "HostedZone", {
+      domainName: conf.hostedZoneDomain,
+    });
+    new ARecord(this, "ARecord", {
+      zone: hostedZone,
+      recordName: conf.recordDomainName,
+      deleteExisting: true,
+      target: RecordTarget.fromIpAddresses(hostInstanceIp.ref),
+    });
+
     /**
      * Certbot Task Definition
      * Mounts generated certificate to host instance
      */
-    const hostedZone = HostedZone.fromLookup(this, "HostedZone", {
-      domainName: conf.hostedZoneDomain,
-    });
-
     const certbotTaskDefinition = new Ec2TaskDefinition(
       this,
       "CertbotTaskDefinition"
@@ -170,12 +175,8 @@ export class EasyCerver extends Stack {
           "--expand",
           "-m",
           conf.email,
-          ...(
-            conf.certificateDomains ?? [
-              conf.hostedZoneDomain,
-              `*.${conf.hostedZoneDomain}`,
-            ]
-          ).flatMap((domain) => ["-d", domain]),
+          "-d",
+          conf.recordDomainName,
         ],
         logging: LogDriver.awsLogs({
           streamPrefix: conf.certbotDockerTag,
