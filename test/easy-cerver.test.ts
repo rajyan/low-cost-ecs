@@ -5,8 +5,8 @@ import { EasyCerver } from "../lib/easy-cerver";
 test("Template matches snapshot", () => {
   const app = new App();
   const stack = new EasyCerver(app, "MyTestStack", {
-    hostedZoneDomain: 'test.example.com',
-    email: 'test@example.com'
+    hostedZoneDomain: "test.example.com",
+    email: "test@example.com",
   });
   expect.addSnapshotSerializer({
     test: (val) => typeof val === "string",
