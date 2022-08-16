@@ -215,12 +215,25 @@ export class EasyCerver extends Stack {
         message: TaskInput.fromJsonPathAt("$"),
       }).next(new Fail(this, "Fail"))
     );
+    certbotRunTask.addRetry({
+      interval: Duration.minutes(1),
+    });
     const certbotStateMachine = new StateMachine(this, "StateMachine", {
       definition: certbotRunTask,
     });
 
     new Rule(this, "CertbotScheduleRule", {
       schedule: Schedule.rate(Duration.days(conf.certbotScheduleInterval)),
+      targets: [new SfnStateMachine(certbotStateMachine)],
+    });
+    new Rule(this, "CertbotEc2LaunchRule", {
+      eventPattern: {
+        source: ["aws.autoscaling"],
+        detailType: ["EC2 Instance Launch Successful"],
+        detail: {
+          AutoScalingGroupName: [hostAutoScalingGroup.autoScalingGroupName],
+        },
+      },
       targets: [new SfnStateMachine(certbotStateMachine)],
     });
 
