@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { Duration, Stack, StackProps } from "aws-cdk-lib";
+import { Duration, Names, Stack, StackProps } from "aws-cdk-lib";
 import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
   Cluster,
@@ -99,22 +99,19 @@ export class EasyCerver extends Stack {
         resources: ["*"],
       })
     );
-    const hostInstanceIp = new CfnEIP(this, "HostInstanceIp", {
-      tags: [
-        {
-          key: "Name",
-          value: "easy-cerver-ip",
-        },
-      ],
-    });
+
+    const hostInstanceIp = new CfnEIP(this, "HostInstanceIp");
+    const tagUniqueId = Names.uniqueId(hostInstanceIp);
+    hostInstanceIp.tags.setTag("Name", tagUniqueId);
+
     hostAutoScalingGroup.addUserData(
       ...`
         yum install -y unzip jq
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
+        unzip awscliv2.zip && rm awscli2.zip
         ./aws/install
         INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-        ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=easy-cerver-ip \\
+        ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=${tagUniqueId} \\
           | grep AllocationId \\
           | sed -E 's/\\s+"AllocationId":\\s+"(.+)",/\\1/' \\
           | head
