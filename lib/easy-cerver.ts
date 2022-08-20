@@ -3,6 +3,7 @@ import { Duration, Names, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
   Cluster,
+  ContainerDependencyCondition,
   ContainerImage,
   Ec2Service,
   Ec2TaskDefinition,
@@ -231,7 +232,7 @@ export class EasyCerver extends Stack {
       }).next(new Fail(this, "Fail"))
     );
     certbotRunTask.addRetry({
-      interval: Duration.minutes(1),
+      interval: Duration.seconds(20),
     });
     const certbotStateMachine = new StateMachine(this, "StateMachine", {
       definition: certbotRunTask,
@@ -243,16 +244,6 @@ export class EasyCerver extends Stack {
 
     new Rule(this, "CertbotScheduleRule", {
       schedule: Schedule.rate(Duration.days(conf.certbotScheduleInterval)),
-      targets: [new SfnStateMachine(certbotStateMachine)],
-    });
-    new Rule(this, "CertbotEc2LaunchRule", {
-      eventPattern: {
-        source: ["aws.autoscaling"],
-        detailType: ["EC2 Instance Launch Successful"],
-        detail: {
-          AutoScalingGroupName: [hostAutoScalingGroup.autoScalingGroupName],
-        },
-      },
       targets: [new SfnStateMachine(certbotStateMachine)],
     });
 
@@ -307,6 +298,22 @@ export class EasyCerver extends Stack {
         protocol: Protocol.TCP,
       }
     );
+
+    const containerProps = certbotContainer.renderContainerDefinition();
+    nginxContainer.addContainerDependencies({
+      container: nginxTaskDefinition.addContainer("ServerCertbotContainer", {
+        image: ContainerImage.fromRegistry(certbotContainer.imageName),
+        containerName: containerProps.name,
+        memoryReservationMiB: containerProps.memoryReservation,
+        command: containerProps.command,
+        essential: false,
+        logging: LogDriver.awsLogs({
+          streamPrefix: conf.certbotDockerTag,
+          logRetention: RetentionDays.TWO_YEARS,
+        }),
+      }),
+      condition: ContainerDependencyCondition.COMPLETE,
+    });
 
     new Ec2Service(this, "nginxService", {
       cluster: cluster,
