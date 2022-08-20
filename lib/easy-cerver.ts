@@ -258,6 +258,10 @@ export class EasyCerver extends Stack {
       nginxTaskDefinition.taskRole,
       "elasticfilesystem:ClientMount"
     );
+    certbotFileSystem.grant(
+      nginxTaskDefinition.taskRole,
+      "elasticfilesystem:ClientWrite"
+    );
     const nginxContainer = nginxTaskDefinition.addContainer("NginxContainer", {
       image: ContainerImage.fromAsset(
         path.join(__dirname, "../containers/nginx-proxy")
