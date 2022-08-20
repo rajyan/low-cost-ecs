@@ -193,8 +193,8 @@ export class EasyCerver extends Stack {
       }),
       removalPolicy: RemovalPolicy.DESTROY,
     });
-    certbotFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
-    certbotFileSystem.connections.allowDefaultPortFrom(hostAutoScalingGroup);
+    certbotFileSystem.connections.allowDefaultPortTo(tcpSecurityGroup);
+    certbotFileSystem.connections.allowDefaultPortFrom(tcpSecurityGroup);
 
     certbotTaskDefinition.addVolume({
       name: "certVolume",
