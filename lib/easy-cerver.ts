@@ -49,6 +49,7 @@ export type EasyCerverProps = StackProps & {
   certbotScheduleInterval?: number;
   hostInstanceType?: string;
   hostInstanceSpotPrice?: string;
+  awsCliDockerTag?: string;
 };
 
 export class EasyCerver extends Stack {
@@ -60,6 +61,7 @@ export class EasyCerver extends Stack {
       certbotDockerTag: "v1.29.0",
       certbotScheduleInterval: 60,
       hostInstanceType: "t2.micro",
+      awsCliDockerTag: "latest",
     };
     const conf: EasyCerverProps & typeof defaultProps = {
       ...defaultProps,
@@ -258,10 +260,6 @@ export class EasyCerver extends Stack {
       nginxTaskDefinition.taskRole,
       "elasticfilesystem:ClientMount"
     );
-    certbotFileSystem.grant(
-      nginxTaskDefinition.taskRole,
-      "elasticfilesystem:ClientWrite"
-    );
     const nginxContainer = nginxTaskDefinition.addContainer("NginxContainer", {
       image: ContainerImage.fromAsset(
         path.join(__dirname, "../containers/nginx-proxy")
@@ -303,35 +301,28 @@ export class EasyCerver extends Stack {
       }
     );
 
-    const containerProps = certbotContainer.renderContainerDefinition();
     nginxContainer.addContainerDependencies({
-      container: nginxTaskDefinition.addContainer("ServerCertbotContainer", {
-        image: ContainerImage.fromRegistry(certbotContainer.imageName),
-        containerName: containerProps.name,
-        memoryReservationMiB: containerProps.memoryReservation,
-        command: containerProps.command,
+      container: nginxTaskDefinition.addContainer("AwsCliContainer", {
+        image: ContainerImage.fromRegistry(`amazon/aws-cli:${conf.awsCliDockerTag}`),
+        containerName: "aws-cli",
+        memoryReservationMiB: 64,
+        command: [
+          "stepfunctions",
+          "--region",
+          certbotStateMachine.env.region,
+          "--state-machine-arn",
+          "start-execution",
+          certbotStateMachine.stateMachineArn,
+        ],
         essential: false,
         logging: LogDriver.awsLogs({
-          streamPrefix: conf.certbotDockerTag,
+          streamPrefix: conf.awsCliDockerTag,
           logRetention: RetentionDays.TWO_YEARS,
         }),
       }),
       condition: ContainerDependencyCondition.COMPLETE,
     });
-    nginxTaskDefinition.addToTaskRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: ["route53:ListHostedZones", "route53:GetChange"],
-        resources: ["*"],
-      })
-    );
-    nginxTaskDefinition.addToTaskRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: ["route53:ChangeResourceRecordSets"],
-        resources: [hostedZone.hostedZoneArn],
-      })
-    );
+    certbotStateMachine.grantStartExecution(nginxTaskDefinition.taskRole);
 
     new Ec2Service(this, "nginxService", {
       cluster: cluster,
