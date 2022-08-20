@@ -47,6 +47,7 @@ export type EasyCerverProps = StackProps & {
   certbotScheduleInterval?: number;
   hostInstanceType?: string;
   hostInstanceSpotPrice?: string;
+  awsCliDockerTag?: string;
 };
 
 export class EasyCerver extends Stack {
@@ -58,6 +59,7 @@ export class EasyCerver extends Stack {
       certbotDockerTag: "v1.29.0",
       certbotScheduleInterval: 60,
       hostInstanceType: "t2.micro",
+      awsCliDockerTag: "latest",
     };
     const conf: EasyCerverProps & typeof defaultProps = {
       ...defaultProps,
@@ -299,21 +301,26 @@ export class EasyCerver extends Stack {
       }
     );
 
-    const containerProps = certbotContainer.renderContainerDefinition();
     nginxContainer.addContainerDependencies({
-      container: nginxTaskDefinition.addContainer("ServerCertbotContainer", {
-        image: ContainerImage.fromRegistry(certbotContainer.imageName),
-        containerName: containerProps.name,
-        memoryReservationMiB: containerProps.memoryReservation,
-        command: containerProps.command,
+      container: nginxTaskDefinition.addContainer("AwsCliContainer", {
+        image: ContainerImage.fromRegistry("amazon/aws-cli"),
+        containerName: "aws-cli",
+        memoryReservationMiB: 64,
+        command: [
+          "aws",
+          "stepfunctions",
+          "start-execution",
+          certbotStateMachine.stateMachineArn,
+        ],
         essential: false,
         logging: LogDriver.awsLogs({
-          streamPrefix: conf.certbotDockerTag,
+          streamPrefix: conf.awsCliDockerTag,
           logRetention: RetentionDays.TWO_YEARS,
         }),
       }),
       condition: ContainerDependencyCondition.COMPLETE,
     });
+    certbotStateMachine.grantStartExecution(nginxTaskDefinition.taskRole)
 
     new Ec2Service(this, "nginxService", {
       cluster: cluster,
