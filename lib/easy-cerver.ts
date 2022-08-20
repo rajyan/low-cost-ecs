@@ -83,14 +83,11 @@ export class EasyCerver extends Stack {
       minCapacity: 1,
       maxCapacity: 1,
     });
-    const tcpSecurityGroup = new SecurityGroup(this, "HostSecurityGroup", {
-      vpc: vpc,
-    });
-    tcpSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(80));
-    tcpSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.tcp(80));
-    tcpSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(443));
-    tcpSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.tcp(443));
-    hostAutoScalingGroup.addSecurityGroup(tcpSecurityGroup);
+    hostAutoScalingGroup.connections.allowFromAnyIpv4(Port.tcp(80));
+    hostAutoScalingGroup.connections.allowFromAnyIpv4(Port.tcp(443));
+    hostAutoScalingGroup.connections.allowFrom(Peer.anyIpv6(), Port.tcp(80));
+    hostAutoScalingGroup.connections.allowFrom(Peer.anyIpv6(), Port.tcp(443));
+
     hostAutoScalingGroup.role.addManagedPolicy(
       ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")
     );
@@ -193,8 +190,8 @@ export class EasyCerver extends Stack {
       }),
       removalPolicy: RemovalPolicy.DESTROY,
     });
-    certbotFileSystem.connections.allowDefaultPortTo(tcpSecurityGroup);
-    certbotFileSystem.connections.allowDefaultPortFrom(tcpSecurityGroup);
+    certbotFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
+    certbotFileSystem.connections.allowDefaultPortFrom(hostAutoScalingGroup);
 
     certbotTaskDefinition.addVolume({
       name: "certVolume",
