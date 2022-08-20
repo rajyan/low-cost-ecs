@@ -2,11 +2,13 @@ import { Construct } from "constructs";
 import { Duration, Names, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
+  AmiHardwareType,
   Cluster,
   ContainerDependencyCondition,
   ContainerImage,
   Ec2Service,
   Ec2TaskDefinition,
+  EcsOptimizedImage,
   LogDriver,
   LogDrivers,
   Protocol,
@@ -73,9 +75,13 @@ export class EasyCerver extends Stack {
     const cluster = new Cluster(this, "Cluster", {
       vpc: vpc,
       executeCommandConfiguration: {},
+      containerInsights: true,
     });
 
     const hostAutoScalingGroup = cluster.addCapacity("HostInstanceCapacity", {
+      machineImage: EcsOptimizedImage.amazonLinux2(AmiHardwareType.STANDARD, {
+        cachedInContext: true,
+      }),
       instanceType: new InstanceType(conf.hostInstanceType),
       spotPrice: conf.hostInstanceSpotPrice,
       vpcSubnets: { subnetType: SubnetType.PUBLIC },
@@ -104,19 +110,16 @@ export class EasyCerver extends Stack {
     hostInstanceIp.tags.setTag("Name", tagUniqueId);
 
     hostAutoScalingGroup.addUserData(
-      ...`
-        yum install -y unzip jq
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip && rm awscli2.zip
-        ./aws/install
-        INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-        ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=${tagUniqueId} \\
-          | grep AllocationId \\
-          | sed -E 's/\\s+"AllocationId":\\s+"(.+)",/\\1/' \\
+      "yum install -y unzip jq",
+      'curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"',
+      "unzip awscliv2.zip && rm awscliv2.zip",
+      "./aws/install",
+      "INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)",
+      `ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=${tagUniqueId} \\
+          | jq -r '.Addresses[].AllocationId' \\
           | head
-        )
-        aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation
-        `.split("\n")
+        )`,
+      'aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation'
     );
 
     const hostedZone = HostedZone.fromLookup(this, "HostedZone", {
