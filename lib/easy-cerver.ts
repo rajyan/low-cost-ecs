@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { Duration, Names, Stack, StackProps } from "aws-cdk-lib";
+import { Duration, Names, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
   Cluster,
@@ -36,6 +36,7 @@ import { Subscription, SubscriptionProtocol, Topic } from "aws-cdk-lib/aws-sns";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { SfnStateMachine } from "aws-cdk-lib/aws-events-targets";
 import * as path from "path";
+import { FileSystem } from "aws-cdk-lib/aws-efs";
 
 export type EasyCerverProps = StackProps & {
   hostedZoneDomain: string;
@@ -182,9 +183,23 @@ export class EasyCerver extends Stack {
       }
     );
 
+    const certbotFileSystem = new FileSystem(this, "CertbotFileSystem", {
+      vpc: vpc,
+      encrypted: true,
+      securityGroup: new SecurityGroup(this, "FileSystemSecurityGroup", {
+        vpc: vpc,
+        allowAllOutbound: false,
+      }),
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+    certbotFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
+    certbotFileSystem.connections.allowDefaultPortFrom(hostAutoScalingGroup);
+
     certbotTaskDefinition.addVolume({
-      host: { sourcePath: "/etc/letsencrypt" },
       name: "certVolume",
+      efsVolumeConfiguration: {
+        fileSystemId: certbotFileSystem.fileSystemId,
+      },
     });
     certbotContainer.addMountPoints({
       sourceVolume: "certVolume",
@@ -221,6 +236,10 @@ export class EasyCerver extends Stack {
     const certbotStateMachine = new StateMachine(this, "StateMachine", {
       definition: certbotRunTask,
     });
+    certbotFileSystem.grant(
+      certbotStateMachine,
+      "elasticfilesystem:ClientWrite"
+    );
 
     new Rule(this, "CertbotScheduleRule", {
       schedule: Schedule.rate(Duration.days(conf.certbotScheduleInterval)),
@@ -244,6 +263,10 @@ export class EasyCerver extends Stack {
       this,
       "NginxTaskDefinition"
     );
+    certbotFileSystem.grant(
+      nginxTaskDefinition.taskRole,
+      "elasticfilesystem:ClientMount"
+    );
     const nginxContainer = nginxTaskDefinition.addContainer("NginxContainer", {
       image: ContainerImage.fromAsset(
         path.join(__dirname, "../containers/nginx-proxy")
@@ -261,8 +284,10 @@ export class EasyCerver extends Stack {
     });
 
     nginxTaskDefinition.addVolume({
-      host: { sourcePath: "/etc/letsencrypt" },
       name: "certVolume",
+      efsVolumeConfiguration: {
+        fileSystemId: certbotFileSystem.fileSystemId,
+      },
     });
     nginxContainer.addMountPoints({
       sourceVolume: "certVolume",
