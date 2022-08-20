@@ -314,6 +314,20 @@ export class EasyCerver extends Stack {
       }),
       condition: ContainerDependencyCondition.COMPLETE,
     });
+    nginxTaskDefinition.addToTaskRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["route53:ListHostedZones", "route53:GetChange"],
+        resources: ["*"],
+      })
+    );
+    nginxTaskDefinition.addToTaskRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["route53:ChangeResourceRecordSets"],
+        resources: [hostedZone.hostedZoneArn],
+      })
+    );
 
     new Ec2Service(this, "nginxService", {
       cluster: cluster,
