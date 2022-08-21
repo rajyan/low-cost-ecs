@@ -121,6 +121,21 @@ export class EasyCerver extends Stack {
       'aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation'
     );
 
+    const certificateFileSystem = new FileSystem(this, "FileSystem", {
+      vpc: vpc,
+      encrypted: true,
+      securityGroup: new SecurityGroup(this, "FileSystemSecurityGroup", {
+        vpc: vpc,
+        allowAllOutbound: false,
+      }),
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+    certificateFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
+    certificateFileSystem.connections.allowDefaultPortFrom(hostAutoScalingGroup);
+
+    /**
+     * ARecord to Elastic ip
+     */
     const hostedZone = HostedZone.fromLookup(this, "HostedZone", {
       domainName: conf.hostedZoneDomain,
     });
@@ -183,22 +198,14 @@ export class EasyCerver extends Stack {
       }
     );
 
-    const certbotFileSystem = new FileSystem(this, "CertbotFileSystem", {
-      vpc: vpc,
-      encrypted: true,
-      securityGroup: new SecurityGroup(this, "FileSystemSecurityGroup", {
-        vpc: vpc,
-        allowAllOutbound: false,
-      }),
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
-    certbotFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
-    certbotFileSystem.connections.allowDefaultPortFrom(hostAutoScalingGroup);
-
+    certificateFileSystem.grant(
+        certbotTaskDefinition.taskRole,
+        "elasticfilesystem:ClientWrite"
+    );
     certbotTaskDefinition.addVolume({
       name: "certVolume",
       efsVolumeConfiguration: {
-        fileSystemId: certbotFileSystem.fileSystemId,
+        fileSystemId: certificateFileSystem.fileSystemId,
       },
     });
     certbotContainer.addMountPoints({
@@ -236,10 +243,6 @@ export class EasyCerver extends Stack {
     const certbotStateMachine = new StateMachine(this, "StateMachine", {
       definition: certbotRunTask,
     });
-    certbotFileSystem.grant(
-      certbotStateMachine,
-      "elasticfilesystem:ClientWrite"
-    );
 
     new Rule(this, "CertbotScheduleRule", {
       schedule: Schedule.rate(Duration.days(conf.certbotScheduleInterval)),
@@ -252,10 +255,6 @@ export class EasyCerver extends Stack {
     const nginxTaskDefinition = new Ec2TaskDefinition(
       this,
       "NginxTaskDefinition"
-    );
-    certbotFileSystem.grant(
-      nginxTaskDefinition.taskRole,
-      "elasticfilesystem:ClientMount"
     );
     const nginxContainer = nginxTaskDefinition.addContainer("NginxContainer", {
       image: ContainerImage.fromAsset(
@@ -273,10 +272,14 @@ export class EasyCerver extends Stack {
       }),
     });
 
+    certificateFileSystem.grant(
+        nginxTaskDefinition.taskRole,
+        "elasticfilesystem:ClientMount"
+    );
     nginxTaskDefinition.addVolume({
       name: "certVolume",
       efsVolumeConfiguration: {
-        fileSystemId: certbotFileSystem.fileSystemId,
+        fileSystemId: certificateFileSystem.fileSystemId,
       },
     });
     nginxContainer.addMountPoints({
