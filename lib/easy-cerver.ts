@@ -112,15 +112,12 @@ export class EasyCerver extends Stack {
     hostInstanceIp.tags.setTag("Name", tagUniqueId);
 
     hostAutoScalingGroup.addUserData(
-      "yum install -y unzip jq",
+      "yum install -y unzip",
       'curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"',
       "unzip awscliv2.zip && rm awscliv2.zip",
       "./aws/install",
       "INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)",
-      `ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=${tagUniqueId} \\
-          | jq -r '.Addresses[].AllocationId' \\
-          | head
-        )`,
+      `ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=${tagUniqueId} --query 'Addresses[].AllocationId' --output text | head)`,
       'aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation'
     );
 
@@ -303,22 +300,24 @@ export class EasyCerver extends Stack {
 
     nginxContainer.addContainerDependencies({
       container: nginxTaskDefinition.addContainer("AwsCliContainer", {
-        image: ContainerImage.fromRegistry(`amazon/aws-cli:${conf.awsCliDockerTag}`),
+        image: ContainerImage.fromRegistry(
+          `amazon/aws-cli:${conf.awsCliDockerTag}`
+        ),
         containerName: "aws-cli",
         memoryReservationMiB: 64,
         entryPoint: ["/bin/bash", "-c"],
         command: [
-            `
+          `
             set -eux
             aws configure set region ${certbotStateMachine.env.region} && \\
             aws configure set output text && \\
             EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ${certbotStateMachine.stateMachineArn} --query executionArn) && \\
-            until [ $(aws stepfunctions describe-execution --execution-arn $EXECUTION_ARN --query status) != RUNNING ];
+            until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
             do
               echo "Waiting for $EXECUTION_ARN"
               sleep 10
             done
-            `
+            `,
         ],
         essential: false,
         logging: LogDriver.awsLogs({
@@ -328,7 +327,10 @@ export class EasyCerver extends Stack {
       }),
       condition: ContainerDependencyCondition.COMPLETE,
     });
-    certbotStateMachine.grantExecution(nginxTaskDefinition.taskRole, 'states:DescribeExecution')
+    certbotStateMachine.grantExecution(
+      nginxTaskDefinition.taskRole,
+      "states:DescribeExecution"
+    );
     certbotStateMachine.grantStartExecution(nginxTaskDefinition.taskRole);
 
     new Ec2Service(this, "nginxService", {
