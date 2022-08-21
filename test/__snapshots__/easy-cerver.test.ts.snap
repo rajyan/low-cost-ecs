@@ -2,12 +2,6 @@
 
 exports[`Template matches snapshot 1`] = `
 Object {
-  "Parameters": Object {
-    "SsmParameterValueawsserviceecsoptimizedamiamazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter": Object {
-      "Default": "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id",
-      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
-    },
-  },
   "Resources": Object {
     "ARecordDeleteExistingRecordSetCustomResource9D8E5045": Object {
       "DeletionPolicy": "Delete",
@@ -41,6 +35,77 @@ Object {
         "Type": "A",
       },
       "Type": "AWS::Route53::RecordSet",
+    },
+    "CertbotFileSystem37E6FF23": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Encrypted": true,
+        "FileSystemTags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/CertbotFileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "CertbotFileSystemEfsMountTarget10399C6AC": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "CertbotFileSystem37E6FF23",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcIsolatedSubnet1SubnetE48C5737",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "CertbotFileSystemEfsMountTarget21B7765B4": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "CertbotFileSystem37E6FF23",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcIsolatedSubnet2Subnet16364B91",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "CertbotFileSystemEfsMountTarget37EED30C0": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "CertbotFileSystem37E6FF23",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcIsolatedSubnet3Subnet6840A2D4",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
     },
     "CertbotScheduleRuleBCE26D73": Object {
       "Properties": Object {
@@ -131,8 +196,10 @@ Object {
         },
         "Volumes": Array [
           Object {
-            "Host": Object {
-              "SourcePath": "/etc/letsencrypt",
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "CertbotFileSystem37E6FF23",
+              },
             },
             "Name": "certVolume",
           },
@@ -245,6 +312,12 @@ Object {
     },
     "ClusterEB0386A7": Object {
       "Properties": Object {
+        "ClusterSettings": Array [
+          Object {
+            "Name": "containerInsights",
+            "Value": "enabled",
+          },
+        ],
         "Configuration": Object {
           "ExecuteCommandConfiguration": Object {},
         },
@@ -707,6 +780,36 @@ def pick(dct, *keys):
             "IpProtocol": "-1",
           },
         ],
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:443",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+          Object {
+            "CidrIpv6": "::/0",
+            "Description": "from ::/0:80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+          Object {
+            "CidrIpv6": "::/0",
+            "Description": "from ::/0:443",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
         "Tags": Array [
           Object {
             "Key": "Name",
@@ -719,6 +822,27 @@ def pick(dct, *keys):
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
+    "ClusterHostInstanceCapacityInstanceSecurityGroupfromMyTestStackFileSystemSecurityGroup425BCE5620498EF36158": Object {
+      "Properties": Object {
+        "Description": "from MyTestStackFileSystemSecurityGroup425BCE56:2049",
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "ClusterHostInstanceCapacityLaunchConfig812B5EE6": Object {
       "DependsOn": Array [
         "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24",
@@ -729,20 +853,12 @@ def pick(dct, *keys):
         "IamInstanceProfile": Object {
           "Ref": "ClusterHostInstanceCapacityInstanceProfileD7C1621F",
         },
-        "ImageId": Object {
-          "Ref": "SsmParameterValueawsserviceecsoptimizedamiamazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter",
-        },
+        "ImageId": "dummy-value-for-/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id",
         "InstanceType": "t2.micro",
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
               "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
-              "GroupId",
-            ],
-          },
-          Object {
-            "Fn::GetAtt": Array [
-              "HostSecurityGroupCA615E03",
               "GroupId",
             ],
           },
@@ -761,19 +877,13 @@ echo ECS_CLUSTER=",
 sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.169.254/32 --jump DROP
 sudo service iptables save
 echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
-
-        yum install -y unzip jq
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        ./aws/install
-        INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-        ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=easy-cerver-ip \\
-          | grep AllocationId \\
-          | sed -E 's/\\s+"AllocationId":\\s+"(.+)",/\\1/' \\
-          | head
-        )
-        aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation
-        ",
+yum install -y unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip && rm awscliv2.zip
+./aws/install
+INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
+ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=MyTestStackHostInstanceIpD0B6B686 --query 'Addresses[].AllocationId' --output text | head)
+aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
               ],
             ],
           },
@@ -950,67 +1060,78 @@ echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "HostInstanceIp": Object {
+    "FileSystemSecurityGroupBFA44C6B": Object {
       "Properties": Object {
-        "Tags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "easy-cerver-ip",
-          },
-        ],
-      },
-      "Type": "AWS::EC2::EIP",
-    },
-    "HostSecurityGroupCA615E03": Object {
-      "Properties": Object {
-        "GroupDescription": "MyTestStack/HostSecurityGroup",
-        "SecurityGroupEgress": Array [
-          Object {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "SecurityGroupIngress": Array [
-          Object {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "from 0.0.0.0/0:80",
-            "FromPort": 80,
-            "IpProtocol": "tcp",
-            "ToPort": 80,
-          },
-          Object {
-            "CidrIpv6": "::/0",
-            "Description": "from ::/0:80",
-            "FromPort": 80,
-            "IpProtocol": "tcp",
-            "ToPort": 80,
-          },
-          Object {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "from 0.0.0.0/0:443",
-            "FromPort": 443,
-            "IpProtocol": "tcp",
-            "ToPort": 443,
-          },
-          Object {
-            "CidrIpv6": "::/0",
-            "Description": "from ::/0:443",
-            "FromPort": 443,
-            "IpProtocol": "tcp",
-            "ToPort": 443,
-          },
-        ],
+        "GroupDescription": "MyTestStack/FileSystemSecurityGroup",
         "VpcId": Object {
           "Ref": "Vpc8378EB38",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
+    "FileSystemSecurityGroupfromMyTestStackClusterHostInstanceCapacityInstanceSecurityGroupC7127ED72049AE16816D": Object {
+      "Properties": Object {
+        "Description": "from MyTestStackClusterHostInstanceCapacityInstanceSecurityGroupC7127ED7:2049",
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "FileSystemSecurityGrouptoMyTestStackClusterHostInstanceCapacityInstanceSecurityGroupC7127ED72049CCD648C7": Object {
+      "Properties": Object {
+        "Description": "to MyTestStackClusterHostInstanceCapacityInstanceSecurityGroupC7127ED7:2049",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "HostInstanceIp": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStackHostInstanceIpD0B6B686",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
     "NginxTaskDefinition76C3FF98": Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
           Object {
+            "DependsOn": Array [
+              Object {
+                "Condition": "COMPLETE",
+                "ContainerName": "aws-cli",
+              },
+            ],
             "Environment": Array [
               Object {
                 "Name": "SERVER_NAME",
@@ -1053,6 +1174,50 @@ echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
               },
             ],
           },
+          Object {
+            "Command": Array [
+              Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "
+            set -eux
+            aws configure set region dummy-region && \\
+            aws configure set output text && \\
+            EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
+                    Object {
+                      "Ref": "StateMachine2E01A3A5",
+                    },
+                    " --query executionArn) && \\
+            until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
+            do
+              echo "Waiting for $EXECUTION_ARN"
+              sleep 10
+            done
+            ",
+                  ],
+                ],
+              },
+            ],
+            "EntryPoint": Array [
+              "/bin/bash",
+              "-c",
+            ],
+            "Essential": false,
+            "Image": "amazon/aws-cli:latest",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "NginxTaskDefinitionAwsCliContainerLogGroup97D43BF7",
+                },
+                "awslogs-region": "dummy-region",
+                "awslogs-stream-prefix": "latest",
+              },
+            },
+            "MemoryReservation": 64,
+            "Name": "aws-cli",
+          },
         ],
         "ExecutionRoleArn": Object {
           "Fn::GetAtt": Array [
@@ -1073,14 +1238,24 @@ echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
         },
         "Volumes": Array [
           Object {
-            "Host": Object {
-              "SourcePath": "/etc/letsencrypt",
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "CertbotFileSystem37E6FF23",
+              },
             },
             "Name": "certVolume",
           },
         ],
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "NginxTaskDefinitionAwsCliContainerLogGroup97D43BF7": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 731,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC": Object {
       "Properties": Object {
@@ -1120,6 +1295,19 @@ echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
               "Resource": Object {
                 "Fn::GetAtt": Array [
                   "NginxTaskDefinitionNginxContainerLogGroup701FC183",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "NginxTaskDefinitionAwsCliContainerLogGroup97D43BF7",
                   "Arn",
                 ],
               },
@@ -1183,6 +1371,53 @@ echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
         "PolicyDocument": Object {
           "Statement": Array [
             Object {
+              "Action": "elasticfilesystem:ClientMount",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "CertbotFileSystem37E6FF23",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "states:DescribeExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":states:dummy-region:dummy-id:execution:",
+                    Object {
+                      "Fn::Select": Array [
+                        6,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "StateMachine2E01A3A5",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "states:StartExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "StateMachine2E01A3A5",
+              },
+            },
+            Object {
               "Action": Array [
                 "ssmmessages:CreateControlChannel",
                 "ssmmessages:CreateDataChannel",
@@ -1228,7 +1463,7 @@ echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
           "Fn::Join": Array [
             "",
             Array [
-              "{"StartAt":"CreateCertificate","States":{"CreateCertificate":{"End":true,"Catch":[{"ErrorEquals":["States.ALL"],"Next":"SendEmailOnFailure"}],"Type":"Task","Resource":"arn:",
+              "{"StartAt":"CreateCertificate","States":{"CreateCertificate":{"End":true,"Retry":[{"ErrorEquals":["States.ALL"],"IntervalSeconds":20}],"Catch":[{"ErrorEquals":["States.ALL"],"Next":"SendEmailOnFailure"}],"Type":"Task","Resource":"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
@@ -1487,6 +1722,16 @@ echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
               "Effect": "Allow",
               "Resource": Object {
                 "Ref": "TopicBFC7AF6E",
+              },
+            },
+            Object {
+              "Action": "elasticfilesystem:ClientWrite",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "CertbotFileSystem37E6FF23",
+                  "Arn",
+                ],
               },
             },
           ],
