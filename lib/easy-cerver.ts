@@ -307,17 +307,15 @@ export class EasyCerver extends Stack {
         memoryReservationMiB: 64,
         entryPoint: ["/bin/bash", "-c"],
         command: [
-          `
-            set -eux
-            aws configure set region ${certbotStateMachine.env.region} && \\
-            aws configure set output text && \\
-            EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ${certbotStateMachine.stateMachineArn} --query executionArn) && \\
-            until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
-            do
-              echo "Waiting for $EXECUTION_ARN"
-              sleep 10
-            done
-            `,
+          `set -eux
+          aws configure set region ${certbotStateMachine.env.region} && \\
+          aws configure set output text && \\
+          EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ${certbotStateMachine.stateMachineArn} --query executionArn) && \\
+          until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
+          do
+            echo "Waiting for $EXECUTION_ARN"
+            sleep 10
+          done`,
         ],
         essential: false,
         logging: LogDriver.awsLogs({
