@@ -112,13 +112,9 @@ export class EasyCerver extends Stack {
     hostInstanceIp.tags.setTag("Name", tagUniqueId);
 
     hostAutoScalingGroup.addUserData(
-      "yum install -y unzip",
-      'curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"',
-      "unzip awscliv2.zip && rm awscliv2.zip",
-      "./aws/install",
       "INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)",
-      `ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=${tagUniqueId} --query 'Addresses[].AllocationId' --output text | head)`,
-      'aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation'
+      `ALLOCATION_ID=$(docker run amazon/aws-cli:${conf.awsCliDockerTag} ec2 describe-addresses --filter Name=tag:Name,Values=${tagUniqueId} --query 'Addresses[].AllocationId' --output text | head)`,
+      `docker run amazon/aws-cli:${conf.awsCliDockerTag} ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation`
     );
 
     const certificateFileSystem = new FileSystem(this, "FileSystem", {
@@ -131,7 +127,9 @@ export class EasyCerver extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
     certificateFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
-    certificateFileSystem.connections.allowDefaultPortFrom(hostAutoScalingGroup);
+    certificateFileSystem.connections.allowDefaultPortFrom(
+      hostAutoScalingGroup
+    );
 
     /**
      * ARecord to Elastic ip
@@ -199,8 +197,8 @@ export class EasyCerver extends Stack {
     );
 
     certificateFileSystem.grant(
-        certbotTaskDefinition.taskRole,
-        "elasticfilesystem:ClientWrite"
+      certbotTaskDefinition.taskRole,
+      "elasticfilesystem:ClientWrite"
     );
     certbotTaskDefinition.addVolume({
       name: "certVolume",
@@ -273,8 +271,8 @@ export class EasyCerver extends Stack {
     });
 
     certificateFileSystem.grant(
-        nginxTaskDefinition.taskRole,
-        "elasticfilesystem:ClientMount"
+      nginxTaskDefinition.taskRole,
+      "elasticfilesystem:ClientMount"
     );
     nginxTaskDefinition.addVolume({
       name: "certVolume",
