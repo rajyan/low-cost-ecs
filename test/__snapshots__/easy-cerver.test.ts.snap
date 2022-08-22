@@ -36,77 +36,6 @@ Object {
       },
       "Type": "AWS::Route53::RecordSet",
     },
-    "CertbotFileSystem37E6FF23": Object {
-      "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "Encrypted": true,
-        "FileSystemTags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "MyTestStack/CertbotFileSystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "CertbotFileSystemEfsMountTarget10399C6AC": Object {
-      "Properties": Object {
-        "FileSystemId": Object {
-          "Ref": "CertbotFileSystem37E6FF23",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": Object {
-          "Ref": "VpcIsolatedSubnet1SubnetE48C5737",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "CertbotFileSystemEfsMountTarget21B7765B4": Object {
-      "Properties": Object {
-        "FileSystemId": Object {
-          "Ref": "CertbotFileSystem37E6FF23",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": Object {
-          "Ref": "VpcIsolatedSubnet2Subnet16364B91",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "CertbotFileSystemEfsMountTarget37EED30C0": Object {
-      "Properties": Object {
-        "FileSystemId": Object {
-          "Ref": "CertbotFileSystem37E6FF23",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": Object {
-          "Ref": "VpcIsolatedSubnet3Subnet6840A2D4",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
     "CertbotScheduleRuleBCE26D73": Object {
       "Properties": Object {
         "ScheduleExpression": "rate(60 days)",
@@ -198,7 +127,7 @@ Object {
           Object {
             "EFSVolumeConfiguration": Object {
               "FilesystemId": Object {
-                "Ref": "CertbotFileSystem37E6FF23",
+                "Ref": "FileSystem8A8E25C0",
               },
             },
             "Name": "certVolume",
@@ -278,6 +207,16 @@ Object {
                     },
                     ":route53:::hostedzone/DUMMY",
                   ],
+                ],
+              },
+            },
+            Object {
+              "Action": "elasticfilesystem:ClientWrite",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FileSystem8A8E25C0",
+                  "Arn",
                 ],
               },
             },
@@ -877,13 +816,9 @@ echo ECS_CLUSTER=",
 sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.169.254/32 --jump DROP
 sudo service iptables save
 echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
-yum install -y unzip
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip && rm awscliv2.zip
-./aws/install
 INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-ALLOCATION_ID=$(aws ec2 describe-addresses --filter Name=tag:Name,Values=MyTestStackHostInstanceIpD0B6B686 --query 'Addresses[].AllocationId' --output text | head)
-aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region dummy-region --filter Name=tag:Name,Values=MyTestStackHostInstanceIpD0B6B686 --query 'Addresses[].AllocationId' --output text | head)
+docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy-region --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
               ],
             ],
           },
@@ -1060,6 +995,77 @@ aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCAT
       },
       "Type": "AWS::SNS::Subscription",
     },
+    "FileSystem8A8E25C0": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Encrypted": true,
+        "FileSystemTags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/FileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "FileSystemEfsMountTarget1586453F0": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcIsolatedSubnet1SubnetE48C5737",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemEfsMountTarget24B8EBB43": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcIsolatedSubnet2Subnet16364B91",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemEfsMountTarget37C2F9139": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcIsolatedSubnet3Subnet6840A2D4",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
     "FileSystemSecurityGroupBFA44C6B": Object {
       "Properties": Object {
         "GroupDescription": "MyTestStack/FileSystemSecurityGroup",
@@ -1140,7 +1146,7 @@ aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCAT
             ],
             "Essential": true,
             "Image": Object {
-              "Fn::Sub": "dummy-id.dkr.ecr.dummy-region.\${AWS::URLSuffix}/cdk-hnb659fds-container-assets-dummy-id-dummy-region:bb6cdcfb967a23bdf88351bd31f9a26ce059635b6b7170198f6826610f7264b6",
+              "Fn::Sub": "dummy-id.dkr.ecr.dummy-region.\${AWS::URLSuffix}/cdk-hnb659fds-container-assets-dummy-id-dummy-region:dbdef966910277c581318f999e8ec2070e93891523faa984deee44de911bee92",
             },
             "LogConfiguration": Object {
               "LogDriver": "awslogs",
@@ -1180,21 +1186,19 @@ aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCAT
                 "Fn::Join": Array [
                   "",
                   Array [
-                    "
-            set -eux
-            aws configure set region dummy-region && \\
-            aws configure set output text && \\
-            EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
+                    "set -eux
+          aws configure set region dummy-region && \\
+          aws configure set output text && \\
+          EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
                     Object {
                       "Ref": "StateMachine2E01A3A5",
                     },
                     " --query executionArn) && \\
-            until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
-            do
-              echo "Waiting for $EXECUTION_ARN"
-              sleep 10
-            done
-            ",
+          until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
+          do
+            echo "Waiting for $EXECUTION_ARN"
+            sleep 10
+          done",
                   ],
                 ],
               },
@@ -1240,7 +1244,7 @@ aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCAT
           Object {
             "EFSVolumeConfiguration": Object {
               "FilesystemId": Object {
-                "Ref": "CertbotFileSystem37E6FF23",
+                "Ref": "FileSystem8A8E25C0",
               },
             },
             "Name": "certVolume",
@@ -1375,7 +1379,7 @@ aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCAT
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "CertbotFileSystem37E6FF23",
+                  "FileSystem8A8E25C0",
                   "Arn",
                 ],
               },
@@ -1722,16 +1726,6 @@ aws ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCAT
               "Effect": "Allow",
               "Resource": Object {
                 "Ref": "TopicBFC7AF6E",
-              },
-            },
-            Object {
-              "Action": "elasticfilesystem:ClientWrite",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "CertbotFileSystem37E6FF23",
-                  "Arn",
-                ],
               },
             },
           ],
