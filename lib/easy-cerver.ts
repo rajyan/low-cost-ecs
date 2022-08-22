@@ -113,8 +113,8 @@ export class EasyCerver extends Stack {
 
     hostAutoScalingGroup.addUserData(
       "INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)",
-      `ALLOCATION_ID=$(docker run amazon/aws-cli:${conf.awsCliDockerTag} ec2 describe-addresses --filter Name=tag:Name,Values=${tagUniqueId} --query 'Addresses[].AllocationId' --output text | head)`,
-      `docker run amazon/aws-cli:${conf.awsCliDockerTag} ec2 associate-address --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation`
+      `ALLOCATION_ID=$(docker run amazon/aws-cli:${conf.awsCliDockerTag} ec2 describe-addresses --region ${hostAutoScalingGroup.env.region} --filter Name=tag:Name,Values=${tagUniqueId} --query 'Addresses[].AllocationId' --output text | head)`,
+      `docker run amazon/aws-cli:${conf.awsCliDockerTag} ec2 associate-address --region ${hostAutoScalingGroup.env.region} --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation`
     );
 
     const certificateFileSystem = new FileSystem(this, "FileSystem", {
