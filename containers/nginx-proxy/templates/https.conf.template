@@ -23,7 +23,7 @@ server {
     ssl_stapling_verify on;
 
     # vpc resolver https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html
-    resolver 169.254.169.253
+    resolver 169.254.169.253;
 
     server_name ${SERVER_NAME};
 
