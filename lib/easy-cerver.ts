@@ -13,7 +13,7 @@ import {
   LogDrivers,
   Protocol,
 } from "aws-cdk-lib/aws-ecs";
-import { RetentionDays } from "aws-cdk-lib/aws-logs";
+import {LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {
   CfnEIP,
   InstanceType,
@@ -67,6 +67,11 @@ export class EasyCerver extends Stack {
       ...defaultProps,
       ...props,
     };
+
+    const logGroup = new LogGroup(this, 'LogGroup', {
+      retention: RetentionDays.TWO_YEARS,
+      removalPolicy: RemovalPolicy.DESTROY,
+    })
 
     /**
      * Vpc, Cluster, Container Host EC2 ASG
@@ -195,8 +200,8 @@ export class EasyCerver extends Stack {
           conf.recordDomainName,
         ],
         logging: LogDriver.awsLogs({
+          logGroup: logGroup,
           streamPrefix: conf.certbotDockerTag,
-          logRetention: RetentionDays.TWO_YEARS,
         }),
       }
     );
@@ -270,8 +275,8 @@ export class EasyCerver extends Stack {
         SERVER_NAME: conf.recordDomainName,
       },
       logging: LogDrivers.awsLogs({
+        logGroup: logGroup,
         streamPrefix: "nginx-proxy",
-        logRetention: RetentionDays.TWO_YEARS,
       }),
     });
 
@@ -325,8 +330,8 @@ export class EasyCerver extends Stack {
         ],
         essential: false,
         logging: LogDriver.awsLogs({
+          logGroup: logGroup,
           streamPrefix: conf.awsCliDockerTag,
-          logRetention: RetentionDays.TWO_YEARS,
         }),
       }),
       condition: ContainerDependencyCondition.COMPLETE,
