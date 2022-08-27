@@ -1,47 +1,19 @@
-import { Construct } from "constructs";
-import { Duration, Names, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
-import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
-import {
-  AmiHardwareType,
-  Cluster,
-  ContainerDependencyCondition,
-  ContainerImage,
-  Ec2Service,
-  Ec2TaskDefinition,
-  EcsOptimizedImage,
-  LogDriver,
-  LogDrivers,
-  Protocol,
-} from "aws-cdk-lib/aws-ecs";
-import {LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
-import {
-  CfnEIP,
-  InstanceType,
-  Peer,
-  Port,
-  SecurityGroup,
-  SubnetType,
-  Vpc,
-} from "aws-cdk-lib/aws-ec2";
-import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
-import {
-  EcsEc2LaunchTarget,
-  EcsRunTask,
-  SnsPublish,
-} from "aws-cdk-lib/aws-stepfunctions-tasks";
-import {
-  Fail,
-  IntegrationPattern,
-  StateMachine,
-  TaskInput,
-} from "aws-cdk-lib/aws-stepfunctions";
-import { Subscription, SubscriptionProtocol, Topic } from "aws-cdk-lib/aws-sns";
+import * as path from "path";
+import * as lib from "aws-cdk-lib";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as ecs from "aws-cdk-lib/aws-ecs";
+import { FileSystem } from "aws-cdk-lib/aws-efs";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { SfnStateMachine } from "aws-cdk-lib/aws-events-targets";
-import * as path from "path";
-import { FileSystem } from "aws-cdk-lib/aws-efs";
+import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
+import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
+import { Subscription, SubscriptionProtocol, Topic } from "aws-cdk-lib/aws-sns";
+import * as sfn from "aws-cdk-lib/aws-stepfunctions";
+import * as sfn_tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
+import { Construct } from "constructs";
 
-export type EasyCerverProps = StackProps & {
+export type EasyCerverProps = lib.StackProps & {
   hostedZoneDomain: string;
   recordDomainName?: string;
   email: string;
@@ -52,7 +24,7 @@ export type EasyCerverProps = StackProps & {
   awsCliDockerTag?: string;
 };
 
-export class EasyCerver extends Stack {
+export class EasyCerver extends lib.Stack {
   constructor(scope: Construct, id: string, props: EasyCerverProps) {
     super(scope, id, props);
 
@@ -68,45 +40,54 @@ export class EasyCerver extends Stack {
       ...props,
     };
 
-    const logGroup = new LogGroup(this, 'LogGroup', {
+    const logGroup = new LogGroup(this, "LogGroup", {
       retention: RetentionDays.TWO_YEARS,
-      removalPolicy: RemovalPolicy.DESTROY,
-    })
+      removalPolicy: lib.RemovalPolicy.DESTROY,
+    });
 
     /**
      * Vpc, Cluster, Container Host EC2 ASG
      * Container host instance with SSM agent connection enabled
      */
-    const vpc = new Vpc(this, "Vpc", {
+    const vpc = new ec2.Vpc(this, "Vpc", {
       natGateways: 0,
       subnetConfiguration: [
         {
           name: "PublicSubnet",
-          subnetType: SubnetType.PUBLIC,
+          subnetType: ec2.SubnetType.PUBLIC,
         },
       ],
     });
 
-    const cluster = new Cluster(this, "Cluster", {
+    const cluster = new ecs.Cluster(this, "Cluster", {
       vpc: vpc,
       containerInsights: true,
     });
 
     const hostAutoScalingGroup = cluster.addCapacity("HostInstanceCapacity", {
-      machineImage: EcsOptimizedImage.amazonLinux2(AmiHardwareType.STANDARD, {
-        cachedInContext: true,
-      }),
-      instanceType: new InstanceType(conf.hostInstanceType),
+      machineImage: ecs.EcsOptimizedImage.amazonLinux2(
+        ecs.AmiHardwareType.STANDARD,
+        {
+          cachedInContext: true,
+        }
+      ),
+      instanceType: new ec2.InstanceType(conf.hostInstanceType),
       spotPrice: conf.hostInstanceSpotPrice,
-      vpcSubnets: { subnetType: SubnetType.PUBLIC },
+      vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
       associatePublicIpAddress: true,
       minCapacity: 1,
       maxCapacity: 1,
     });
-    hostAutoScalingGroup.connections.allowFromAnyIpv4(Port.tcp(80));
-    hostAutoScalingGroup.connections.allowFromAnyIpv4(Port.tcp(443));
-    hostAutoScalingGroup.connections.allowFrom(Peer.anyIpv6(), Port.tcp(80));
-    hostAutoScalingGroup.connections.allowFrom(Peer.anyIpv6(), Port.tcp(443));
+    hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(80));
+    hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(443));
+    hostAutoScalingGroup.connections.allowFrom(
+      ec2.Peer.anyIpv6(),
+      ec2.Port.tcp(80)
+    );
+    hostAutoScalingGroup.connections.allowFrom(
+      ec2.Peer.anyIpv6(),
+      ec2.Port.tcp(443)
+    );
 
     hostAutoScalingGroup.role.addManagedPolicy(
       ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")
@@ -119,8 +100,8 @@ export class EasyCerver extends Stack {
       })
     );
 
-    const hostInstanceIp = new CfnEIP(this, "HostInstanceIp");
-    const tagUniqueId = Names.uniqueId(hostInstanceIp);
+    const hostInstanceIp = new ec2.CfnEIP(this, "HostInstanceIp");
+    const tagUniqueId = lib.Names.uniqueId(hostInstanceIp);
     hostInstanceIp.tags.setTag("Name", tagUniqueId);
 
     hostAutoScalingGroup.addUserData(
@@ -132,11 +113,11 @@ export class EasyCerver extends Stack {
     const certFileSystem = new FileSystem(this, "FileSystem", {
       vpc: vpc,
       encrypted: true,
-      securityGroup: new SecurityGroup(this, "FileSystemSecurityGroup", {
+      securityGroup: new ec2.SecurityGroup(this, "FileSystemSecurityGroup", {
         vpc: vpc,
         allowAllOutbound: false,
       }),
-      removalPolicy: RemovalPolicy.DESTROY,
+      removalPolicy: lib.RemovalPolicy.DESTROY,
     });
     certFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
     certFileSystem.connections.allowDefaultPortFrom(hostAutoScalingGroup);
@@ -158,7 +139,7 @@ export class EasyCerver extends Stack {
      * Certbot Task Definition
      * Mounts generated certificate to host instance
      */
-    const certbotTaskDefinition = new Ec2TaskDefinition(
+    const certbotTaskDefinition = new ecs.Ec2TaskDefinition(
       this,
       "CertbotTaskDefinition"
     );
@@ -180,7 +161,7 @@ export class EasyCerver extends Stack {
     const certbotContainer = certbotTaskDefinition.addContainer(
       "CertbotContainer",
       {
-        image: ContainerImage.fromRegistry(
+        image: ecs.ContainerImage.fromRegistry(
           `certbot/dns-route53:${conf.certbotDockerTag}`
         ),
         containerName: "certbot",
@@ -199,7 +180,7 @@ export class EasyCerver extends Stack {
           "-d",
           conf.recordDomainName,
         ],
-        logging: LogDriver.awsLogs({
+        logging: ecs.LogDriver.awsLogs({
           logGroup: logGroup,
           streamPrefix: conf.certbotDockerTag,
         }),
@@ -233,39 +214,39 @@ export class EasyCerver extends Stack {
       endpoint: conf.email,
     });
 
-    const certbotRunTask = new EcsRunTask(this, "CreateCertificate", {
+    const certbotRunTask = new sfn_tasks.EcsRunTask(this, "CreateCertificate", {
       cluster: cluster,
       taskDefinition: certbotTaskDefinition,
-      launchTarget: new EcsEc2LaunchTarget(),
-      integrationPattern: IntegrationPattern.RUN_JOB,
+      launchTarget: new sfn_tasks.EcsEc2LaunchTarget(),
+      integrationPattern: sfn.IntegrationPattern.RUN_JOB,
     });
     certbotRunTask.addCatch(
-      new SnsPublish(this, "SendEmailOnFailure", {
+      new sfn_tasks.SnsPublish(this, "SendEmailOnFailure", {
         topic: topic,
-        message: TaskInput.fromJsonPathAt("$"),
-      }).next(new Fail(this, "Fail"))
+        message: sfn.TaskInput.fromJsonPathAt("$"),
+      }).next(new sfn.Fail(this, "Fail"))
     );
     certbotRunTask.addRetry({
-      interval: Duration.seconds(20),
+      interval: lib.Duration.seconds(20),
     });
-    const certbotStateMachine = new StateMachine(this, "StateMachine", {
+    const certbotStateMachine = new sfn.StateMachine(this, "StateMachine", {
       definition: certbotRunTask,
     });
 
     new Rule(this, "CertbotScheduleRule", {
-      schedule: Schedule.rate(Duration.days(conf.certbotScheduleInterval)),
+      schedule: Schedule.rate(lib.Duration.days(conf.certbotScheduleInterval)),
       targets: [new SfnStateMachine(certbotStateMachine)],
     });
 
     /**
      * Nginx proxy server task definition
      */
-    const nginxTaskDefinition = new Ec2TaskDefinition(
+    const nginxTaskDefinition = new ecs.Ec2TaskDefinition(
       this,
       "NginxTaskDefinition"
     );
     const nginxContainer = nginxTaskDefinition.addContainer("NginxContainer", {
-      image: ContainerImage.fromAsset(
+      image: ecs.ContainerImage.fromAsset(
         path.join(__dirname, "../containers/nginx-proxy")
       ),
       containerName: "nginx",
@@ -274,7 +255,7 @@ export class EasyCerver extends Stack {
       environment: {
         SERVER_NAME: conf.recordDomainName,
       },
-      logging: LogDrivers.awsLogs({
+      logging: ecs.LogDrivers.awsLogs({
         logGroup: logGroup,
         streamPrefix: "nginx-proxy",
       }),
@@ -300,18 +281,18 @@ export class EasyCerver extends Stack {
       {
         hostPort: 80,
         containerPort: 80,
-        protocol: Protocol.TCP,
+        protocol: ecs.Protocol.TCP,
       },
       {
         hostPort: 443,
         containerPort: 443,
-        protocol: Protocol.TCP,
+        protocol: ecs.Protocol.TCP,
       }
     );
 
     nginxContainer.addContainerDependencies({
       container: nginxTaskDefinition.addContainer("AwsCliContainer", {
-        image: ContainerImage.fromRegistry(
+        image: ecs.ContainerImage.fromRegistry(
           `amazon/aws-cli:${conf.awsCliDockerTag}`
         ),
         containerName: "aws-cli",
@@ -329,12 +310,12 @@ export class EasyCerver extends Stack {
           done`,
         ],
         essential: false,
-        logging: LogDriver.awsLogs({
+        logging: ecs.LogDriver.awsLogs({
           logGroup: logGroup,
           streamPrefix: conf.awsCliDockerTag,
         }),
       }),
-      condition: ContainerDependencyCondition.COMPLETE,
+      condition: ecs.ContainerDependencyCondition.COMPLETE,
     });
     certbotStateMachine.grantExecution(
       nginxTaskDefinition.taskRole,
@@ -342,7 +323,7 @@ export class EasyCerver extends Stack {
     );
     certbotStateMachine.grantStartExecution(nginxTaskDefinition.taskRole);
 
-    new Ec2Service(this, "nginxService", {
+    new ecs.Ec2Service(this, "nginxService", {
       cluster: cluster,
       taskDefinition: nginxTaskDefinition,
       desiredCount: 1,
