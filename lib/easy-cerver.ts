@@ -72,11 +72,18 @@ export class EasyCerver extends Stack {
      * Vpc, Cluster, Container Host EC2 ASG
      * Container host instance with SSM agent connection enabled
      */
-    const vpc = new Vpc(this, "Vpc", { natGateways: 0 });
+    const vpc = new Vpc(this, "Vpc", {
+      natGateways: 0,
+      subnetConfiguration: [
+        {
+          name: "PublicSubnet",
+          subnetType: SubnetType.PUBLIC,
+        },
+      ],
+    });
 
     const cluster = new Cluster(this, "Cluster", {
       vpc: vpc,
-      executeCommandConfiguration: {},
       containerInsights: true,
     });
 
@@ -117,7 +124,7 @@ export class EasyCerver extends Stack {
       `docker run --net=host amazon/aws-cli:${conf.awsCliDockerTag} ec2 associate-address --region ${hostAutoScalingGroup.env.region} --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation`
     );
 
-    const certificateFileSystem = new FileSystem(this, "FileSystem", {
+    const certFileSystem = new FileSystem(this, "FileSystem", {
       vpc: vpc,
       encrypted: true,
       securityGroup: new SecurityGroup(this, "FileSystemSecurityGroup", {
@@ -126,10 +133,8 @@ export class EasyCerver extends Stack {
       }),
       removalPolicy: RemovalPolicy.DESTROY,
     });
-    certificateFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
-    certificateFileSystem.connections.allowDefaultPortFrom(
-      hostAutoScalingGroup
-    );
+    certFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
+    certFileSystem.connections.allowDefaultPortFrom(hostAutoScalingGroup);
 
     /**
      * ARecord to Elastic ip
@@ -196,14 +201,14 @@ export class EasyCerver extends Stack {
       }
     );
 
-    certificateFileSystem.grant(
+    certFileSystem.grant(
       certbotTaskDefinition.taskRole,
       "elasticfilesystem:ClientWrite"
     );
     certbotTaskDefinition.addVolume({
       name: "certVolume",
       efsVolumeConfiguration: {
-        fileSystemId: certificateFileSystem.fileSystemId,
+        fileSystemId: certFileSystem.fileSystemId,
       },
     });
     certbotContainer.addMountPoints({
@@ -270,14 +275,14 @@ export class EasyCerver extends Stack {
       }),
     });
 
-    certificateFileSystem.grant(
+    certFileSystem.grant(
       nginxTaskDefinition.taskRole,
       "elasticfilesystem:ClientMount"
     );
     nginxTaskDefinition.addVolume({
       name: "certVolume",
       efsVolumeConfiguration: {
-        fileSystemId: certificateFileSystem.fileSystemId,
+        fileSystemId: certFileSystem.fileSystemId,
       },
     });
     nginxContainer.addMountPoints({
