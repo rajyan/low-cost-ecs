@@ -6,5 +6,10 @@ server {
 
     ssl_reject_handshake on;
 
+    error_page 497 =444 @close;
+    location @close {
+        return 444;
+    }
+
     return 444;
 }
