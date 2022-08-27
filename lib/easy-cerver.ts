@@ -270,6 +270,8 @@ export class EasyCerver extends lib.Stack {
           "--expand",
           "-m",
           props.email,
+          "--cert-name",
+          records[0],
           ...records.flatMap((domain) => ["-d", domain]),
         ],
         logging: ecs.LogDriver.awsLogs({
@@ -416,7 +418,8 @@ export class EasyCerver extends lib.Stack {
       memoryReservationMiB: 64,
       essential: true,
       environment: {
-        SERVER_NAME: records.join(", "),
+        SERVER_NAME: records.join(" "),
+        CERT_NAME: records[0],
       },
       logging: ecs.LogDrivers.awsLogs({
         logGroup: logGroup,

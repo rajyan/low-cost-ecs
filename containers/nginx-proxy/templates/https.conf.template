@@ -1,8 +1,11 @@
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    ssl_certificate /etc/letsencrypt/live/${SERVER_NAME}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SERVER_NAME}/privkey.pem;
+
+    server_name ${SERVER_NAME};
+
+    ssl_certificate /etc/letsencrypt/live/${CERT_NAME}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${CERT_NAME}/privkey.pem;
     ssl_session_cache shared:ssl:10m;
     ssl_session_timeout 1d;
     ssl_session_tickets off;
@@ -22,8 +25,6 @@ server {
 
     # vpc resolver https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html
     resolver 169.254.169.253;
-
-    server_name ${SERVER_NAME};
 
     location / {
         root   /usr/share/nginx/html;
