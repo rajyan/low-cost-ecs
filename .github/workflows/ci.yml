@@ -14,7 +14,7 @@ jobs:
       - run: npm ci
       - run: npm test
 
-  prittier:
+  prettier:
     name: "Fix"
     runs-on: ubuntu-latest
     steps:
