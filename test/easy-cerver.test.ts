@@ -16,7 +16,7 @@ test("Template matches snapshot", () => {
     test: (val) => typeof val === "string",
     serialize: (val) => {
       return `"${val.replace(
-        /[a-f0-9]{64}\.zip|cdk-[a-z0-9]{9}-assets-\${AWS::AccountId}-\${AWS::Region}/,
+        new RegExp(`[a-f0-9]{64}\\.zip|cdk-[a-z0-9]{9}-assets-\\$\{AWS::AccountId}-\\$\{AWS::Region}|container-assets-${stack.account}-${stack.region}:[a-z0-9]{64}`),
         "[HASH REMOVED]"
       )}"`;
     },

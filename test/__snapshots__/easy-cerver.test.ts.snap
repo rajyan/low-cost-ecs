@@ -1052,7 +1052,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
             ],
             "Essential": true,
             "Image": Object {
-              "Fn::Sub": "dummy-id.dkr.ecr.dummy-region.\${AWS::URLSuffix}/cdk-hnb659fds-container-assets-dummy-id-dummy-region:82ab5e349988d5d9810118bba7a8dfb8386e890a7142f3780ef58a5b71c2e70b",
+              "Fn::Sub": "dummy-id.dkr.ecr.dummy-region.\${AWS::URLSuffix}/cdk-hnb659fds-[HASH REMOVED]",
             },
             "LogConfiguration": Object {
               "LogDriver": "awslogs",
