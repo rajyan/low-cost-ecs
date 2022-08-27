@@ -3,26 +3,7 @@
 exports[`Template matches snapshot 1`] = `
 Object {
   "Resources": Object {
-    "ARecordDeleteExistingRecordSetCustomResource9D8E5045": Object {
-      "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "HostedZoneId": "DUMMY",
-        "RecordName": "test.example.com.",
-        "RecordType": "A",
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
-            "CustomDeleteExistingRecordSetCustomResourceProviderHandlerAD00231E",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "Custom::DeleteExistingRecordSet",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "ARecordE7B57761": Object {
-      "DependsOn": Array [
-        "ARecordDeleteExistingRecordSetCustomResource9D8E5045",
-      ],
+    "ARecordtestexamplecom0D0DB14A": Object {
       "Properties": Object {
         "HostedZoneId": "DUMMY",
         "Name": "test.example.com.",
@@ -57,14 +38,6 @@ Object {
       },
       "Type": "AWS::Events::Rule",
     },
-    "CertbotTaskDefinitionCertbotContainerLogGroupC83AF586": Object {
-      "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "RetentionInDays": 731,
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
     "CertbotTaskDefinitionE960D6F7": Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
@@ -80,6 +53,8 @@ Object {
               "--expand",
               "-m",
               "test@example.com",
+              "--cert-name",
+              "test.example.com",
               "-d",
               "test.example.com",
             ],
@@ -89,7 +64,7 @@ Object {
               "LogDriver": "awslogs",
               "Options": Object {
                 "awslogs-group": Object {
-                  "Ref": "CertbotTaskDefinitionCertbotContainerLogGroupC83AF586",
+                  "Ref": "LogGroupF5B46931",
                 },
                 "awslogs-region": "dummy-region",
                 "awslogs-stream-prefix": "v1.29.0",
@@ -165,7 +140,7 @@ Object {
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "CertbotTaskDefinitionCertbotContainerLogGroupC83AF586",
+                  "LogGroupF5B46931",
                   "Arn",
                 ],
               },
@@ -257,9 +232,6 @@ Object {
             "Value": "enabled",
           },
         ],
-        "Configuration": Object {
-          "ExecuteCommandConfiguration": Object {},
-        },
       },
       "Type": "AWS::ECS::Cluster",
     },
@@ -279,13 +251,13 @@ Object {
         ],
         "VPCZoneIdentifier": Array [
           Object {
-            "Ref": "VpcPublicSubnet1Subnet5C2D37C4",
+            "Ref": "VpcPublicSubnetSubnet1SubnetC1C3749F",
           },
           Object {
-            "Ref": "VpcPublicSubnet2Subnet691E08A3",
+            "Ref": "VpcPublicSubnetSubnet2Subnet2294BBD1",
           },
           Object {
-            "Ref": "VpcPublicSubnet3SubnetBE12F0B6",
+            "Ref": "VpcPublicSubnetSubnet3SubnetFDC17AA4",
           },
         ],
       },
@@ -907,84 +879,6 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
       },
       "Type": "AWS::SNS::Topic",
     },
-    "CustomDeleteExistingRecordSetCustomResourceProviderHandlerAD00231E": Object {
-      "DependsOn": Array [
-        "CustomDeleteExistingRecordSetCustomResourceProviderRole03A7ED08",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "cdk-hnb659fds-assets-dummy-id-dummy-region",
-          "S3Key": "[HASH REMOVED]",
-        },
-        "Handler": "__entrypoint__.handler",
-        "MemorySize": 128,
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "CustomDeleteExistingRecordSetCustomResourceProviderRole03A7ED08",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs14.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "CustomDeleteExistingRecordSetCustomResourceProviderRole03A7ED08": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-          },
-        ],
-        "Policies": Array [
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
-                  "Action": "route53:GetChange",
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                Object {
-                  "Action": Array [
-                    "route53:ChangeResourceRecordSets",
-                    "route53:ListResourceRecordSets",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": Object {
-                    "Fn::Join": Array [
-                      "",
-                      Array [
-                        "arn:",
-                        Object {
-                          "Ref": "AWS::Partition",
-                        },
-                        ":route53:::hostedzone/DUMMY",
-                      ],
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "Inline",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "EmailSubscriptionBC065AF0": Object {
       "Properties": Object {
         "Endpoint": "test@example.com",
@@ -1023,7 +917,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
           },
         ],
         "SubnetId": Object {
-          "Ref": "VpcIsolatedSubnet1SubnetE48C5737",
+          "Ref": "VpcPublicSubnetSubnet1SubnetC1C3749F",
         },
       },
       "Type": "AWS::EFS::MountTarget",
@@ -1042,7 +936,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
           },
         ],
         "SubnetId": Object {
-          "Ref": "VpcIsolatedSubnet2Subnet16364B91",
+          "Ref": "VpcPublicSubnetSubnet2Subnet2294BBD1",
         },
       },
       "Type": "AWS::EFS::MountTarget",
@@ -1061,7 +955,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
           },
         ],
         "SubnetId": Object {
-          "Ref": "VpcIsolatedSubnet3Subnet6840A2D4",
+          "Ref": "VpcPublicSubnetSubnet3SubnetFDC17AA4",
         },
       },
       "Type": "AWS::EFS::MountTarget",
@@ -1128,6 +1022,14 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
       },
       "Type": "AWS::EC2::EIP",
     },
+    "LogGroupF5B46931": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 731,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
     "NginxTaskDefinition76C3FF98": Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
@@ -1143,16 +1045,20 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
                 "Name": "SERVER_NAME",
                 "Value": "test.example.com",
               },
+              Object {
+                "Name": "CERT_NAME",
+                "Value": "test.example.com",
+              },
             ],
             "Essential": true,
             "Image": Object {
-              "Fn::Sub": "dummy-id.dkr.ecr.dummy-region.\${AWS::URLSuffix}/cdk-hnb659fds-container-assets-dummy-id-dummy-region:dbdef966910277c581318f999e8ec2070e93891523faa984deee44de911bee92",
+              "Fn::Sub": "dummy-id.dkr.ecr.dummy-region.\${AWS::URLSuffix}/cdk-hnb659fds-container-assets-dummy-id-dummy-region:82ab5e349988d5d9810118bba7a8dfb8386e890a7142f3780ef58a5b71c2e70b",
             },
             "LogConfiguration": Object {
               "LogDriver": "awslogs",
               "Options": Object {
                 "awslogs-group": Object {
-                  "Ref": "NginxTaskDefinitionNginxContainerLogGroup701FC183",
+                  "Ref": "LogGroupF5B46931",
                 },
                 "awslogs-region": "dummy-region",
                 "awslogs-stream-prefix": "nginx-proxy",
@@ -1213,7 +1119,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
               "LogDriver": "awslogs",
               "Options": Object {
                 "awslogs-group": Object {
-                  "Ref": "NginxTaskDefinitionAwsCliContainerLogGroup97D43BF7",
+                  "Ref": "LogGroupF5B46931",
                 },
                 "awslogs-region": "dummy-region",
                 "awslogs-stream-prefix": "latest",
@@ -1253,14 +1159,6 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "NginxTaskDefinitionAwsCliContainerLogGroup97D43BF7": Object {
-      "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "RetentionInDays": 731,
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
     "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC": Object {
       "Properties": Object {
         "PolicyDocument": Object {
@@ -1298,20 +1196,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "NginxTaskDefinitionNginxContainerLogGroup701FC183",
-                  "Arn",
-                ],
-              },
-            },
-            Object {
-              "Action": Array [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "NginxTaskDefinitionAwsCliContainerLogGroup97D43BF7",
+                  "LogGroupF5B46931",
                   "Arn",
                 ],
               },
@@ -1344,14 +1229,6 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
         },
       },
       "Type": "AWS::IAM::Role",
-    },
-    "NginxTaskDefinitionNginxContainerLogGroup701FC183": Object {
-      "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "RetentionInDays": 731,
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
     },
     "NginxTaskDefinitionTaskRole4E6E78AD": Object {
       "Properties": Object {
@@ -1456,6 +1333,33 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "ServiceD69D759B": Object {
+      "Properties": Object {
+        "Cluster": Object {
+          "Ref": "ClusterEB0386A7",
+        },
+        "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
+          "MaximumPercent": 100,
+          "MinimumHealthyPercent": 0,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "LaunchType": "EC2",
+        "SchedulingStrategy": "REPLICA",
+        "TaskDefinition": Object {
+          "Ref": "NginxTaskDefinition76C3FF98",
+        },
+      },
+      "Type": "AWS::ECS::Service",
     },
     "StateMachine2E01A3A5": Object {
       "DependsOn": Array [
@@ -1769,12 +1673,27 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
       },
       "Type": "AWS::EC2::InternetGateway",
     },
-    "VpcIsolatedSubnet1RouteTable4771E3E5": Object {
+    "VpcPublicSubnetSubnet1DefaultRoute8657BB78": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet1RouteTable54741E8C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnetSubnet1RouteTable54741E8C": Object {
       "Properties": Object {
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "MyTestStack/Vpc/IsolatedSubnet1",
+            "Value": "MyTestStack/Vpc/PublicSubnetSubnet1",
           },
         ],
         "VpcId": Object {
@@ -1783,34 +1702,34 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
       },
       "Type": "AWS::EC2::RouteTable",
     },
-    "VpcIsolatedSubnet1RouteTableAssociationD300FCBB": Object {
+    "VpcPublicSubnetSubnet1RouteTableAssociation12F076E3": Object {
       "Properties": Object {
         "RouteTableId": Object {
-          "Ref": "VpcIsolatedSubnet1RouteTable4771E3E5",
+          "Ref": "VpcPublicSubnetSubnet1RouteTable54741E8C",
         },
         "SubnetId": Object {
-          "Ref": "VpcIsolatedSubnet1SubnetE48C5737",
+          "Ref": "VpcPublicSubnetSubnet1SubnetC1C3749F",
         },
       },
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
     },
-    "VpcIsolatedSubnet1SubnetE48C5737": Object {
+    "VpcPublicSubnetSubnet1SubnetC1C3749F": Object {
       "Properties": Object {
         "AvailabilityZone": "dummy1a",
-        "CidrBlock": "10.0.96.0/19",
-        "MapPublicIpOnLaunch": false,
+        "CidrBlock": "10.0.0.0/18",
+        "MapPublicIpOnLaunch": true,
         "Tags": Array [
           Object {
             "Key": "aws-cdk:subnet-name",
-            "Value": "Isolated",
+            "Value": "PublicSubnet",
           },
           Object {
             "Key": "aws-cdk:subnet-type",
-            "Value": "Isolated",
+            "Value": "Public",
           },
           Object {
             "Key": "Name",
-            "Value": "MyTestStack/Vpc/IsolatedSubnet1",
+            "Value": "MyTestStack/Vpc/PublicSubnetSubnet1",
           },
         ],
         "VpcId": Object {
@@ -1819,12 +1738,38 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
       },
       "Type": "AWS::EC2::Subnet",
     },
-    "VpcIsolatedSubnet2RouteTable1D30AF7D": Object {
+    "VpcPublicSubnetSubnet2DefaultRoute27ACE0CE": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet2RouteTableC47A3F8E",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnetSubnet2RouteTableAssociation4749FF4D": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet2RouteTableC47A3F8E",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet2Subnet2294BBD1",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnetSubnet2RouteTableC47A3F8E": Object {
       "Properties": Object {
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "MyTestStack/Vpc/IsolatedSubnet2",
+            "Value": "MyTestStack/Vpc/PublicSubnetSubnet2",
           },
         ],
         "VpcId": Object {
@@ -1833,34 +1778,23 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
       },
       "Type": "AWS::EC2::RouteTable",
     },
-    "VpcIsolatedSubnet2RouteTableAssociationF7B18CCA": Object {
-      "Properties": Object {
-        "RouteTableId": Object {
-          "Ref": "VpcIsolatedSubnet2RouteTable1D30AF7D",
-        },
-        "SubnetId": Object {
-          "Ref": "VpcIsolatedSubnet2Subnet16364B91",
-        },
-      },
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-    },
-    "VpcIsolatedSubnet2Subnet16364B91": Object {
+    "VpcPublicSubnetSubnet2Subnet2294BBD1": Object {
       "Properties": Object {
         "AvailabilityZone": "dummy1b",
-        "CidrBlock": "10.0.128.0/19",
-        "MapPublicIpOnLaunch": false,
+        "CidrBlock": "10.0.64.0/18",
+        "MapPublicIpOnLaunch": true,
         "Tags": Array [
           Object {
             "Key": "aws-cdk:subnet-name",
-            "Value": "Isolated",
+            "Value": "PublicSubnet",
           },
           Object {
             "Key": "aws-cdk:subnet-type",
-            "Value": "Isolated",
+            "Value": "Public",
           },
           Object {
             "Key": "Name",
-            "Value": "MyTestStack/Vpc/IsolatedSubnet2",
+            "Value": "MyTestStack/Vpc/PublicSubnetSubnet2",
           },
         ],
         "VpcId": Object {
@@ -1869,12 +1803,27 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
       },
       "Type": "AWS::EC2::Subnet",
     },
-    "VpcIsolatedSubnet3RouteTableA34D73CB": Object {
+    "VpcPublicSubnetSubnet3DefaultRoute76177F6D": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet3RouteTable53BC55FE",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnetSubnet3RouteTable53BC55FE": Object {
       "Properties": Object {
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "MyTestStack/Vpc/IsolatedSubnet3",
+            "Value": "MyTestStack/Vpc/PublicSubnetSubnet3",
           },
         ],
         "VpcId": Object {
@@ -1883,91 +1832,26 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
       },
       "Type": "AWS::EC2::RouteTable",
     },
-    "VpcIsolatedSubnet3RouteTableAssociation04776B7F": Object {
+    "VpcPublicSubnetSubnet3RouteTableAssociationC9BC8F75": Object {
       "Properties": Object {
         "RouteTableId": Object {
-          "Ref": "VpcIsolatedSubnet3RouteTableA34D73CB",
+          "Ref": "VpcPublicSubnetSubnet3RouteTable53BC55FE",
         },
         "SubnetId": Object {
-          "Ref": "VpcIsolatedSubnet3Subnet6840A2D4",
+          "Ref": "VpcPublicSubnetSubnet3SubnetFDC17AA4",
         },
       },
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
     },
-    "VpcIsolatedSubnet3Subnet6840A2D4": Object {
+    "VpcPublicSubnetSubnet3SubnetFDC17AA4": Object {
       "Properties": Object {
         "AvailabilityZone": "dummy1c",
-        "CidrBlock": "10.0.160.0/19",
-        "MapPublicIpOnLaunch": false,
-        "Tags": Array [
-          Object {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Isolated",
-          },
-          Object {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Isolated",
-          },
-          Object {
-            "Key": "Name",
-            "Value": "MyTestStack/Vpc/IsolatedSubnet3",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "Vpc8378EB38",
-        },
-      },
-      "Type": "AWS::EC2::Subnet",
-    },
-    "VpcPublicSubnet1DefaultRoute3DA9E72A": Object {
-      "DependsOn": Array [
-        "VpcVPCGWBF912B6E",
-      ],
-      "Properties": Object {
-        "DestinationCidrBlock": "0.0.0.0/0",
-        "GatewayId": Object {
-          "Ref": "VpcIGWD7BA715C",
-        },
-        "RouteTableId": Object {
-          "Ref": "VpcPublicSubnet1RouteTable6C95E38E",
-        },
-      },
-      "Type": "AWS::EC2::Route",
-    },
-    "VpcPublicSubnet1RouteTable6C95E38E": Object {
-      "Properties": Object {
-        "Tags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "MyTestStack/Vpc/PublicSubnet1",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "Vpc8378EB38",
-        },
-      },
-      "Type": "AWS::EC2::RouteTable",
-    },
-    "VpcPublicSubnet1RouteTableAssociation97140677": Object {
-      "Properties": Object {
-        "RouteTableId": Object {
-          "Ref": "VpcPublicSubnet1RouteTable6C95E38E",
-        },
-        "SubnetId": Object {
-          "Ref": "VpcPublicSubnet1Subnet5C2D37C4",
-        },
-      },
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-    },
-    "VpcPublicSubnet1Subnet5C2D37C4": Object {
-      "Properties": Object {
-        "AvailabilityZone": "dummy1a",
-        "CidrBlock": "10.0.0.0/19",
+        "CidrBlock": "10.0.128.0/18",
         "MapPublicIpOnLaunch": true,
         "Tags": Array [
           Object {
             "Key": "aws-cdk:subnet-name",
-            "Value": "Public",
+            "Value": "PublicSubnet",
           },
           Object {
             "Key": "aws-cdk:subnet-type",
@@ -1975,137 +1859,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
           },
           Object {
             "Key": "Name",
-            "Value": "MyTestStack/Vpc/PublicSubnet1",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "Vpc8378EB38",
-        },
-      },
-      "Type": "AWS::EC2::Subnet",
-    },
-    "VpcPublicSubnet2DefaultRoute97F91067": Object {
-      "DependsOn": Array [
-        "VpcVPCGWBF912B6E",
-      ],
-      "Properties": Object {
-        "DestinationCidrBlock": "0.0.0.0/0",
-        "GatewayId": Object {
-          "Ref": "VpcIGWD7BA715C",
-        },
-        "RouteTableId": Object {
-          "Ref": "VpcPublicSubnet2RouteTable94F7E489",
-        },
-      },
-      "Type": "AWS::EC2::Route",
-    },
-    "VpcPublicSubnet2RouteTable94F7E489": Object {
-      "Properties": Object {
-        "Tags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "MyTestStack/Vpc/PublicSubnet2",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "Vpc8378EB38",
-        },
-      },
-      "Type": "AWS::EC2::RouteTable",
-    },
-    "VpcPublicSubnet2RouteTableAssociationDD5762D8": Object {
-      "Properties": Object {
-        "RouteTableId": Object {
-          "Ref": "VpcPublicSubnet2RouteTable94F7E489",
-        },
-        "SubnetId": Object {
-          "Ref": "VpcPublicSubnet2Subnet691E08A3",
-        },
-      },
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-    },
-    "VpcPublicSubnet2Subnet691E08A3": Object {
-      "Properties": Object {
-        "AvailabilityZone": "dummy1b",
-        "CidrBlock": "10.0.32.0/19",
-        "MapPublicIpOnLaunch": true,
-        "Tags": Array [
-          Object {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Public",
-          },
-          Object {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Public",
-          },
-          Object {
-            "Key": "Name",
-            "Value": "MyTestStack/Vpc/PublicSubnet2",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "Vpc8378EB38",
-        },
-      },
-      "Type": "AWS::EC2::Subnet",
-    },
-    "VpcPublicSubnet3DefaultRoute4697774F": Object {
-      "DependsOn": Array [
-        "VpcVPCGWBF912B6E",
-      ],
-      "Properties": Object {
-        "DestinationCidrBlock": "0.0.0.0/0",
-        "GatewayId": Object {
-          "Ref": "VpcIGWD7BA715C",
-        },
-        "RouteTableId": Object {
-          "Ref": "VpcPublicSubnet3RouteTable93458DBB",
-        },
-      },
-      "Type": "AWS::EC2::Route",
-    },
-    "VpcPublicSubnet3RouteTable93458DBB": Object {
-      "Properties": Object {
-        "Tags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "MyTestStack/Vpc/PublicSubnet3",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "Vpc8378EB38",
-        },
-      },
-      "Type": "AWS::EC2::RouteTable",
-    },
-    "VpcPublicSubnet3RouteTableAssociation1F1EDF02": Object {
-      "Properties": Object {
-        "RouteTableId": Object {
-          "Ref": "VpcPublicSubnet3RouteTable93458DBB",
-        },
-        "SubnetId": Object {
-          "Ref": "VpcPublicSubnet3SubnetBE12F0B6",
-        },
-      },
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-    },
-    "VpcPublicSubnet3SubnetBE12F0B6": Object {
-      "Properties": Object {
-        "AvailabilityZone": "dummy1c",
-        "CidrBlock": "10.0.64.0/19",
-        "MapPublicIpOnLaunch": true,
-        "Tags": Array [
-          Object {
-            "Key": "aws-cdk:subnet-name",
-            "Value": "Public",
-          },
-          Object {
-            "Key": "aws-cdk:subnet-type",
-            "Value": "Public",
-          },
-          Object {
-            "Key": "Name",
-            "Value": "MyTestStack/Vpc/PublicSubnet3",
+            "Value": "MyTestStack/Vpc/PublicSubnetSubnet3",
           },
         ],
         "VpcId": Object {
@@ -2124,33 +1878,6 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region dummy
         },
       },
       "Type": "AWS::EC2::VPCGatewayAttachment",
-    },
-    "nginxService9DBA4A91": Object {
-      "Properties": Object {
-        "Cluster": Object {
-          "Ref": "ClusterEB0386A7",
-        },
-        "DeploymentConfiguration": Object {
-          "DeploymentCircuitBreaker": Object {
-            "Enable": true,
-            "Rollback": true,
-          },
-          "MaximumPercent": 100,
-          "MinimumHealthyPercent": 0,
-        },
-        "DeploymentController": Object {
-          "Type": "ECS",
-        },
-        "DesiredCount": 1,
-        "EnableECSManagedTags": false,
-        "EnableExecuteCommand": true,
-        "LaunchType": "EC2",
-        "SchedulingStrategy": "REPLICA",
-        "TaskDefinition": Object {
-          "Ref": "NginxTaskDefinition76C3FF98",
-        },
-      },
-      "Type": "AWS::ECS::Service",
     },
   },
 }
