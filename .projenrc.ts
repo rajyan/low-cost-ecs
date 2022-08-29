@@ -8,7 +8,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   description: 'test',
   repositoryUrl: 'https://github.com/rajyan/easy-cerver.git',
   license: 'MIT',
-  cdkVersion: '2.1.0',
+  cdkVersion: '2.37.0',
   defaultReleaseBranch: 'main',
 
   devDeps: [
