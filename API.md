@@ -776,11 +776,12 @@ const easyCerverProps: EasyCerverProps = { ... }
 | <code><a href="#easy-cerver.EasyCerverProps.property.awsCliDockerTag">awsCliDockerTag</a></code> | <code>string</code> | Docker image tag of amazon/aws-cli. |
 | <code><a href="#easy-cerver.EasyCerverProps.property.certbotDockerTag">certbotDockerTag</a></code> | <code>string</code> | Docker image tag of certbot/dns-route53 to create certificates. |
 | <code><a href="#easy-cerver.EasyCerverProps.property.certbotScheduleInterval">certbotScheduleInterval</a></code> | <code>number</code> | Certbot task schedule interval in days to renew the certificate. |
+| <code><a href="#easy-cerver.EasyCerverProps.property.containerInsights">containerInsights</a></code> | <code>boolean</code> | Enable container insights or not. |
 | <code><a href="#easy-cerver.EasyCerverProps.property.hostInstanceSpotPrice">hostInstanceSpotPrice</a></code> | <code>string</code> | The maximum hourly price (in USD) to be paid for any Spot Instance launched to fulfill the request. |
 | <code><a href="#easy-cerver.EasyCerverProps.property.hostInstanceType">hostInstanceType</a></code> | <code>string</code> | Instance type of the ECS host instance. |
 | <code><a href="#easy-cerver.EasyCerverProps.property.logGroup">logGroup</a></code> | <code>aws-cdk-lib.aws_logs.ILogGroup</code> | Log group of the certbot task and the aws-cli task. |
 | <code><a href="#easy-cerver.EasyCerverProps.property.recordDomainNames">recordDomainNames</a></code> | <code>string[]</code> | Domain names for A records to elastic ip of ECS host instance. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.removalPolicy">removalPolicy</a></code> | <code>aws-cdk-lib.RemovalPolicy</code> | Removal policy for efs file system and log group (if using default). |
+| <code><a href="#easy-cerver.EasyCerverProps.property.removalPolicy">removalPolicy</a></code> | <code>aws-cdk-lib.RemovalPolicy</code> | Removal policy for the file system and log group (if using default). |
 | <code><a href="#easy-cerver.EasyCerverProps.property.securityGroup">securityGroup</a></code> | <code>aws-cdk-lib.aws_ec2.SecurityGroup</code> | Security group of the ECS host instance. |
 | <code><a href="#easy-cerver.EasyCerverProps.property.serverTaskDefinition">serverTaskDefinition</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2TaskDefinition</code> | Task definition for the server ecs task. |
 | <code><a href="#easy-cerver.EasyCerverProps.property.vpc">vpc</a></code> | <code>aws-cdk-lib.aws_ec2.IVpc</code> | Vpc of the ECS host instance and cluster. |
@@ -1002,9 +1003,22 @@ public readonly certbotScheduleInterval: number;
 ```
 
 - *Type:* number
-- *Default:* true
+- *Default:* 60
 
 Certbot task schedule interval in days to renew the certificate.
+
+---
+
+##### `containerInsights`<sup>Optional</sup> <a name="containerInsights" id="easy-cerver.EasyCerverProps.property.containerInsights"></a>
+
+```typescript
+public readonly containerInsights: boolean;
+```
+
+- *Type:* boolean
+- *Default:* undefined (container insights disabled)
+
+Enable container insights or not.
 
 ---
 
@@ -1045,7 +1059,7 @@ public readonly logGroup: ILogGroup;
 ```
 
 - *Type:* aws-cdk-lib.aws_logs.ILogGroup
-- *Default:* true
+- *Default:* Creates default cdk log group
 
 Log group of the certbot task and the aws-cli task.
 
@@ -1073,7 +1087,7 @@ public readonly removalPolicy: RemovalPolicy;
 - *Type:* aws-cdk-lib.RemovalPolicy
 - *Default:* RemovalPolicy.DESTROY
 
-Removal policy for efs file system and log group (if using default).
+Removal policy for the file system and log group (if using default).
 
 ---
 
