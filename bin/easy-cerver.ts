@@ -1,5 +1,5 @@
 import { App } from "aws-cdk-lib";
-import { EasyCerver } from "../lib/easy-cerver";
+import { EasyCerver } from '../src';
 
 const app = new App();
 
