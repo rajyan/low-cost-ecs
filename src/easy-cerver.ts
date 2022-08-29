@@ -71,7 +71,7 @@ export interface EasyCerverProps extends lib.StackProps {
   /**
    * Log group of the certbot task and the aws-cli task.
    *
-   * @default - true
+   * @default - Creates default cdk log group
    */
   readonly logGroup?: ILogGroup;
 
@@ -86,7 +86,7 @@ export interface EasyCerverProps extends lib.StackProps {
   /**
    * Certbot task schedule interval in days to renew the certificate.
    *
-   * @default - true
+   * @default - 60
    */
   readonly certbotScheduleInterval?: number;
 
@@ -99,7 +99,14 @@ export interface EasyCerverProps extends lib.StackProps {
   readonly awsCliDockerTag?: string;
 
   /**
-   * Removal policy for efs file system and log group (if using default).
+   * Enable container insights or not
+   *
+   * @default - undefined (container insights disabled)
+   */
+  readonly containerInsights?: boolean;
+
+  /**
+   * Removal policy for the file system and log group (if using default).
    *
    * @default - RemovalPolicy.DESTROY
    */
@@ -131,7 +138,7 @@ export class EasyCerver extends lib.Stack {
 
     const cluster = new ecs.Cluster(this, 'Cluster', {
       vpc,
-      containerInsights: true,
+      containerInsights: props.containerInsights,
     });
 
     const hostAutoScalingGroup = cluster.addCapacity('HostInstanceCapacity', {
@@ -222,7 +229,7 @@ export class EasyCerver extends lib.Stack {
 
     /**
      * Certbot Task Definition
-     * Mounts generated certificate to host instance
+     * Mounts generated certificate to EFS
      */
     const logGroup =
       props.logGroup ??
