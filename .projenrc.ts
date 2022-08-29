@@ -23,14 +23,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
     'low-cost',
   ],
 
-  buildWorkflowTriggers: {
-    pullRequest: {},
-    workflowDispatch: {},
-    push: {
-      branches: ['main'],
-    },
-  },
-
   depsUpgradeOptions: {
     workflowOptions: {
       schedule: UpgradeDependenciesSchedule.WEEKLY,
