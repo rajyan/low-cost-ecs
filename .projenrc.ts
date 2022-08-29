@@ -1,5 +1,5 @@
 import { awscdk } from 'projen';
-import {UpgradeDependenciesSchedule} from 'projen/lib/javascript';
+import { UpgradeDependenciesSchedule } from 'projen/lib/javascript';
 
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Yohta Kimura',
