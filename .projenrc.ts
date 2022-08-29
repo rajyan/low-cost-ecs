@@ -10,35 +10,31 @@ const project = new awscdk.AwsCdkConstructLibrary({
   license: 'MIT',
   cdkVersion: '2.37.0',
   defaultReleaseBranch: 'main',
-
-  devDeps: [
-    'aws-cdk',
-    'ts-node',
-  ],
-
   keywords: [
     'cdk',
     'ecs',
     'certbot',
     'low-cost',
   ],
-
-  depsUpgradeOptions: {
-    workflowOptions: {
-      schedule: UpgradeDependenciesSchedule.WEEKLY,
-    },
-  },
-
+  devDeps: [
+    'aws-cdk',
+    'ts-node',
+  ],
   stability: 'experimental',
 
-  autoApproveOptions: {
-    allowedUsernames: ['rajyan'],
-  },
   python: {
     distName: 'easy-cerver',
     module: 'eascy_cerver',
   },
 
+  autoApproveOptions: {
+    allowedUsernames: ['rajyan'],
+  },
+  depsUpgradeOptions: {
+    workflowOptions: {
+      schedule: UpgradeDependenciesSchedule.WEEKLY,
+    },
+  },
   projenrcTs: true,
 });
 
