@@ -232,14 +232,6 @@ Object {
       "Type": "AWS::IAM::Role",
     },
     "ClusterEB0386A7": Object {
-      "Properties": Object {
-        "ClusterSettings": Array [
-          Object {
-            "Name": "containerInsights",
-            "Value": "enabled",
-          },
-        ],
-      },
       "Type": "AWS::ECS::Cluster",
     },
     "ClusterHostInstanceCapacityASG6B791030": Object {
