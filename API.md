@@ -48,6 +48,7 @@ new EasyCerver(scope: Construct, id: string, props: EasyCerverProps)
 | <code><a href="#easy-cerver.EasyCerver.exportValue">exportValue</a></code> | Create a CloudFormation Export for a value. |
 | <code><a href="#easy-cerver.EasyCerver.formatArn">formatArn</a></code> | Creates an ARN from components. |
 | <code><a href="#easy-cerver.EasyCerver.getLogicalId">getLogicalId</a></code> | Allocates a stack-unique CloudFormation-compatible logical identity for a specific resource. |
+| <code><a href="#easy-cerver.EasyCerver.regionalFact">regionalFact</a></code> | Look up a fact value for the given fact for the region of this stack. |
 | <code><a href="#easy-cerver.EasyCerver.renameLogicalId">renameLogicalId</a></code> | Rename a generated logical identities. |
 | <code><a href="#easy-cerver.EasyCerver.reportMissingContextKey">reportMissingContextKey</a></code> | Indicate that a context key was expected. |
 | <code><a href="#easy-cerver.EasyCerver.resolve">resolve</a></code> | Resolve a tokenized value in the context of the current stack. |
@@ -195,7 +196,7 @@ into the generated ARN at the location that component corresponds to.
 
 The ARN will be formatted as follows:
 
-   arn:{partition}:{service}:{region}:{account}:{resource}{sep}}{resource-name}
+   arn:{partition}:{service}:{region}:{account}:{resource}{sep}{resource-name}
 
 The required ARN pieces that are omitted will be taken from the stack that
 the 'scope' is attached to. If all ARN pieces are supplied, the supplied scope
@@ -228,6 +229,42 @@ class and override this method.
 - *Type:* aws-cdk-lib.CfnElement
 
 The CloudFormation element for which a logical identity is needed.
+
+---
+
+##### `regionalFact` <a name="regionalFact" id="easy-cerver.EasyCerver.regionalFact"></a>
+
+```typescript
+public regionalFact(factName: string, defaultValue?: string): string
+```
+
+Look up a fact value for the given fact for the region of this stack.
+
+Will return a definite value only if the region of the current stack is resolved.
+If not, a lookup map will be added to the stack and the lookup will be done at
+CDK deployment time.
+
+What regions will be included in the lookup map is controlled by the
+`@aws-cdk/core:target-partitions` context value: it must be set to a list
+of partitions, and only regions from the given partitions will be included.
+If no such context key is set, all regions will be included.
+
+This function is intended to be used by construct library authors. Application
+builders can rely on the abstractions offered by construct libraries and do
+not have to worry about regional facts.
+
+If `defaultValue` is not given, it is an error if the fact is unknown for
+the given region.
+
+###### `factName`<sup>Required</sup> <a name="factName" id="easy-cerver.EasyCerver.regionalFact.parameter.factName"></a>
+
+- *Type:* string
+
+---
+
+###### `defaultValue`<sup>Optional</sup> <a name="defaultValue" id="easy-cerver.EasyCerver.regionalFact.parameter.defaultValue"></a>
+
+- *Type:* string
 
 ---
 
@@ -410,11 +447,10 @@ The construct to start the search from.
 | <code><a href="#easy-cerver.EasyCerver.property.account">account</a></code> | <code>string</code> | The AWS account into which this stack will be deployed. |
 | <code><a href="#easy-cerver.EasyCerver.property.artifactId">artifactId</a></code> | <code>string</code> | The ID of the cloud assembly artifact for this stack. |
 | <code><a href="#easy-cerver.EasyCerver.property.availabilityZones">availabilityZones</a></code> | <code>string[]</code> | Returns the list of AZs that are available in the AWS environment (account/region) associated with this stack. |
+| <code><a href="#easy-cerver.EasyCerver.property.bundlingRequired">bundlingRequired</a></code> | <code>boolean</code> | Indicates whether the stack requires bundling or not. |
 | <code><a href="#easy-cerver.EasyCerver.property.dependencies">dependencies</a></code> | <code>aws-cdk-lib.Stack[]</code> | Return the stacks this stack depends on. |
 | <code><a href="#easy-cerver.EasyCerver.property.environment">environment</a></code> | <code>string</code> | The environment coordinates in which this stack is deployed. |
 | <code><a href="#easy-cerver.EasyCerver.property.nested">nested</a></code> | <code>boolean</code> | Indicates if this is a nested stack, in which case `parentStack` will include a reference to it's parent. |
-| <code><a href="#easy-cerver.EasyCerver.property.nestedStackParent">nestedStackParent</a></code> | <code>aws-cdk-lib.Stack</code> | If this is a nested stack, returns it's parent stack. |
-| <code><a href="#easy-cerver.EasyCerver.property.nestedStackResource">nestedStackResource</a></code> | <code>aws-cdk-lib.CfnResource</code> | If this is a nested stack, this represents its `AWS::CloudFormation::Stack` resource. |
 | <code><a href="#easy-cerver.EasyCerver.property.notificationArns">notificationArns</a></code> | <code>string[]</code> | Returns the list of notification Amazon Resource Names (ARNs) for the current stack. |
 | <code><a href="#easy-cerver.EasyCerver.property.partition">partition</a></code> | <code>string</code> | The partition in which this stack is defined. |
 | <code><a href="#easy-cerver.EasyCerver.property.region">region</a></code> | <code>string</code> | The AWS region into which this stack will be deployed (e.g. `us-west-2`). |
@@ -424,8 +460,10 @@ The construct to start the search from.
 | <code><a href="#easy-cerver.EasyCerver.property.tags">tags</a></code> | <code>aws-cdk-lib.TagManager</code> | Tags to be applied to the stack. |
 | <code><a href="#easy-cerver.EasyCerver.property.templateFile">templateFile</a></code> | <code>string</code> | The name of the CloudFormation template file emitted to the output directory during synthesis. |
 | <code><a href="#easy-cerver.EasyCerver.property.templateOptions">templateOptions</a></code> | <code>aws-cdk-lib.ITemplateOptions</code> | Options for CloudFormation template (like version, transform, description). |
-| <code><a href="#easy-cerver.EasyCerver.property.terminationProtection">terminationProtection</a></code> | <code>boolean</code> | Whether termination protection is enabled for this stack. |
 | <code><a href="#easy-cerver.EasyCerver.property.urlSuffix">urlSuffix</a></code> | <code>string</code> | The Amazon domain suffix for the region in which this stack is defined. |
+| <code><a href="#easy-cerver.EasyCerver.property.nestedStackParent">nestedStackParent</a></code> | <code>aws-cdk-lib.Stack</code> | If this is a nested stack, returns it's parent stack. |
+| <code><a href="#easy-cerver.EasyCerver.property.nestedStackResource">nestedStackResource</a></code> | <code>aws-cdk-lib.CfnResource</code> | If this is a nested stack, this represents its `AWS::CloudFormation::Stack` resource. |
+| <code><a href="#easy-cerver.EasyCerver.property.terminationProtection">terminationProtection</a></code> | <code>boolean</code> | Whether termination protection is enabled for this stack. |
 
 ---
 
@@ -454,9 +492,9 @@ The AWS account into which this stack will be deployed.
 This value is resolved according to the following rules:
 
 1. The value provided to `env.account` when the stack is defined. This can
-    either be a concerete account (e.g. `585695031111`) or the
-    `Aws.accountId` token.
-3. `Aws.accountId`, which represents the CloudFormation intrinsic reference
+    either be a concrete account (e.g. `585695031111`) or the
+    `Aws.ACCOUNT_ID` token.
+3. `Aws.ACCOUNT_ID`, which represents the CloudFormation intrinsic reference
     `{ "Ref": "AWS::AccountId" }` encoded as a string token.
 
 Preferably, you should use the return value as an opaque string and not
@@ -505,6 +543,18 @@ To specify a different strategy for selecting availability zones override this m
 
 ---
 
+##### `bundlingRequired`<sup>Required</sup> <a name="bundlingRequired" id="easy-cerver.EasyCerver.property.bundlingRequired"></a>
+
+```typescript
+public readonly bundlingRequired: boolean;
+```
+
+- *Type:* boolean
+
+Indicates whether the stack requires bundling or not.
+
+---
+
 ##### `dependencies`<sup>Required</sup> <a name="dependencies" id="easy-cerver.EasyCerver.property.dependencies"></a>
 
 ```typescript
@@ -535,7 +585,7 @@ You can use this value to determine if two stacks are targeting the same
 environment.
 
 If either `stack.account` or `stack.region` are not concrete values (e.g.
-`Aws.account` or `Aws.region`) the special strings `unknown-account` and/or
+`Aws.ACCOUNT_ID` or `Aws.REGION`) the special strings `unknown-account` and/or
 `unknown-region` will be used respectively to indicate this stack is
 region/account-agnostic.
 
@@ -550,32 +600,6 @@ public readonly nested: boolean;
 - *Type:* boolean
 
 Indicates if this is a nested stack, in which case `parentStack` will include a reference to it's parent.
-
----
-
-##### `nestedStackParent`<sup>Optional</sup> <a name="nestedStackParent" id="easy-cerver.EasyCerver.property.nestedStackParent"></a>
-
-```typescript
-public readonly nestedStackParent: Stack;
-```
-
-- *Type:* aws-cdk-lib.Stack
-
-If this is a nested stack, returns it's parent stack.
-
----
-
-##### `nestedStackResource`<sup>Optional</sup> <a name="nestedStackResource" id="easy-cerver.EasyCerver.property.nestedStackResource"></a>
-
-```typescript
-public readonly nestedStackResource: CfnResource;
-```
-
-- *Type:* aws-cdk-lib.CfnResource
-
-If this is a nested stack, this represents its `AWS::CloudFormation::Stack` resource.
-
-`undefined` for top-level (non-nested) stacks.
 
 ---
 
@@ -616,9 +640,9 @@ The AWS region into which this stack will be deployed (e.g. `us-west-2`).
 This value is resolved according to the following rules:
 
 1. The value provided to `env.region` when the stack is defined. This can
-    either be a concerete region (e.g. `us-west-2`) or the `Aws.region`
+    either be a concerete region (e.g. `us-west-2`) or the `Aws.REGION`
     token.
-3. `Aws.region`, which is represents the CloudFormation intrinsic reference
+3. `Aws.REGION`, which is represents the CloudFormation intrinsic reference
     `{ "Ref": "AWS::Region" }` encoded as a string token.
 
 Preferably, you should use the return value as an opaque string and not
@@ -669,7 +693,7 @@ name. Stacks that are defined deeper within the tree will use a hashed naming
 scheme based on the construct path to ensure uniqueness.
 
 If you wish to obtain the deploy-time AWS::StackName intrinsic,
-you can use `Aws.stackName` directly.
+you can use `Aws.STACK_NAME` directly.
 
 ---
 
@@ -723,18 +747,6 @@ Options for CloudFormation template (like version, transform, description).
 
 ---
 
-##### `terminationProtection`<sup>Optional</sup> <a name="terminationProtection" id="easy-cerver.EasyCerver.property.terminationProtection"></a>
-
-```typescript
-public readonly terminationProtection: boolean;
-```
-
-- *Type:* boolean
-
-Whether termination protection is enabled for this stack.
-
----
-
 ##### `urlSuffix`<sup>Required</sup> <a name="urlSuffix" id="easy-cerver.EasyCerver.property.urlSuffix"></a>
 
 ```typescript
@@ -744,6 +756,44 @@ public readonly urlSuffix: string;
 - *Type:* string
 
 The Amazon domain suffix for the region in which this stack is defined.
+
+---
+
+##### `nestedStackParent`<sup>Optional</sup> <a name="nestedStackParent" id="easy-cerver.EasyCerver.property.nestedStackParent"></a>
+
+```typescript
+public readonly nestedStackParent: Stack;
+```
+
+- *Type:* aws-cdk-lib.Stack
+
+If this is a nested stack, returns it's parent stack.
+
+---
+
+##### `nestedStackResource`<sup>Optional</sup> <a name="nestedStackResource" id="easy-cerver.EasyCerver.property.nestedStackResource"></a>
+
+```typescript
+public readonly nestedStackResource: CfnResource;
+```
+
+- *Type:* aws-cdk-lib.CfnResource
+
+If this is a nested stack, this represents its `AWS::CloudFormation::Stack` resource.
+
+`undefined` for top-level (non-nested) stacks.
+
+---
+
+##### `terminationProtection`<sup>Optional</sup> <a name="terminationProtection" id="easy-cerver.EasyCerver.property.terminationProtection"></a>
+
+```typescript
+public readonly terminationProtection: boolean;
+```
+
+- *Type:* boolean
+
+Whether termination protection is enabled for this stack.
 
 ---
 

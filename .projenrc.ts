@@ -1,6 +1,7 @@
 import { awscdk } from 'projen';
 import { UpgradeDependenciesSchedule } from 'projen/lib/javascript';
 
+const excludes = ['.idea/', 'cdk.out/', 'cdk.context.json', 'yarn-error.log'];
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Yohta Kimura',
   authorAddress: 'kitakita7617@gmail.com',
@@ -10,48 +11,34 @@ const project = new awscdk.AwsCdkConstructLibrary({
   license: 'MIT',
   cdkVersion: '2.37.0',
   defaultReleaseBranch: 'main',
-
-  devDeps: [
-    'aws-cdk',
-    'ts-node',
-  ],
-
   keywords: [
     'cdk',
     'ecs',
     'certbot',
     'low-cost',
   ],
-
-  buildWorkflowTriggers: {
-    pullRequest: {},
-    workflowDispatch: {},
-    push: {
-      branches: ['main'],
-    },
-  },
-
-  depsUpgradeOptions: {
-    workflowOptions: {
-      schedule: UpgradeDependenciesSchedule.WEEKLY,
-    },
-  },
-
+  devDeps: [
+    'aws-cdk',
+    'ts-node',
+  ],
   stability: 'experimental',
 
-  autoApproveOptions: {
-    allowedUsernames: ['rajyan'],
-  },
   python: {
     distName: 'easy-cerver',
     module: 'eascy_cerver',
   },
 
+  npmignore: excludes,
+  gitignore: excludes,
+  autoApproveOptions: {
+    allowedUsernames: ['rajyan'],
+  },
+  depsUpgradeOptions: {
+    workflowOptions: {
+      schedule: UpgradeDependenciesSchedule.WEEKLY,
+    },
+  },
   projenrcTs: true,
 });
-
-const excludes = ['.idea/', 'cdk.out/', 'cdk.context.json', 'yarn-error.log'];
-project.npmignore?.exclude(...excludes);
-project.gitignore.exclude(...excludes);
 
 project.synth();
