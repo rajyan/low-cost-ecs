@@ -1,5 +1,6 @@
-const { awscdk } = require('projen');
-const { UpgradeDependenciesSchedule } = require('projen/lib/javascript/upgrade-dependencies');
+import { awscdk } from 'projen';
+import {UpgradeDependenciesSchedule} from 'projen/lib/javascript';
+
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Yohta Kimura',
   authorAddress: 'kitakita7617@gmail.com',
@@ -45,10 +46,12 @@ const project = new awscdk.AwsCdkConstructLibrary({
     distName: 'easy-cerver',
     module: 'eascy_cerver',
   },
+
+  projenrcTs: true,
 });
 
 const excludes = ['.idea/', 'cdk.out/', 'cdk.context.json', 'yarn-error.log'];
-project.npmignore.exclude(...excludes);
+project.npmignore?.exclude(...excludes);
 project.gitignore.exclude(...excludes);
 
 project.synth();
