@@ -5,4 +5,25 @@
 
 # Easy Cerver
 
-Easy ssl certificated server.
+Easy and low-cost ECS on EC2 server without a load balancer.
+TLS/SSL certificates are installed automatically on startup and renewed by a scheduled state machine using [certbot-dns-route53](https://certbot-dns-route53.readthedocs.io/en/stable/).
+
+# Why
+
+# Overview
+
+# Cost
+
+# Install
+
+setup => route53 hosted zone
+
+# Debugging
+
+* host => ssm
+* server ecs execute
+
+# Limitations
+
+* downtime on release
+* server recreate port

@@ -6,7 +6,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Yohta Kimura',
   authorAddress: 'kitakita7617@gmail.com',
   name: 'easy-cerver',
-  description: 'test',
+  description: 'Easy and low-cost ECS on EC2 server without a load balancer',
   repositoryUrl: 'https://github.com/rajyan/easy-cerver.git',
   license: 'MIT',
   cdkVersion: '2.37.0',
@@ -14,8 +14,10 @@ const project = new awscdk.AwsCdkConstructLibrary({
   keywords: [
     'cdk',
     'ecs',
+    'stepfunctions',
+    'route53',
     'certbot',
-    'low-cost',
+    'loadbalancer',
   ],
   devDeps: [
     'aws-cdk',
