@@ -124,7 +124,7 @@
     "targets": {
       "python": {
         "distName": "low-cost-ecs",
-        "module": "eascy_cerver"
+        "module": "low_cost_ecs"
       }
     },
     "tsc": {
