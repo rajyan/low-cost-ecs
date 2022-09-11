@@ -1,4 +1,4 @@
 # todo
 
-* Deploy as package
-* update README
+* update Overview
+* add properties to expose
