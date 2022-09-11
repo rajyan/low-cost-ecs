@@ -13,7 +13,7 @@ import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
 import * as sfn_tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
 
-export interface EasyCerverProps extends lib.StackProps {
+export interface LowCostECSProps extends lib.StackProps {
   /**
    * Domain name of the hosted zone.
    */
@@ -120,8 +120,8 @@ export interface EasyCerverProps extends lib.StackProps {
   readonly serverTaskDefinition?: ecs.Ec2TaskDefinition;
 };
 
-export class EasyCerver extends lib.Stack {
-  constructor(scope: Construct, id: string, props: EasyCerverProps) {
+export class LowCostECS extends lib.Stack {
+  constructor(scope: Construct, id: string, props: LowCostECSProps) {
     super(scope, id, props);
 
     const vpc =

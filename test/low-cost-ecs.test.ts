@@ -1,10 +1,10 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { EasyCerver } from '../src';
+import { LowCostECS } from '../src';
 
 test('Template matches snapshot', () => {
   const app = new App();
-  const stack = new EasyCerver(app, 'MyTestStack', {
+  const stack = new LowCostECS(app, 'MyTestStack', {
     env: {
       account: 'dummy-id',
       region: 'dummy-region',
