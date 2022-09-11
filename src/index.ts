@@ -1,1 +1,1 @@
-export * from './easy-cerver';
+export * from './low-cost-ecs';

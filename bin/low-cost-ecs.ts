@@ -1,9 +1,9 @@
 import { App } from "aws-cdk-lib";
-import { EasyCerver } from '../src';
+import { LowCostECS } from '../src';
 
 const app = new App();
 
-new EasyCerver(app, "EasyCerverStack", {
+new LowCostECS(app, "LowCostECSStack", {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,

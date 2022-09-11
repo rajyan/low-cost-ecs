@@ -1,9 +1,9 @@
 {
-  "name": "easy-cerver",
+  "name": "low-cost-ecs",
   "description": "Easy and low-cost ECS on EC2 server without a load balancer",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rajyan/easy-cerver.git"
+    "url": "https://github.com/rajyan/low-cost-ecs.git"
   },
   "scripts": {
     "build": "npx projen build",
@@ -123,8 +123,8 @@
     "outdir": "dist",
     "targets": {
       "python": {
-        "distName": "easy-cerver",
-        "module": "eascy_cerver"
+        "distName": "low-cost-ecs",
+        "module": "low_cost_ecs"
       }
     },
     "tsc": {

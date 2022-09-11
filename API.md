@@ -2,39 +2,39 @@
 
 ## Constructs <a name="Constructs" id="Constructs"></a>
 
-### EasyCerver <a name="EasyCerver" id="easy-cerver.EasyCerver"></a>
+### LowCostECS <a name="LowCostECS" id="low-cost-ecs.LowCostECS"></a>
 
-#### Initializers <a name="Initializers" id="easy-cerver.EasyCerver.Initializer"></a>
+#### Initializers <a name="Initializers" id="low-cost-ecs.LowCostECS.Initializer"></a>
 
 ```typescript
-import { EasyCerver } from 'easy-cerver'
+import { LowCostECS } from 'low-cost-ecs'
 
-new EasyCerver(scope: Construct, id: string, props: EasyCerverProps)
+new LowCostECS(scope: Construct, id: string, props: LowCostECSProps)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#easy-cerver.EasyCerver.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
-| <code><a href="#easy-cerver.EasyCerver.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#easy-cerver.EasyCerver.Initializer.parameter.props">props</a></code> | <code><a href="#easy-cerver.EasyCerverProps">EasyCerverProps</a></code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECS.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECS.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECS.Initializer.parameter.props">props</a></code> | <code><a href="#low-cost-ecs.LowCostECSProps">LowCostECSProps</a></code> | *No description.* |
 
 ---
 
-##### `scope`<sup>Required</sup> <a name="scope" id="easy-cerver.EasyCerver.Initializer.parameter.scope"></a>
+##### `scope`<sup>Required</sup> <a name="scope" id="low-cost-ecs.LowCostECS.Initializer.parameter.scope"></a>
 
 - *Type:* constructs.Construct
 
 ---
 
-##### `id`<sup>Required</sup> <a name="id" id="easy-cerver.EasyCerver.Initializer.parameter.id"></a>
+##### `id`<sup>Required</sup> <a name="id" id="low-cost-ecs.LowCostECS.Initializer.parameter.id"></a>
 
 - *Type:* string
 
 ---
 
-##### `props`<sup>Required</sup> <a name="props" id="easy-cerver.EasyCerver.Initializer.parameter.props"></a>
+##### `props`<sup>Required</sup> <a name="props" id="low-cost-ecs.LowCostECS.Initializer.parameter.props"></a>
 
-- *Type:* <a href="#easy-cerver.EasyCerverProps">EasyCerverProps</a>
+- *Type:* <a href="#low-cost-ecs.LowCostECSProps">LowCostECSProps</a>
 
 ---
 
@@ -42,22 +42,22 @@ new EasyCerver(scope: Construct, id: string, props: EasyCerverProps)
 
 | **Name** | **Description** |
 | --- | --- |
-| <code><a href="#easy-cerver.EasyCerver.toString">toString</a></code> | Returns a string representation of this construct. |
-| <code><a href="#easy-cerver.EasyCerver.addDependency">addDependency</a></code> | Add a dependency between this stack and another stack. |
-| <code><a href="#easy-cerver.EasyCerver.addTransform">addTransform</a></code> | Add a Transform to this stack. A Transform is a macro that AWS CloudFormation uses to process your template. |
-| <code><a href="#easy-cerver.EasyCerver.exportValue">exportValue</a></code> | Create a CloudFormation Export for a value. |
-| <code><a href="#easy-cerver.EasyCerver.formatArn">formatArn</a></code> | Creates an ARN from components. |
-| <code><a href="#easy-cerver.EasyCerver.getLogicalId">getLogicalId</a></code> | Allocates a stack-unique CloudFormation-compatible logical identity for a specific resource. |
-| <code><a href="#easy-cerver.EasyCerver.regionalFact">regionalFact</a></code> | Look up a fact value for the given fact for the region of this stack. |
-| <code><a href="#easy-cerver.EasyCerver.renameLogicalId">renameLogicalId</a></code> | Rename a generated logical identities. |
-| <code><a href="#easy-cerver.EasyCerver.reportMissingContextKey">reportMissingContextKey</a></code> | Indicate that a context key was expected. |
-| <code><a href="#easy-cerver.EasyCerver.resolve">resolve</a></code> | Resolve a tokenized value in the context of the current stack. |
-| <code><a href="#easy-cerver.EasyCerver.splitArn">splitArn</a></code> | Splits the provided ARN into its components. |
-| <code><a href="#easy-cerver.EasyCerver.toJsonString">toJsonString</a></code> | Convert an object, potentially containing tokens, to a JSON string. |
+| <code><a href="#low-cost-ecs.LowCostECS.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#low-cost-ecs.LowCostECS.addDependency">addDependency</a></code> | Add a dependency between this stack and another stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.addTransform">addTransform</a></code> | Add a Transform to this stack. A Transform is a macro that AWS CloudFormation uses to process your template. |
+| <code><a href="#low-cost-ecs.LowCostECS.exportValue">exportValue</a></code> | Create a CloudFormation Export for a value. |
+| <code><a href="#low-cost-ecs.LowCostECS.formatArn">formatArn</a></code> | Creates an ARN from components. |
+| <code><a href="#low-cost-ecs.LowCostECS.getLogicalId">getLogicalId</a></code> | Allocates a stack-unique CloudFormation-compatible logical identity for a specific resource. |
+| <code><a href="#low-cost-ecs.LowCostECS.regionalFact">regionalFact</a></code> | Look up a fact value for the given fact for the region of this stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.renameLogicalId">renameLogicalId</a></code> | Rename a generated logical identities. |
+| <code><a href="#low-cost-ecs.LowCostECS.reportMissingContextKey">reportMissingContextKey</a></code> | Indicate that a context key was expected. |
+| <code><a href="#low-cost-ecs.LowCostECS.resolve">resolve</a></code> | Resolve a tokenized value in the context of the current stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.splitArn">splitArn</a></code> | Splits the provided ARN into its components. |
+| <code><a href="#low-cost-ecs.LowCostECS.toJsonString">toJsonString</a></code> | Convert an object, potentially containing tokens, to a JSON string. |
 
 ---
 
-##### `toString` <a name="toString" id="easy-cerver.EasyCerver.toString"></a>
+##### `toString` <a name="toString" id="low-cost-ecs.LowCostECS.toString"></a>
 
 ```typescript
 public toString(): string
@@ -65,7 +65,7 @@ public toString(): string
 
 Returns a string representation of this construct.
 
-##### `addDependency` <a name="addDependency" id="easy-cerver.EasyCerver.addDependency"></a>
+##### `addDependency` <a name="addDependency" id="low-cost-ecs.LowCostECS.addDependency"></a>
 
 ```typescript
 public addDependency(target: Stack, reason?: string): void
@@ -76,19 +76,19 @@ Add a dependency between this stack and another stack.
 This can be used to define dependencies between any two stacks within an
 app, and also supports nested stacks.
 
-###### `target`<sup>Required</sup> <a name="target" id="easy-cerver.EasyCerver.addDependency.parameter.target"></a>
+###### `target`<sup>Required</sup> <a name="target" id="low-cost-ecs.LowCostECS.addDependency.parameter.target"></a>
 
 - *Type:* aws-cdk-lib.Stack
 
 ---
 
-###### `reason`<sup>Optional</sup> <a name="reason" id="easy-cerver.EasyCerver.addDependency.parameter.reason"></a>
+###### `reason`<sup>Optional</sup> <a name="reason" id="low-cost-ecs.LowCostECS.addDependency.parameter.reason"></a>
 
 - *Type:* string
 
 ---
 
-##### `addTransform` <a name="addTransform" id="easy-cerver.EasyCerver.addTransform"></a>
+##### `addTransform` <a name="addTransform" id="low-cost-ecs.LowCostECS.addTransform"></a>
 
 ```typescript
 public addTransform(transform: string): void
@@ -109,7 +109,7 @@ stack.addTransform('AWS::Serverless-2016-10-31')
 ```
 
 
-###### `transform`<sup>Required</sup> <a name="transform" id="easy-cerver.EasyCerver.addTransform.parameter.transform"></a>
+###### `transform`<sup>Required</sup> <a name="transform" id="low-cost-ecs.LowCostECS.addTransform.parameter.transform"></a>
 
 - *Type:* string
 
@@ -117,7 +117,7 @@ The transform to add.
 
 ---
 
-##### `exportValue` <a name="exportValue" id="easy-cerver.EasyCerver.exportValue"></a>
+##### `exportValue` <a name="exportValue" id="low-cost-ecs.LowCostECS.exportValue"></a>
 
 ```typescript
 public exportValue(exportedValue: any, options?: ExportValueOptions): string
@@ -168,19 +168,19 @@ Instead, the process takes two deployments:
 - Don't forget to remove the `exportValue()` call as well.
 - Deploy again (this time only the `producerStack` will be changed -- the bucket will be deleted).
 
-###### `exportedValue`<sup>Required</sup> <a name="exportedValue" id="easy-cerver.EasyCerver.exportValue.parameter.exportedValue"></a>
+###### `exportedValue`<sup>Required</sup> <a name="exportedValue" id="low-cost-ecs.LowCostECS.exportValue.parameter.exportedValue"></a>
 
 - *Type:* any
 
 ---
 
-###### `options`<sup>Optional</sup> <a name="options" id="easy-cerver.EasyCerver.exportValue.parameter.options"></a>
+###### `options`<sup>Optional</sup> <a name="options" id="low-cost-ecs.LowCostECS.exportValue.parameter.options"></a>
 
 - *Type:* aws-cdk-lib.ExportValueOptions
 
 ---
 
-##### `formatArn` <a name="formatArn" id="easy-cerver.EasyCerver.formatArn"></a>
+##### `formatArn` <a name="formatArn" id="low-cost-ecs.LowCostECS.formatArn"></a>
 
 ```typescript
 public formatArn(components: ArnComponents): string
@@ -202,13 +202,13 @@ The required ARN pieces that are omitted will be taken from the stack that
 the 'scope' is attached to. If all ARN pieces are supplied, the supplied scope
 can be 'undefined'.
 
-###### `components`<sup>Required</sup> <a name="components" id="easy-cerver.EasyCerver.formatArn.parameter.components"></a>
+###### `components`<sup>Required</sup> <a name="components" id="low-cost-ecs.LowCostECS.formatArn.parameter.components"></a>
 
 - *Type:* aws-cdk-lib.ArnComponents
 
 ---
 
-##### `getLogicalId` <a name="getLogicalId" id="easy-cerver.EasyCerver.getLogicalId"></a>
+##### `getLogicalId` <a name="getLogicalId" id="low-cost-ecs.LowCostECS.getLogicalId"></a>
 
 ```typescript
 public getLogicalId(element: CfnElement): string
@@ -224,7 +224,7 @@ This method uses the protected method `allocateLogicalId` to render the
 logical ID for an element. To modify the naming scheme, extend the `Stack`
 class and override this method.
 
-###### `element`<sup>Required</sup> <a name="element" id="easy-cerver.EasyCerver.getLogicalId.parameter.element"></a>
+###### `element`<sup>Required</sup> <a name="element" id="low-cost-ecs.LowCostECS.getLogicalId.parameter.element"></a>
 
 - *Type:* aws-cdk-lib.CfnElement
 
@@ -232,7 +232,7 @@ The CloudFormation element for which a logical identity is needed.
 
 ---
 
-##### `regionalFact` <a name="regionalFact" id="easy-cerver.EasyCerver.regionalFact"></a>
+##### `regionalFact` <a name="regionalFact" id="low-cost-ecs.LowCostECS.regionalFact"></a>
 
 ```typescript
 public regionalFact(factName: string, defaultValue?: string): string
@@ -256,19 +256,19 @@ not have to worry about regional facts.
 If `defaultValue` is not given, it is an error if the fact is unknown for
 the given region.
 
-###### `factName`<sup>Required</sup> <a name="factName" id="easy-cerver.EasyCerver.regionalFact.parameter.factName"></a>
+###### `factName`<sup>Required</sup> <a name="factName" id="low-cost-ecs.LowCostECS.regionalFact.parameter.factName"></a>
 
 - *Type:* string
 
 ---
 
-###### `defaultValue`<sup>Optional</sup> <a name="defaultValue" id="easy-cerver.EasyCerver.regionalFact.parameter.defaultValue"></a>
+###### `defaultValue`<sup>Optional</sup> <a name="defaultValue" id="low-cost-ecs.LowCostECS.regionalFact.parameter.defaultValue"></a>
 
 - *Type:* string
 
 ---
 
-##### `renameLogicalId` <a name="renameLogicalId" id="easy-cerver.EasyCerver.renameLogicalId"></a>
+##### `renameLogicalId` <a name="renameLogicalId" id="low-cost-ecs.LowCostECS.renameLogicalId"></a>
 
 ```typescript
 public renameLogicalId(oldId: string, newId: string): void
@@ -279,19 +279,19 @@ Rename a generated logical identities.
 To modify the naming scheme strategy, extend the `Stack` class and
 override the `allocateLogicalId` method.
 
-###### `oldId`<sup>Required</sup> <a name="oldId" id="easy-cerver.EasyCerver.renameLogicalId.parameter.oldId"></a>
+###### `oldId`<sup>Required</sup> <a name="oldId" id="low-cost-ecs.LowCostECS.renameLogicalId.parameter.oldId"></a>
 
 - *Type:* string
 
 ---
 
-###### `newId`<sup>Required</sup> <a name="newId" id="easy-cerver.EasyCerver.renameLogicalId.parameter.newId"></a>
+###### `newId`<sup>Required</sup> <a name="newId" id="low-cost-ecs.LowCostECS.renameLogicalId.parameter.newId"></a>
 
 - *Type:* string
 
 ---
 
-##### `reportMissingContextKey` <a name="reportMissingContextKey" id="easy-cerver.EasyCerver.reportMissingContextKey"></a>
+##### `reportMissingContextKey` <a name="reportMissingContextKey" id="low-cost-ecs.LowCostECS.reportMissingContextKey"></a>
 
 ```typescript
 public reportMissingContextKey(report: MissingContext): void
@@ -302,7 +302,7 @@ Indicate that a context key was expected.
 Contains instructions which will be emitted into the cloud assembly on how
 the key should be supplied.
 
-###### `report`<sup>Required</sup> <a name="report" id="easy-cerver.EasyCerver.reportMissingContextKey.parameter.report"></a>
+###### `report`<sup>Required</sup> <a name="report" id="low-cost-ecs.LowCostECS.reportMissingContextKey.parameter.report"></a>
 
 - *Type:* aws-cdk-lib.cloud_assembly_schema.MissingContext
 
@@ -310,7 +310,7 @@ The set of parameters needed to obtain the context.
 
 ---
 
-##### `resolve` <a name="resolve" id="easy-cerver.EasyCerver.resolve"></a>
+##### `resolve` <a name="resolve" id="low-cost-ecs.LowCostECS.resolve"></a>
 
 ```typescript
 public resolve(obj: any): any
@@ -318,13 +318,13 @@ public resolve(obj: any): any
 
 Resolve a tokenized value in the context of the current stack.
 
-###### `obj`<sup>Required</sup> <a name="obj" id="easy-cerver.EasyCerver.resolve.parameter.obj"></a>
+###### `obj`<sup>Required</sup> <a name="obj" id="low-cost-ecs.LowCostECS.resolve.parameter.obj"></a>
 
 - *Type:* any
 
 ---
 
-##### `splitArn` <a name="splitArn" id="easy-cerver.EasyCerver.splitArn"></a>
+##### `splitArn` <a name="splitArn" id="low-cost-ecs.LowCostECS.splitArn"></a>
 
 ```typescript
 public splitArn(arn: string, arnFormat: ArnFormat): ArnComponents
@@ -337,7 +337,7 @@ and a Token representing a dynamic CloudFormation expression
 (in which case the returned components will also be dynamic CloudFormation expressions,
 encoded as Tokens).
 
-###### `arn`<sup>Required</sup> <a name="arn" id="easy-cerver.EasyCerver.splitArn.parameter.arn"></a>
+###### `arn`<sup>Required</sup> <a name="arn" id="low-cost-ecs.LowCostECS.splitArn.parameter.arn"></a>
 
 - *Type:* string
 
@@ -345,7 +345,7 @@ the ARN to split into its components.
 
 ---
 
-###### `arnFormat`<sup>Required</sup> <a name="arnFormat" id="easy-cerver.EasyCerver.splitArn.parameter.arnFormat"></a>
+###### `arnFormat`<sup>Required</sup> <a name="arnFormat" id="low-cost-ecs.LowCostECS.splitArn.parameter.arnFormat"></a>
 
 - *Type:* aws-cdk-lib.ArnFormat
 
@@ -353,7 +353,7 @@ the expected format of 'arn' - depends on what format the service 'arn' represen
 
 ---
 
-##### `toJsonString` <a name="toJsonString" id="easy-cerver.EasyCerver.toJsonString"></a>
+##### `toJsonString` <a name="toJsonString" id="low-cost-ecs.LowCostECS.toJsonString"></a>
 
 ```typescript
 public toJsonString(obj: any, space?: number): string
@@ -361,13 +361,13 @@ public toJsonString(obj: any, space?: number): string
 
 Convert an object, potentially containing tokens, to a JSON string.
 
-###### `obj`<sup>Required</sup> <a name="obj" id="easy-cerver.EasyCerver.toJsonString.parameter.obj"></a>
+###### `obj`<sup>Required</sup> <a name="obj" id="low-cost-ecs.LowCostECS.toJsonString.parameter.obj"></a>
 
 - *Type:* any
 
 ---
 
-###### `space`<sup>Optional</sup> <a name="space" id="easy-cerver.EasyCerver.toJsonString.parameter.space"></a>
+###### `space`<sup>Optional</sup> <a name="space" id="low-cost-ecs.LowCostECS.toJsonString.parameter.space"></a>
 
 - *Type:* number
 
@@ -377,23 +377,23 @@ Convert an object, potentially containing tokens, to a JSON string.
 
 | **Name** | **Description** |
 | --- | --- |
-| <code><a href="#easy-cerver.EasyCerver.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
-| <code><a href="#easy-cerver.EasyCerver.isStack">isStack</a></code> | Return whether the given object is a Stack. |
-| <code><a href="#easy-cerver.EasyCerver.of">of</a></code> | Looks up the first stack scope in which `construct` is defined. |
+| <code><a href="#low-cost-ecs.LowCostECS.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#low-cost-ecs.LowCostECS.isStack">isStack</a></code> | Return whether the given object is a Stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.of">of</a></code> | Looks up the first stack scope in which `construct` is defined. |
 
 ---
 
-##### ~~`isConstruct`~~ <a name="isConstruct" id="easy-cerver.EasyCerver.isConstruct"></a>
+##### ~~`isConstruct`~~ <a name="isConstruct" id="low-cost-ecs.LowCostECS.isConstruct"></a>
 
 ```typescript
-import { EasyCerver } from 'easy-cerver'
+import { LowCostECS } from 'low-cost-ecs'
 
-EasyCerver.isConstruct(x: any)
+LowCostECS.isConstruct(x: any)
 ```
 
 Checks if `x` is a construct.
 
-###### `x`<sup>Required</sup> <a name="x" id="easy-cerver.EasyCerver.isConstruct.parameter.x"></a>
+###### `x`<sup>Required</sup> <a name="x" id="low-cost-ecs.LowCostECS.isConstruct.parameter.x"></a>
 
 - *Type:* any
 
@@ -401,37 +401,37 @@ Any object.
 
 ---
 
-##### `isStack` <a name="isStack" id="easy-cerver.EasyCerver.isStack"></a>
+##### `isStack` <a name="isStack" id="low-cost-ecs.LowCostECS.isStack"></a>
 
 ```typescript
-import { EasyCerver } from 'easy-cerver'
+import { LowCostECS } from 'low-cost-ecs'
 
-EasyCerver.isStack(x: any)
+LowCostECS.isStack(x: any)
 ```
 
 Return whether the given object is a Stack.
 
 We do attribute detection since we can't reliably use 'instanceof'.
 
-###### `x`<sup>Required</sup> <a name="x" id="easy-cerver.EasyCerver.isStack.parameter.x"></a>
+###### `x`<sup>Required</sup> <a name="x" id="low-cost-ecs.LowCostECS.isStack.parameter.x"></a>
 
 - *Type:* any
 
 ---
 
-##### `of` <a name="of" id="easy-cerver.EasyCerver.of"></a>
+##### `of` <a name="of" id="low-cost-ecs.LowCostECS.of"></a>
 
 ```typescript
-import { EasyCerver } from 'easy-cerver'
+import { LowCostECS } from 'low-cost-ecs'
 
-EasyCerver.of(construct: IConstruct)
+LowCostECS.of(construct: IConstruct)
 ```
 
 Looks up the first stack scope in which `construct` is defined.
 
 Fails if there is no stack up the tree.
 
-###### `construct`<sup>Required</sup> <a name="construct" id="easy-cerver.EasyCerver.of.parameter.construct"></a>
+###### `construct`<sup>Required</sup> <a name="construct" id="low-cost-ecs.LowCostECS.of.parameter.construct"></a>
 
 - *Type:* constructs.IConstruct
 
@@ -443,31 +443,31 @@ The construct to start the search from.
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#easy-cerver.EasyCerver.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
-| <code><a href="#easy-cerver.EasyCerver.property.account">account</a></code> | <code>string</code> | The AWS account into which this stack will be deployed. |
-| <code><a href="#easy-cerver.EasyCerver.property.artifactId">artifactId</a></code> | <code>string</code> | The ID of the cloud assembly artifact for this stack. |
-| <code><a href="#easy-cerver.EasyCerver.property.availabilityZones">availabilityZones</a></code> | <code>string[]</code> | Returns the list of AZs that are available in the AWS environment (account/region) associated with this stack. |
-| <code><a href="#easy-cerver.EasyCerver.property.bundlingRequired">bundlingRequired</a></code> | <code>boolean</code> | Indicates whether the stack requires bundling or not. |
-| <code><a href="#easy-cerver.EasyCerver.property.dependencies">dependencies</a></code> | <code>aws-cdk-lib.Stack[]</code> | Return the stacks this stack depends on. |
-| <code><a href="#easy-cerver.EasyCerver.property.environment">environment</a></code> | <code>string</code> | The environment coordinates in which this stack is deployed. |
-| <code><a href="#easy-cerver.EasyCerver.property.nested">nested</a></code> | <code>boolean</code> | Indicates if this is a nested stack, in which case `parentStack` will include a reference to it's parent. |
-| <code><a href="#easy-cerver.EasyCerver.property.notificationArns">notificationArns</a></code> | <code>string[]</code> | Returns the list of notification Amazon Resource Names (ARNs) for the current stack. |
-| <code><a href="#easy-cerver.EasyCerver.property.partition">partition</a></code> | <code>string</code> | The partition in which this stack is defined. |
-| <code><a href="#easy-cerver.EasyCerver.property.region">region</a></code> | <code>string</code> | The AWS region into which this stack will be deployed (e.g. `us-west-2`). |
-| <code><a href="#easy-cerver.EasyCerver.property.stackId">stackId</a></code> | <code>string</code> | The ID of the stack. |
-| <code><a href="#easy-cerver.EasyCerver.property.stackName">stackName</a></code> | <code>string</code> | The concrete CloudFormation physical stack name. |
-| <code><a href="#easy-cerver.EasyCerver.property.synthesizer">synthesizer</a></code> | <code>aws-cdk-lib.IStackSynthesizer</code> | Synthesis method for this stack. |
-| <code><a href="#easy-cerver.EasyCerver.property.tags">tags</a></code> | <code>aws-cdk-lib.TagManager</code> | Tags to be applied to the stack. |
-| <code><a href="#easy-cerver.EasyCerver.property.templateFile">templateFile</a></code> | <code>string</code> | The name of the CloudFormation template file emitted to the output directory during synthesis. |
-| <code><a href="#easy-cerver.EasyCerver.property.templateOptions">templateOptions</a></code> | <code>aws-cdk-lib.ITemplateOptions</code> | Options for CloudFormation template (like version, transform, description). |
-| <code><a href="#easy-cerver.EasyCerver.property.urlSuffix">urlSuffix</a></code> | <code>string</code> | The Amazon domain suffix for the region in which this stack is defined. |
-| <code><a href="#easy-cerver.EasyCerver.property.nestedStackParent">nestedStackParent</a></code> | <code>aws-cdk-lib.Stack</code> | If this is a nested stack, returns it's parent stack. |
-| <code><a href="#easy-cerver.EasyCerver.property.nestedStackResource">nestedStackResource</a></code> | <code>aws-cdk-lib.CfnResource</code> | If this is a nested stack, this represents its `AWS::CloudFormation::Stack` resource. |
-| <code><a href="#easy-cerver.EasyCerver.property.terminationProtection">terminationProtection</a></code> | <code>boolean</code> | Whether termination protection is enabled for this stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.account">account</a></code> | <code>string</code> | The AWS account into which this stack will be deployed. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.artifactId">artifactId</a></code> | <code>string</code> | The ID of the cloud assembly artifact for this stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.availabilityZones">availabilityZones</a></code> | <code>string[]</code> | Returns the list of AZs that are available in the AWS environment (account/region) associated with this stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.bundlingRequired">bundlingRequired</a></code> | <code>boolean</code> | Indicates whether the stack requires bundling or not. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.dependencies">dependencies</a></code> | <code>aws-cdk-lib.Stack[]</code> | Return the stacks this stack depends on. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.environment">environment</a></code> | <code>string</code> | The environment coordinates in which this stack is deployed. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.nested">nested</a></code> | <code>boolean</code> | Indicates if this is a nested stack, in which case `parentStack` will include a reference to it's parent. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.notificationArns">notificationArns</a></code> | <code>string[]</code> | Returns the list of notification Amazon Resource Names (ARNs) for the current stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.partition">partition</a></code> | <code>string</code> | The partition in which this stack is defined. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.region">region</a></code> | <code>string</code> | The AWS region into which this stack will be deployed (e.g. `us-west-2`). |
+| <code><a href="#low-cost-ecs.LowCostECS.property.stackId">stackId</a></code> | <code>string</code> | The ID of the stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.stackName">stackName</a></code> | <code>string</code> | The concrete CloudFormation physical stack name. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.synthesizer">synthesizer</a></code> | <code>aws-cdk-lib.IStackSynthesizer</code> | Synthesis method for this stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.tags">tags</a></code> | <code>aws-cdk-lib.TagManager</code> | Tags to be applied to the stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.templateFile">templateFile</a></code> | <code>string</code> | The name of the CloudFormation template file emitted to the output directory during synthesis. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.templateOptions">templateOptions</a></code> | <code>aws-cdk-lib.ITemplateOptions</code> | Options for CloudFormation template (like version, transform, description). |
+| <code><a href="#low-cost-ecs.LowCostECS.property.urlSuffix">urlSuffix</a></code> | <code>string</code> | The Amazon domain suffix for the region in which this stack is defined. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.nestedStackParent">nestedStackParent</a></code> | <code>aws-cdk-lib.Stack</code> | If this is a nested stack, returns it's parent stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.nestedStackResource">nestedStackResource</a></code> | <code>aws-cdk-lib.CfnResource</code> | If this is a nested stack, this represents its `AWS::CloudFormation::Stack` resource. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.terminationProtection">terminationProtection</a></code> | <code>boolean</code> | Whether termination protection is enabled for this stack. |
 
 ---
 
-##### `node`<sup>Required</sup> <a name="node" id="easy-cerver.EasyCerver.property.node"></a>
+##### `node`<sup>Required</sup> <a name="node" id="low-cost-ecs.LowCostECS.property.node"></a>
 
 ```typescript
 public readonly node: Node;
@@ -479,7 +479,7 @@ The tree node.
 
 ---
 
-##### `account`<sup>Required</sup> <a name="account" id="easy-cerver.EasyCerver.property.account"></a>
+##### `account`<sup>Required</sup> <a name="account" id="low-cost-ecs.LowCostECS.property.account"></a>
 
 ```typescript
 public readonly account: string;
@@ -508,7 +508,7 @@ implement some other region-agnostic behavior.
 
 ---
 
-##### `artifactId`<sup>Required</sup> <a name="artifactId" id="easy-cerver.EasyCerver.property.artifactId"></a>
+##### `artifactId`<sup>Required</sup> <a name="artifactId" id="low-cost-ecs.LowCostECS.property.artifactId"></a>
 
 ```typescript
 public readonly artifactId: string;
@@ -520,7 +520,7 @@ The ID of the cloud assembly artifact for this stack.
 
 ---
 
-##### `availabilityZones`<sup>Required</sup> <a name="availabilityZones" id="easy-cerver.EasyCerver.property.availabilityZones"></a>
+##### `availabilityZones`<sup>Required</sup> <a name="availabilityZones" id="low-cost-ecs.LowCostECS.property.availabilityZones"></a>
 
 ```typescript
 public readonly availabilityZones: string[];
@@ -543,7 +543,7 @@ To specify a different strategy for selecting availability zones override this m
 
 ---
 
-##### `bundlingRequired`<sup>Required</sup> <a name="bundlingRequired" id="easy-cerver.EasyCerver.property.bundlingRequired"></a>
+##### `bundlingRequired`<sup>Required</sup> <a name="bundlingRequired" id="low-cost-ecs.LowCostECS.property.bundlingRequired"></a>
 
 ```typescript
 public readonly bundlingRequired: boolean;
@@ -555,7 +555,7 @@ Indicates whether the stack requires bundling or not.
 
 ---
 
-##### `dependencies`<sup>Required</sup> <a name="dependencies" id="easy-cerver.EasyCerver.property.dependencies"></a>
+##### `dependencies`<sup>Required</sup> <a name="dependencies" id="low-cost-ecs.LowCostECS.property.dependencies"></a>
 
 ```typescript
 public readonly dependencies: Stack[];
@@ -567,7 +567,7 @@ Return the stacks this stack depends on.
 
 ---
 
-##### `environment`<sup>Required</sup> <a name="environment" id="easy-cerver.EasyCerver.property.environment"></a>
+##### `environment`<sup>Required</sup> <a name="environment" id="low-cost-ecs.LowCostECS.property.environment"></a>
 
 ```typescript
 public readonly environment: string;
@@ -591,7 +591,7 @@ region/account-agnostic.
 
 ---
 
-##### `nested`<sup>Required</sup> <a name="nested" id="easy-cerver.EasyCerver.property.nested"></a>
+##### `nested`<sup>Required</sup> <a name="nested" id="low-cost-ecs.LowCostECS.property.nested"></a>
 
 ```typescript
 public readonly nested: boolean;
@@ -603,7 +603,7 @@ Indicates if this is a nested stack, in which case `parentStack` will include a 
 
 ---
 
-##### `notificationArns`<sup>Required</sup> <a name="notificationArns" id="easy-cerver.EasyCerver.property.notificationArns"></a>
+##### `notificationArns`<sup>Required</sup> <a name="notificationArns" id="low-cost-ecs.LowCostECS.property.notificationArns"></a>
 
 ```typescript
 public readonly notificationArns: string[];
@@ -615,7 +615,7 @@ Returns the list of notification Amazon Resource Names (ARNs) for the current st
 
 ---
 
-##### `partition`<sup>Required</sup> <a name="partition" id="easy-cerver.EasyCerver.property.partition"></a>
+##### `partition`<sup>Required</sup> <a name="partition" id="low-cost-ecs.LowCostECS.property.partition"></a>
 
 ```typescript
 public readonly partition: string;
@@ -627,7 +627,7 @@ The partition in which this stack is defined.
 
 ---
 
-##### `region`<sup>Required</sup> <a name="region" id="easy-cerver.EasyCerver.property.region"></a>
+##### `region`<sup>Required</sup> <a name="region" id="low-cost-ecs.LowCostECS.property.region"></a>
 
 ```typescript
 public readonly region: string;
@@ -656,7 +656,7 @@ implement some other region-agnostic behavior.
 
 ---
 
-##### `stackId`<sup>Required</sup> <a name="stackId" id="easy-cerver.EasyCerver.property.stackId"></a>
+##### `stackId`<sup>Required</sup> <a name="stackId" id="low-cost-ecs.LowCostECS.property.stackId"></a>
 
 ```typescript
 public readonly stackId: string;
@@ -676,7 +676,7 @@ The ID of the stack.
 ```
 
 
-##### `stackName`<sup>Required</sup> <a name="stackName" id="easy-cerver.EasyCerver.property.stackName"></a>
+##### `stackName`<sup>Required</sup> <a name="stackName" id="low-cost-ecs.LowCostECS.property.stackName"></a>
 
 ```typescript
 public readonly stackName: string;
@@ -697,7 +697,7 @@ you can use `Aws.STACK_NAME` directly.
 
 ---
 
-##### `synthesizer`<sup>Required</sup> <a name="synthesizer" id="easy-cerver.EasyCerver.property.synthesizer"></a>
+##### `synthesizer`<sup>Required</sup> <a name="synthesizer" id="low-cost-ecs.LowCostECS.property.synthesizer"></a>
 
 ```typescript
 public readonly synthesizer: IStackSynthesizer;
@@ -709,7 +709,7 @@ Synthesis method for this stack.
 
 ---
 
-##### `tags`<sup>Required</sup> <a name="tags" id="easy-cerver.EasyCerver.property.tags"></a>
+##### `tags`<sup>Required</sup> <a name="tags" id="low-cost-ecs.LowCostECS.property.tags"></a>
 
 ```typescript
 public readonly tags: TagManager;
@@ -721,7 +721,7 @@ Tags to be applied to the stack.
 
 ---
 
-##### `templateFile`<sup>Required</sup> <a name="templateFile" id="easy-cerver.EasyCerver.property.templateFile"></a>
+##### `templateFile`<sup>Required</sup> <a name="templateFile" id="low-cost-ecs.LowCostECS.property.templateFile"></a>
 
 ```typescript
 public readonly templateFile: string;
@@ -735,7 +735,7 @@ Example value: `MyStack.template.json`
 
 ---
 
-##### `templateOptions`<sup>Required</sup> <a name="templateOptions" id="easy-cerver.EasyCerver.property.templateOptions"></a>
+##### `templateOptions`<sup>Required</sup> <a name="templateOptions" id="low-cost-ecs.LowCostECS.property.templateOptions"></a>
 
 ```typescript
 public readonly templateOptions: ITemplateOptions;
@@ -747,7 +747,7 @@ Options for CloudFormation template (like version, transform, description).
 
 ---
 
-##### `urlSuffix`<sup>Required</sup> <a name="urlSuffix" id="easy-cerver.EasyCerver.property.urlSuffix"></a>
+##### `urlSuffix`<sup>Required</sup> <a name="urlSuffix" id="low-cost-ecs.LowCostECS.property.urlSuffix"></a>
 
 ```typescript
 public readonly urlSuffix: string;
@@ -759,7 +759,7 @@ The Amazon domain suffix for the region in which this stack is defined.
 
 ---
 
-##### `nestedStackParent`<sup>Optional</sup> <a name="nestedStackParent" id="easy-cerver.EasyCerver.property.nestedStackParent"></a>
+##### `nestedStackParent`<sup>Optional</sup> <a name="nestedStackParent" id="low-cost-ecs.LowCostECS.property.nestedStackParent"></a>
 
 ```typescript
 public readonly nestedStackParent: Stack;
@@ -771,7 +771,7 @@ If this is a nested stack, returns it's parent stack.
 
 ---
 
-##### `nestedStackResource`<sup>Optional</sup> <a name="nestedStackResource" id="easy-cerver.EasyCerver.property.nestedStackResource"></a>
+##### `nestedStackResource`<sup>Optional</sup> <a name="nestedStackResource" id="low-cost-ecs.LowCostECS.property.nestedStackResource"></a>
 
 ```typescript
 public readonly nestedStackResource: CfnResource;
@@ -785,7 +785,7 @@ If this is a nested stack, this represents its `AWS::CloudFormation::Stack` reso
 
 ---
 
-##### `terminationProtection`<sup>Optional</sup> <a name="terminationProtection" id="easy-cerver.EasyCerver.property.terminationProtection"></a>
+##### `terminationProtection`<sup>Optional</sup> <a name="terminationProtection" id="low-cost-ecs.LowCostECS.property.terminationProtection"></a>
 
 ```typescript
 public readonly terminationProtection: boolean;
@@ -800,45 +800,45 @@ Whether termination protection is enabled for this stack.
 
 ## Structs <a name="Structs" id="Structs"></a>
 
-### EasyCerverProps <a name="EasyCerverProps" id="easy-cerver.EasyCerverProps"></a>
+### LowCostECSProps <a name="LowCostECSProps" id="low-cost-ecs.LowCostECSProps"></a>
 
-#### Initializer <a name="Initializer" id="easy-cerver.EasyCerverProps.Initializer"></a>
+#### Initializer <a name="Initializer" id="low-cost-ecs.LowCostECSProps.Initializer"></a>
 
 ```typescript
-import { EasyCerverProps } from 'easy-cerver'
+import { LowCostECSProps } from 'low-cost-ecs'
 
-const easyCerverProps: EasyCerverProps = { ... }
+const lowCostECSProps: LowCostECSProps = { ... }
 ```
 
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#easy-cerver.EasyCerverProps.property.analyticsReporting">analyticsReporting</a></code> | <code>boolean</code> | Include runtime versioning information in this Stack. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.description">description</a></code> | <code>string</code> | A description of the stack. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.env">env</a></code> | <code>aws-cdk-lib.Environment</code> | The AWS environment (account/region) where this stack will be deployed. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.stackName">stackName</a></code> | <code>string</code> | Name to deploy the stack with. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.synthesizer">synthesizer</a></code> | <code>aws-cdk-lib.IStackSynthesizer</code> | Synthesis method to use while deploying this stack. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.tags">tags</a></code> | <code>{[ key: string ]: string}</code> | Stack tags that will be applied to all the taggable resources and the stack itself. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.terminationProtection">terminationProtection</a></code> | <code>boolean</code> | Whether to enable termination protection for this stack. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.email">email</a></code> | <code>string</code> | Email for expiration emails to register to your let's encrypt account. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.hostedZoneDomain">hostedZoneDomain</a></code> | <code>string</code> | Domain name of the hosted zone. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.awsCliDockerTag">awsCliDockerTag</a></code> | <code>string</code> | Docker image tag of amazon/aws-cli. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.certbotDockerTag">certbotDockerTag</a></code> | <code>string</code> | Docker image tag of certbot/dns-route53 to create certificates. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.certbotScheduleInterval">certbotScheduleInterval</a></code> | <code>number</code> | Certbot task schedule interval in days to renew the certificate. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.containerInsights">containerInsights</a></code> | <code>boolean</code> | Enable container insights or not. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.hostInstanceSpotPrice">hostInstanceSpotPrice</a></code> | <code>string</code> | The maximum hourly price (in USD) to be paid for any Spot Instance launched to fulfill the request. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.hostInstanceType">hostInstanceType</a></code> | <code>string</code> | Instance type of the ECS host instance. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.logGroup">logGroup</a></code> | <code>aws-cdk-lib.aws_logs.ILogGroup</code> | Log group of the certbot task and the aws-cli task. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.recordDomainNames">recordDomainNames</a></code> | <code>string[]</code> | Domain names for A records to elastic ip of ECS host instance. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.removalPolicy">removalPolicy</a></code> | <code>aws-cdk-lib.RemovalPolicy</code> | Removal policy for the file system and log group (if using default). |
-| <code><a href="#easy-cerver.EasyCerverProps.property.securityGroup">securityGroup</a></code> | <code>aws-cdk-lib.aws_ec2.SecurityGroup</code> | Security group of the ECS host instance. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.serverTaskDefinition">serverTaskDefinition</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2TaskDefinition</code> | Task definition for the server ecs task. |
-| <code><a href="#easy-cerver.EasyCerverProps.property.vpc">vpc</a></code> | <code>aws-cdk-lib.aws_ec2.IVpc</code> | Vpc of the ECS host instance and cluster. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.analyticsReporting">analyticsReporting</a></code> | <code>boolean</code> | Include runtime versioning information in this Stack. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.description">description</a></code> | <code>string</code> | A description of the stack. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.env">env</a></code> | <code>aws-cdk-lib.Environment</code> | The AWS environment (account/region) where this stack will be deployed. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.stackName">stackName</a></code> | <code>string</code> | Name to deploy the stack with. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.synthesizer">synthesizer</a></code> | <code>aws-cdk-lib.IStackSynthesizer</code> | Synthesis method to use while deploying this stack. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.tags">tags</a></code> | <code>{[ key: string ]: string}</code> | Stack tags that will be applied to all the taggable resources and the stack itself. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.terminationProtection">terminationProtection</a></code> | <code>boolean</code> | Whether to enable termination protection for this stack. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.email">email</a></code> | <code>string</code> | Email for expiration emails to register to your let's encrypt account. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.hostedZoneDomain">hostedZoneDomain</a></code> | <code>string</code> | Domain name of the hosted zone. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.awsCliDockerTag">awsCliDockerTag</a></code> | <code>string</code> | Docker image tag of amazon/aws-cli. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.certbotDockerTag">certbotDockerTag</a></code> | <code>string</code> | Docker image tag of certbot/dns-route53 to create certificates. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.certbotScheduleInterval">certbotScheduleInterval</a></code> | <code>number</code> | Certbot task schedule interval in days to renew the certificate. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.containerInsights">containerInsights</a></code> | <code>boolean</code> | Enable container insights or not. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.hostInstanceSpotPrice">hostInstanceSpotPrice</a></code> | <code>string</code> | The maximum hourly price (in USD) to be paid for any Spot Instance launched to fulfill the request. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.hostInstanceType">hostInstanceType</a></code> | <code>string</code> | Instance type of the ECS host instance. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.logGroup">logGroup</a></code> | <code>aws-cdk-lib.aws_logs.ILogGroup</code> | Log group of the certbot task and the aws-cli task. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.recordDomainNames">recordDomainNames</a></code> | <code>string[]</code> | Domain names for A records to elastic ip of ECS host instance. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.removalPolicy">removalPolicy</a></code> | <code>aws-cdk-lib.RemovalPolicy</code> | Removal policy for the file system and log group (if using default). |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.securityGroup">securityGroup</a></code> | <code>aws-cdk-lib.aws_ec2.SecurityGroup</code> | Security group of the ECS host instance. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.serverTaskDefinition">serverTaskDefinition</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2TaskDefinition</code> | Task definition for the server ecs task. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.vpc">vpc</a></code> | <code>aws-cdk-lib.aws_ec2.IVpc</code> | Vpc of the ECS host instance and cluster. |
 
 ---
 
-##### `analyticsReporting`<sup>Optional</sup> <a name="analyticsReporting" id="easy-cerver.EasyCerverProps.property.analyticsReporting"></a>
+##### `analyticsReporting`<sup>Optional</sup> <a name="analyticsReporting" id="low-cost-ecs.LowCostECSProps.property.analyticsReporting"></a>
 
 ```typescript
 public readonly analyticsReporting: boolean;
@@ -851,7 +851,7 @@ Include runtime versioning information in this Stack.
 
 ---
 
-##### `description`<sup>Optional</sup> <a name="description" id="easy-cerver.EasyCerverProps.property.description"></a>
+##### `description`<sup>Optional</sup> <a name="description" id="low-cost-ecs.LowCostECSProps.property.description"></a>
 
 ```typescript
 public readonly description: string;
@@ -864,7 +864,7 @@ A description of the stack.
 
 ---
 
-##### `env`<sup>Optional</sup> <a name="env" id="easy-cerver.EasyCerverProps.property.env"></a>
+##### `env`<sup>Optional</sup> <a name="env" id="low-cost-ecs.LowCostECSProps.property.env"></a>
 
 ```typescript
 public readonly env: Environment;
@@ -938,7 +938,7 @@ new MyStack(app, 'Stack1');
 ```
 
 
-##### `stackName`<sup>Optional</sup> <a name="stackName" id="easy-cerver.EasyCerverProps.property.stackName"></a>
+##### `stackName`<sup>Optional</sup> <a name="stackName" id="low-cost-ecs.LowCostECSProps.property.stackName"></a>
 
 ```typescript
 public readonly stackName: string;
@@ -951,7 +951,7 @@ Name to deploy the stack with.
 
 ---
 
-##### `synthesizer`<sup>Optional</sup> <a name="synthesizer" id="easy-cerver.EasyCerverProps.property.synthesizer"></a>
+##### `synthesizer`<sup>Optional</sup> <a name="synthesizer" id="low-cost-ecs.LowCostECSProps.property.synthesizer"></a>
 
 ```typescript
 public readonly synthesizer: IStackSynthesizer;
@@ -964,7 +964,7 @@ Synthesis method to use while deploying this stack.
 
 ---
 
-##### `tags`<sup>Optional</sup> <a name="tags" id="easy-cerver.EasyCerverProps.property.tags"></a>
+##### `tags`<sup>Optional</sup> <a name="tags" id="low-cost-ecs.LowCostECSProps.property.tags"></a>
 
 ```typescript
 public readonly tags: {[ key: string ]: string};
@@ -977,7 +977,7 @@ Stack tags that will be applied to all the taggable resources and the stack itse
 
 ---
 
-##### `terminationProtection`<sup>Optional</sup> <a name="terminationProtection" id="easy-cerver.EasyCerverProps.property.terminationProtection"></a>
+##### `terminationProtection`<sup>Optional</sup> <a name="terminationProtection" id="low-cost-ecs.LowCostECSProps.property.terminationProtection"></a>
 
 ```typescript
 public readonly terminationProtection: boolean;
@@ -990,7 +990,7 @@ Whether to enable termination protection for this stack.
 
 ---
 
-##### `email`<sup>Required</sup> <a name="email" id="easy-cerver.EasyCerverProps.property.email"></a>
+##### `email`<sup>Required</sup> <a name="email" id="low-cost-ecs.LowCostECSProps.property.email"></a>
 
 ```typescript
 public readonly email: string;
@@ -1004,7 +1004,7 @@ Email for expiration emails to register to your let's encrypt account.
 
 ---
 
-##### `hostedZoneDomain`<sup>Required</sup> <a name="hostedZoneDomain" id="easy-cerver.EasyCerverProps.property.hostedZoneDomain"></a>
+##### `hostedZoneDomain`<sup>Required</sup> <a name="hostedZoneDomain" id="low-cost-ecs.LowCostECSProps.property.hostedZoneDomain"></a>
 
 ```typescript
 public readonly hostedZoneDomain: string;
@@ -1016,7 +1016,7 @@ Domain name of the hosted zone.
 
 ---
 
-##### `awsCliDockerTag`<sup>Optional</sup> <a name="awsCliDockerTag" id="easy-cerver.EasyCerverProps.property.awsCliDockerTag"></a>
+##### `awsCliDockerTag`<sup>Optional</sup> <a name="awsCliDockerTag" id="low-cost-ecs.LowCostECSProps.property.awsCliDockerTag"></a>
 
 ```typescript
 public readonly awsCliDockerTag: string;
@@ -1031,7 +1031,7 @@ This image is used to associate elastic ip on host instance startup, and run cer
 
 ---
 
-##### `certbotDockerTag`<sup>Optional</sup> <a name="certbotDockerTag" id="easy-cerver.EasyCerverProps.property.certbotDockerTag"></a>
+##### `certbotDockerTag`<sup>Optional</sup> <a name="certbotDockerTag" id="low-cost-ecs.LowCostECSProps.property.certbotDockerTag"></a>
 
 ```typescript
 public readonly certbotDockerTag: string;
@@ -1046,7 +1046,7 @@ Docker image tag of certbot/dns-route53 to create certificates.
 
 ---
 
-##### `certbotScheduleInterval`<sup>Optional</sup> <a name="certbotScheduleInterval" id="easy-cerver.EasyCerverProps.property.certbotScheduleInterval"></a>
+##### `certbotScheduleInterval`<sup>Optional</sup> <a name="certbotScheduleInterval" id="low-cost-ecs.LowCostECSProps.property.certbotScheduleInterval"></a>
 
 ```typescript
 public readonly certbotScheduleInterval: number;
@@ -1059,7 +1059,7 @@ Certbot task schedule interval in days to renew the certificate.
 
 ---
 
-##### `containerInsights`<sup>Optional</sup> <a name="containerInsights" id="easy-cerver.EasyCerverProps.property.containerInsights"></a>
+##### `containerInsights`<sup>Optional</sup> <a name="containerInsights" id="low-cost-ecs.LowCostECSProps.property.containerInsights"></a>
 
 ```typescript
 public readonly containerInsights: boolean;
@@ -1072,7 +1072,7 @@ Enable container insights or not.
 
 ---
 
-##### `hostInstanceSpotPrice`<sup>Optional</sup> <a name="hostInstanceSpotPrice" id="easy-cerver.EasyCerverProps.property.hostInstanceSpotPrice"></a>
+##### `hostInstanceSpotPrice`<sup>Optional</sup> <a name="hostInstanceSpotPrice" id="low-cost-ecs.LowCostECSProps.property.hostInstanceSpotPrice"></a>
 
 ```typescript
 public readonly hostInstanceSpotPrice: string;
@@ -1089,7 +1089,7 @@ Host instance asg would use spot instances if hostInstanceSpotPrice is set.
 
 ---
 
-##### `hostInstanceType`<sup>Optional</sup> <a name="hostInstanceType" id="easy-cerver.EasyCerverProps.property.hostInstanceType"></a>
+##### `hostInstanceType`<sup>Optional</sup> <a name="hostInstanceType" id="low-cost-ecs.LowCostECSProps.property.hostInstanceType"></a>
 
 ```typescript
 public readonly hostInstanceType: string;
@@ -1102,7 +1102,7 @@ Instance type of the ECS host instance.
 
 ---
 
-##### `logGroup`<sup>Optional</sup> <a name="logGroup" id="easy-cerver.EasyCerverProps.property.logGroup"></a>
+##### `logGroup`<sup>Optional</sup> <a name="logGroup" id="low-cost-ecs.LowCostECSProps.property.logGroup"></a>
 
 ```typescript
 public readonly logGroup: ILogGroup;
@@ -1115,7 +1115,7 @@ Log group of the certbot task and the aws-cli task.
 
 ---
 
-##### `recordDomainNames`<sup>Optional</sup> <a name="recordDomainNames" id="easy-cerver.EasyCerverProps.property.recordDomainNames"></a>
+##### `recordDomainNames`<sup>Optional</sup> <a name="recordDomainNames" id="low-cost-ecs.LowCostECSProps.property.recordDomainNames"></a>
 
 ```typescript
 public readonly recordDomainNames: string[];
@@ -1128,7 +1128,7 @@ Domain names for A records to elastic ip of ECS host instance.
 
 ---
 
-##### `removalPolicy`<sup>Optional</sup> <a name="removalPolicy" id="easy-cerver.EasyCerverProps.property.removalPolicy"></a>
+##### `removalPolicy`<sup>Optional</sup> <a name="removalPolicy" id="low-cost-ecs.LowCostECSProps.property.removalPolicy"></a>
 
 ```typescript
 public readonly removalPolicy: RemovalPolicy;
@@ -1141,7 +1141,7 @@ Removal policy for the file system and log group (if using default).
 
 ---
 
-##### `securityGroup`<sup>Optional</sup> <a name="securityGroup" id="easy-cerver.EasyCerverProps.property.securityGroup"></a>
+##### `securityGroup`<sup>Optional</sup> <a name="securityGroup" id="low-cost-ecs.LowCostECSProps.property.securityGroup"></a>
 
 ```typescript
 public readonly securityGroup: SecurityGroup;
@@ -1154,7 +1154,7 @@ Security group of the ECS host instance.
 
 ---
 
-##### `serverTaskDefinition`<sup>Optional</sup> <a name="serverTaskDefinition" id="easy-cerver.EasyCerverProps.property.serverTaskDefinition"></a>
+##### `serverTaskDefinition`<sup>Optional</sup> <a name="serverTaskDefinition" id="low-cost-ecs.LowCostECSProps.property.serverTaskDefinition"></a>
 
 ```typescript
 public readonly serverTaskDefinition: Ec2TaskDefinition;
@@ -1167,7 +1167,7 @@ Task definition for the server ecs task.
 
 ---
 
-##### `vpc`<sup>Optional</sup> <a name="vpc" id="easy-cerver.EasyCerverProps.property.vpc"></a>
+##### `vpc`<sup>Optional</sup> <a name="vpc" id="low-cost-ecs.LowCostECSProps.property.vpc"></a>
 
 ```typescript
 public readonly vpc: IVpc;

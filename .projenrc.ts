@@ -5,9 +5,9 @@ const excludes = ['.idea/', 'cdk.out/', 'cdk.context.json', 'yarn-error.log'];
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Yohta Kimura',
   authorAddress: 'kitakita7617@gmail.com',
-  name: 'easy-cerver',
+  name: 'low-cost-ecs',
   description: 'Easy and low-cost ECS on EC2 server without a load balancer',
-  repositoryUrl: 'https://github.com/rajyan/easy-cerver.git',
+  repositoryUrl: 'https://github.com/rajyan/low-cost-ecs.git',
   license: 'MIT',
   cdkVersion: '2.37.0',
   defaultReleaseBranch: 'main',
@@ -26,8 +26,8 @@ const project = new awscdk.AwsCdkConstructLibrary({
   stability: 'experimental',
 
   python: {
-    distName: 'easy-cerver',
-    module: 'eascy_cerver',
+    distName: 'low-cost-ecs',
+    module: 'low_cost_ecs',
   },
 
   npmignore: excludes,

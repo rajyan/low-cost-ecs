@@ -1,9 +1,9 @@
-[![NPM version](https://badge.fury.io/js/easy-cerver.svg)](https://www.npmjs.com/package/easy-cerver)
-[![PyPI version](https://badge.fury.io/py/easy-cerver.svg)](https://pypi.org/project/easy-cerver/0.0.4/)
-[![Release](https://github.com/rajyan/easy-cerver/workflows/release/badge.svg)](https://github.com/rajyan/easy-cerver/actions/workflows/release.yml)
-[<img src="https://constructs.dev/badge?package=easy-cerver" width="150">](https://constructs.dev/packages/easy-cerver)
+[![NPM version](https://badge.fury.io/js/low-cost-ecs.svg)](https://www.npmjs.com/package/low-cost-ecs)
+[![PyPI version](https://badge.fury.io/py/low-cost-ecs.svg)](https://pypi.org/project/low-cost-ecs/0.0.4/)
+[![Release](https://github.com/rajyan/low-cost-ecs/workflows/release/badge.svg)](https://github.com/rajyan/low-cost-ecs/actions/workflows/release.yml)
+[<img src="https://constructs.dev/badge?package=low-cost-ecs" width="150">](https://constructs.dev/packages/low-cost-ecs)
 
-# Easy Cerver
+# Low-Cost ECS
 
 A CDK construct that provides easy and low-cost ECS on EC2 server setup without a load balancer.
 TLS/SSL certificates are installed automatically on startup of the server and renewed by a scheduled state machine using [certbot-dns-route53](https://certbot-dns-route53.readthedocs.io/en/stable/).
@@ -13,11 +13,11 @@ TLS/SSL certificates are installed automatically on startup of the server and re
 # Try it out!
 
 The easiest way to see what this construct creates is to clone this repository and deploying sample server.
-Edit settings in `bin/easy-cerver.ts` and deploy cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) with your own domain is required.
+Edit settings in `bin/low-cost-ecs.ts` and deploy cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) with your own domain is required.
 
 ```
-git clone https://github.com/rajyan/easy-cerver.git
-# edit settings in bin/easy-cerver.ts
+git clone https://github.com/rajyan/low-cost-ecs.git
+# edit settings in bin/low-cost-ecs.ts
 npx cdk deploy
 ```
 
@@ -28,23 +28,23 @@ Access to configured `recordDomainNames` and see that the nginx sample server ha
 To use this construct in your own cdk stack as a library,
 
 ```
-npm install easy-cerver
+npm install low-cost-ecs
 ```
 
 ```ts
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { EasyCerver } from 'easy-cerver';
+import { LowCostECS } from 'low-cost-ecs';
 
 class SampleStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
-        const vpc = /** Your VPC */
-        const securityGroup = /** Your security group */
-        const serverTaskDefinition = /** Your task definition */
+        const vpc = /** Your VPC */;
+        const securityGroup = /** Your security group */;
+        const serverTaskDefinition = /** Your task definition */;
 
-        new EasyCerver(this, 'EasyCerver', {
+        new LowCostECS(this, 'LowCostECS', {
             hostedZoneDomain: "rajyan.net",
             email: "kitakita7617@gmail.com",
             vpc: vpc,
@@ -56,7 +56,7 @@ class SampleStack extends Stack {
 ```
 
 The required fields are `hostedZoneDomain` and `email`.
-Set your own task definition, and other props. Read [`EasyCerverProps` documentation](https://github.com/rajyan/easy-cerver/blob/main/API.md#easy-cerver.EasyCerverProps) for details.
+Set your own task definition, and other props. Read [`LowCostECSProps` documentation](https://github.com/rajyan/low-cost-ecs/blob/main/API.md#low-cost-ecs.LowCostECSProps) for details.
 
 # Why
 
@@ -73,7 +73,7 @@ This construct aims to automate these work and deploying resources to run low-co
 
 All resources except Route53 HostedZone should be included in [AWS Free Tier](https://docs.aws.amazon.com/whitepapers/latest/how-aws-pricing-works/get-started-with-the-aws-free-tier.html)
 ***if you are in the 12 Months Free period***.
-After your 12 Months Free period, setting [`hostInstanceSpotPrice`](https://github.com/rajyan/easy-cerver/blob/main/API.md#easy-cerver.EasyCerverProps.property.hostInstanceSpotPrice) to use spot instances is recommended.
+After your 12 Months Free period, setting [`hostInstanceSpotPrice`](https://github.com/rajyan/low-cost-ecs/blob/main/API.md#low-cost-ecs.LowCostECSProps.property.hostInstanceSpotPrice) to use spot instances is recommended.
 
 * EC2
   * t2,micro 750 instance hours (12 Months Free Tier)
@@ -84,7 +84,7 @@ After your 12 Months Free period, setting [`hostInstanceSpotPrice`](https://gith
   * Usage is very small, it should be free
 * Cloud Watch
   * Usage is very small, and it should be included in the free tier
-  * Enabling [`containerInsights`](https://github.com/rajyan/easy-cerver/blob/main/API.md#easy-cerver.EasyCerverProps.property.containerInsights) will charge for custom metrics
+  * Enabling [`containerInsights`](https://github.com/rajyan/low-cost-ecs/blob/main/API.md#low-cost-ecs.LowCostECSProps.property.containerInsights) will charge for custom metrics
 
 # Debugging
 
