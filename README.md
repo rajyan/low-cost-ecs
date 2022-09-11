@@ -9,9 +9,17 @@ A CDK construct that provides easy and [low-cost](#cost) ECS on EC2 server setup
 
 **This construct is for development purposes only**. See [Limitations](#limitations).
 
+# Why
+
+ECS may often seem expensive when used for personal development purposes, due to the cost of the load balancer.
+The application load balancer is a great service that is easy to set up managed ACM certificates, it scales, and has dynamic port mappings and so on, but it is over-featured for running 1 ECS task.
+
+However, to run an ECS server without a load balancer, you need to associate an Elastic IP to the host instance and install your certificate to your service every time you start up the server.
+This construct aims to automate these works and to make it easy to deploy resources to run a low-cost ECS server.
+
 # Try it out!
 
-The easiest way to see what this construct creates is to clone this repository and deploy the sample server.
+The easiest way to try this construct is to clone this repository and deploy the sample server.
 Edit settings in `bin/low-cost-ecs.ts` and deploy the cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) is required.
 
 ```
@@ -56,15 +64,6 @@ class SampleStack extends Stack {
 
 The required fields are `hostedZoneDomain` and `email`.
 You can configure your server task definition and other props. Read [`LowCostECSProps` documentation](https://github.com/rajyan/low-cost-ecs/blob/main/API.md#low-cost-ecs.LowCostECSProps) for details.
-
-# Why
-
-ECS may often seem expensive when used for personal development purposes, because of the cost of the load balancer.
-The application load balancer is a great service because it is easy to set up managed ACM certificates, it scales, and has dynamic port mappings and so on, 
-but it is over-featured for running 1 ECS service.
-
-However, to run an ECS server without a load balancer, you need to associate an Elastic IP to the host instance and install your certificate by yourself.
-This construct aims to automate these works and to make it easy to deploy resources to run a low-cost ECS server.
 
 # Overview
 
