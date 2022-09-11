@@ -21,7 +21,7 @@ git clone https://github.com/rajyan/easy-cerver.git
 npx cdk deploy
 ```
 
-You can access to your `recordDomainNames` and see that the nginx sample server has been deployed.
+Access to configured `recordDomainNames` and see that the nginx sample server has been deployed.
 
 # Installation
 
@@ -56,7 +56,7 @@ class SampleStack extends Stack {
 ```
 
 The required fields are `hostedZoneDomain` and `email`.
-You can set your own task definition, and other props. Read [`EasyCerverProps` documentation](https://github.com/rajyan/easy-cerver/blob/main/API.md#easy-cerver.EasyCerverProps) for details.
+Set your own task definition, and other props. Read [`EasyCerverProps` documentation](https://github.com/rajyan/easy-cerver/blob/main/API.md#easy-cerver.EasyCerverProps) for details.
 
 # Why
 
@@ -66,14 +66,27 @@ You can set your own task definition, and other props. Read [`EasyCerverProps` d
 
 # Cost
 
-setup => route53 hosted zone
+All resources except Route53 HostedZone should be included in [AWS Free Tier](https://docs.aws.amazon.com/whitepapers/latest/how-aws-pricing-works/get-started-with-the-aws-free-tier.html)
+***if you are in the 12 Months Free period***.
+After your 12 Months Free period, setting [`hostInstanceSpotPrice`](https://github.com/rajyan/easy-cerver/blob/main/API.md#easy-cerver.EasyCerverProps.property.hostInstanceSpotPrice) to use spot instances is recommended.
+
+* EC2
+  * t2,micro 750 instance hours (12 Months Free Tier)
+  * 30GB EBS volume (12 Months Free Tier)
+* ECS
+  * No additional charge because using ECS on EC2
+* EFS
+  * Usage is very small, it should be free
+* Cloud Watch
+  * Usage is very small, and it should be included in the free tier
+  * Enabling [`containerInsights`](https://github.com/rajyan/easy-cerver/blob/main/API.md#easy-cerver.EasyCerverProps.property.containerInsights) will charge for custom metrics
 
 # Debugging
 
 * SSM Session Manager
 
-SSM manager is pre-installed (in ECS-optimized Amazon Linux 2 AMI) in the host instance and `AmazonSSMManagedInstanceCore` is added to the host instance role,
-so you can access and debug in your host instance.
+SSM manager is pre-installed (in ECS-optimized Amazon Linux 2 AMI) in the host instance and `AmazonSSMManagedInstanceCore` is added to the host instance role
+to access and debug in your host instance.
 
 ```
 aws ssm start-session --target $INSTANCE_ID
@@ -81,7 +94,7 @@ aws ssm start-session --target $INSTANCE_ID
 
 * ECS Exec
 
-Service ECS Exec is enabled so you can execute commands in your server task container.
+Service ECS Exec is enabled, so execute commands can be used to debug in your server task container.
 
 ```
 aws ecs execute-command \
@@ -94,6 +107,6 @@ aws ecs execute-command \
 
 # Limitations
 
-The ecs service occupies the host port, so you can only run one service at a time.
+The ecs service occupies the host port, only one service can be run at a time.
 The old task must be terminated before the new task launches, and this causes downtime on release.
 Also, if you make changes that require recreating service, you may need to manually terminate the task of old the service.
