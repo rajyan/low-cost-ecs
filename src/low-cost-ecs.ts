@@ -414,6 +414,11 @@ export class LowCostECS extends lib.Stack {
       },
       enableExecuteCommand: true,
     });
+
+    new lib.CfnOutput(this, 'PublicIpAddress', { value: hostInstanceIp.ref });
+    new lib.CfnOutput(this, 'certbotStateMachineName', { value: certbotStateMachine.stateMachineName });
+    new lib.CfnOutput(this, 'ClusterName', { value: this.cluster.clusterName });
+    new lib.CfnOutput(this, 'ServiceName', { value: this.service.serviceName });
   }
 
   private sampleSeverTask(
