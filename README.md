@@ -12,7 +12,7 @@ TLS/SSL certificates are installed automatically on startup of the server and re
 
 # Try it out!
 
-The easiest way to see what this construct does is to clone this repository and deploying sample server.
+The easiest way to see what this construct creates is to clone this repository and deploying sample server.
 Edit settings in `bin/easy-cerver.ts` and deploy cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) with your own domain is required.
 
 ```
@@ -70,8 +70,27 @@ setup => route53 hosted zone
 
 # Debugging
 
-* host => ssm
-* server ecs execute
+* SSM Session Manager
+
+SSM manager is pre-installed (in ECS-optimized Amazon Linux 2 AMI) in the host instance and `AmazonSSMManagedInstanceCore` is added to the host instance role,
+so you can access and debug in your host instance.
+
+```
+aws ssm start-session --target $INSTANCE_ID
+```
+
+* ECS Exec
+
+Service ECS Exec is enabled so you can execute commands in your server task container.
+
+```
+aws ecs execute-command \
+--cluster $CLUSTER_ID \
+--task $TASK_ID \
+--container nginx \
+--command bash \
+--interactive
+```
 
 # Limitations
 
