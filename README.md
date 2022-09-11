@@ -8,6 +8,8 @@
 A CDK construct that provides easy and low-cost ECS on EC2 server setup without a load balancer.
 TLS/SSL certificates are installed automatically on startup of the server and renewed by a scheduled state machine using [certbot-dns-route53](https://certbot-dns-route53.readthedocs.io/en/stable/).
 
+**This construct is for development purposes only** see [Limitations](#Limitations).
+
 # Try it out!
 
 The easiest way to see what this construct does is to clone this repository and deploying sample server.
@@ -58,6 +60,8 @@ You can set your own task definition, and other props. Read [`EasyCerverProps` d
 
 # Why
 
+
+
 # Overview
 
 # Cost
@@ -71,5 +75,6 @@ setup => route53 hosted zone
 
 # Limitations
 
-* downtime on release
-* server recreate port
+The ecs service occupies the host port, so you can only run one service at a time.
+The old task must be terminated before the new task launches, and this causes downtime on release.
+Also, if you make changes that require recreating service, you may need to manually terminate the task of old the service.
