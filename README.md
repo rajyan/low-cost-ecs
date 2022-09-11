@@ -40,9 +40,9 @@ class SampleStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
-        const vpc = /** Your VPC */
-        const securityGroup = /** Your security group */
-        const serverTaskDefinition = /** Your task definition */
+        const vpc = /** Your VPC */;
+        const securityGroup = /** Your security group */;
+        const serverTaskDefinition = /** Your task definition */;
 
         new LowCostECS(this, 'LowCostECS', {
             hostedZoneDomain: "rajyan.net",
