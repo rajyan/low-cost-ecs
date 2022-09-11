@@ -24,8 +24,9 @@ Edit settings in `bin/low-cost-ecs.ts` and deploy the cdk construct. [Public hos
 
 ```
 git clone https://github.com/rajyan/low-cost-ecs.git
+yarn install
 # edit settings in bin/low-cost-ecs.ts
-npx cdk deploy
+./node_modules/.bin/cdk deploy
 ```
 
 Access to configured `recordDomainNames` and see that the nginx sample server has been deployed.
