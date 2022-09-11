@@ -6,14 +6,14 @@
 # Low-Cost ECS
 
 A CDK construct that provides easy and low-cost ECS on EC2 server setup without a load balancer.
-TLS/SSL certificates are installed automatically on startup of the server and renewed by a scheduled state machine using [certbot-dns-route53](https://certbot-dns-route53.readthedocs.io/en/stable/).
+TLS/SSL certificates are installed automatically on the startup of the server and renewed by a scheduled state machine using [certbot-dns-route53](https://certbot-dns-route53.readthedocs.io/en/stable/).
 
 **This construct is for development purposes only** see [Limitations](#Limitations).
 
 # Try it out!
 
-The easiest way to see what this construct creates is to clone this repository and deploying sample server.
-Edit settings in `bin/low-cost-ecs.ts` and deploy cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) with your own domain is required.
+The easiest way to see what this construct creates is to clone this repository and deploying a sample server.
+Edit settings in `bin/low-cost-ecs.ts` and deploy cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) is required.
 
 ```
 git clone https://github.com/rajyan/low-cost-ecs.git
@@ -25,7 +25,7 @@ Access to configured `recordDomainNames` and see that the nginx sample server ha
 
 # Installation
 
-To use this construct in your own cdk stack as a library,
+To use this construct in your cdk stack as a library,
 
 ```
 npm install low-cost-ecs
@@ -56,16 +56,16 @@ class SampleStack extends Stack {
 ```
 
 The required fields are `hostedZoneDomain` and `email`.
-Set your own task definition, and other props. Read [`LowCostECSProps` documentation](https://github.com/rajyan/low-cost-ecs/blob/main/API.md#low-cost-ecs.LowCostECSProps) for details.
+You can configure your server task definition, and other props. Read [`LowCostECSProps` documentation](https://github.com/rajyan/low-cost-ecs/blob/main/API.md#low-cost-ecs.LowCostECSProps) for details.
 
 # Why
 
-ECS may often seem expensive when used for personal development purposes, because of the cost of load balancer.
+ECS may often seem expensive when used for personal development purposes, because of the cost of the load balancer.
 The application load balancer is a great service because it is easy to set up managed ACM certificates, it scales, and has dynamic port mapping, 
 but it is over-featured for running 1 ECS service.
 
-However, to run a ECS sever without a load balancer, you need to associate an Elastic IP to the host instance, and install your certificate by yourself.
-This construct aims to automate these work and deploying resources to run low-cost ECS server.
+However, to run an ECS sever without a load balancer, you need to associate an Elastic IP to the host instance and install your certificate by yourself.
+This construct aims to automate these works and deploy resources to run a low-cost ECS server.
 
 [//]: # (# Overview)
 
@@ -76,7 +76,7 @@ All resources except Route53 HostedZone should be included in [AWS Free Tier](ht
 After your 12 Months Free period, setting [`hostInstanceSpotPrice`](https://github.com/rajyan/low-cost-ecs/blob/main/API.md#low-cost-ecs.LowCostECSProps.property.hostInstanceSpotPrice) to use spot instances is recommended.
 
 * EC2
-  * t2,micro 750 instance hours (12 Months Free Tier)
+  * t2.micro 750 instance hours (12 Months Free Tier)
   * 30GB EBS volume (12 Months Free Tier)
 * ECS
   * No additional charge because using ECS on EC2
@@ -112,6 +112,6 @@ aws ecs execute-command \
 
 # Limitations
 
-The ecs service occupies the host port, only one service can be run at a time.
+The ECS service occupies the host port, only one service can be run at a time.
 The old task must be terminated before the new task launches, and this causes downtime on release.
 Also, if you make changes that require recreating service, you may need to manually terminate the task of old the service.
