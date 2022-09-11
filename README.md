@@ -80,8 +80,8 @@ Resources generated in this stack
   * ECS-optimized Amazon Linux 2 AMI instance auto-scaling group
   * Automatically associated with Elastic IP on instance initialization
 * ECS Service
-  * TLS/SSL certificate installation on default container startup
-  * Certificate EFS mounted on `/etc/letsencrypt`
+  * TLS/SSL certificate installation before default container startup
+  * Certificate EFS mounted on default container as `/etc/letsencrypt`
 * Others
   * VPC with only public subnets (no NAT Gateways to decrease cost)
   * Security groups with minimum inbounds
@@ -130,7 +130,7 @@ aws ecs execute-command \
 
 # Limitations
 
-The ECS service occupies the host port, only one service can be run at a time.
+The ECS service occupies the host port, so only one service can be run at a time.
 The old task must be terminated before the new task launches, and this causes downtime on release.
 
 Also, if you make changes that require recreating service, you may need to manually terminate the task of old the service.
