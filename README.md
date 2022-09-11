@@ -5,10 +5,9 @@
 
 # Low-Cost ECS
 
-A CDK construct that provides easy and low-cost ECS on EC2 server setup without a load balancer.
-TLS/SSL certificates are installed automatically on the startup of the server and renewed by a scheduled state machine using [certbot-dns-route53](https://certbot-dns-route53.readthedocs.io/en/stable/).
+A CDK construct that provides easy and [low-cost](#cost) ECS on EC2 server setup without a load balancer.
 
-**This construct is for development purposes only** see [Limitations](#Limitations).
+**This construct is for development purposes only** see [Limitations](#limitations).
 
 # Try it out!
 
@@ -67,7 +66,26 @@ but it is over-featured for running 1 ECS service.
 However, to run an ECS sever without a load balancer, you need to associate an Elastic IP to the host instance and install your certificate by yourself.
 This construct aims to automate these works and deploy resources to run a low-cost ECS server.
 
-[//]: # (# Overview)
+# Overview
+
+Resources generated in this stack
+
+* Route53 A record
+  * Forwarding to host instance Elastic IP
+* Certificate State Machine
+  * Install and renew certificates to EFS using [certbot-dns-route53](https://certbot-dns-route53.readthedocs.io/en/stable/)
+  * Scheduled automated renewal every 60 days
+  * Email notification on certbot task failure
+* ECS on EC2 host instance
+  * ECS-optimized Amazon Linux 2 AMI instance auto scaling group
+  * Automatically associated with Elastic IP on instance initialization
+* ECS Service
+  * TLS/SSL certificate installation on default container startup
+  * Certificate EFS mounted on `/etc/letsencrypt`
+* Others
+  * VPC with only public subnets (no NAT Gateways to decrease cost)
+  * Security groups with minimum inbounds
+  * IAM roles with minimum privileges
 
 # Cost
 
