@@ -40,7 +40,7 @@ class SampleStack extends Stack {
         super(scope, id, props);
 
         const vpc = { /** Your VPC */ };
-        const securityGroup = {/** Your security group */};
+        const securityGroup = {/** Your security group */ };
         const serverTaskDefinition = {/** Your task definition */ };
 
         new LowCostECS(this, 'LowCostECS', {
