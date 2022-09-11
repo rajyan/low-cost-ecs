@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as lib from 'aws-cdk-lib';
+import { AutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import { FileSystem } from 'aws-cdk-lib/aws-efs';
@@ -121,10 +122,16 @@ export interface LowCostECSProps extends lib.StackProps {
 };
 
 export class LowCostECS extends lib.Stack {
+  readonly vpc: ec2.IVpc;
+  readonly hostAutoScalingGroup: AutoScalingGroup;
+  readonly certFileSystem: FileSystem;
+  readonly cluster: ecs.Cluster;
+  readonly service: ecs.Ec2Service;
+
   constructor(scope: Construct, id: string, props: LowCostECSProps) {
     super(scope, id, props);
 
-    const vpc =
+    this.vpc =
       props.vpc ??
       new ec2.Vpc(this, 'Vpc', {
         natGateways: 0,
@@ -136,12 +143,12 @@ export class LowCostECS extends lib.Stack {
         ],
       });
 
-    const cluster = new ecs.Cluster(this, 'Cluster', {
-      vpc,
+    this.cluster = new ecs.Cluster(this, 'Cluster', {
+      vpc: this.vpc,
       containerInsights: props.containerInsights,
     });
 
-    const hostAutoScalingGroup = cluster.addCapacity('HostInstanceCapacity', {
+    this.hostAutoScalingGroup = this.cluster.addCapacity('HostInstanceCapacity', {
       machineImage: ecs.EcsOptimizedImage.amazonLinux2(
         ecs.AmiHardwareType.STANDARD,
         {
@@ -157,15 +164,15 @@ export class LowCostECS extends lib.Stack {
     });
 
     if (props.securityGroup) {
-      hostAutoScalingGroup.addSecurityGroup(props.securityGroup);
+      this.hostAutoScalingGroup.addSecurityGroup(props.securityGroup);
     } else {
-      hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(80));
-      hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(443));
-      hostAutoScalingGroup.connections.allowFrom(
+      this.hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(80));
+      this.hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(443));
+      this.hostAutoScalingGroup.connections.allowFrom(
         ec2.Peer.anyIpv6(),
         ec2.Port.tcp(80),
       );
-      hostAutoScalingGroup.connections.allowFrom(
+      this.hostAutoScalingGroup.connections.allowFrom(
         ec2.Peer.anyIpv6(),
         ec2.Port.tcp(443),
       );
@@ -174,13 +181,13 @@ export class LowCostECS extends lib.Stack {
     /**
      * Add managed policy to allow ssh through ssm manager
      */
-    hostAutoScalingGroup.role.addManagedPolicy(
+    this.hostAutoScalingGroup.role.addManagedPolicy(
       ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
     );
     /**
      * Add policy to associate elastic ip on startup
      */
-    hostAutoScalingGroup.role.addToPrincipalPolicy(
+    this.hostAutoScalingGroup.role.addToPrincipalPolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ['ec2:DescribeAddresses', 'ec2:AssociateAddress'],
@@ -193,23 +200,23 @@ export class LowCostECS extends lib.Stack {
     hostInstanceIp.tags.setTag('Name', tagUniqueId);
 
     const awsCliTag = props.awsCliDockerTag ?? 'latest';
-    hostAutoScalingGroup.addUserData(
+    this.hostAutoScalingGroup.addUserData(
       'INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)',
-      `ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:${awsCliTag} ec2 describe-addresses --region ${hostAutoScalingGroup.env.region} --filter Name=tag:Name,Values=${tagUniqueId} --query 'Addresses[].AllocationId' --output text | head)`,
-      `docker run --net=host amazon/aws-cli:${awsCliTag} ec2 associate-address --region ${hostAutoScalingGroup.env.region} --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation`,
+      `ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:${awsCliTag} ec2 describe-addresses --region ${this.hostAutoScalingGroup.env.region} --filter Name=tag:Name,Values=${tagUniqueId} --query 'Addresses[].AllocationId' --output text | head)`,
+      `docker run --net=host amazon/aws-cli:${awsCliTag} ec2 associate-address --region ${this.hostAutoScalingGroup.env.region} --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation`,
     );
 
-    const certFileSystem = new FileSystem(this, 'FileSystem', {
-      vpc,
+    this.certFileSystem = new FileSystem(this, 'FileSystem', {
+      vpc: this.vpc,
       encrypted: true,
       securityGroup: new ec2.SecurityGroup(this, 'FileSystemSecurityGroup', {
-        vpc,
+        vpc: this.vpc,
         allowAllOutbound: false,
       }),
       removalPolicy: props.removalPolicy ?? lib.RemovalPolicy.DESTROY,
     });
-    certFileSystem.connections.allowDefaultPortTo(hostAutoScalingGroup);
-    certFileSystem.connections.allowDefaultPortFrom(hostAutoScalingGroup);
+    this.certFileSystem.connections.allowDefaultPortTo(this.hostAutoScalingGroup);
+    this.certFileSystem.connections.allowDefaultPortFrom(this.hostAutoScalingGroup);
 
     /**
      * ARecord to Elastic ip
@@ -288,14 +295,14 @@ export class LowCostECS extends lib.Stack {
       },
     );
 
-    certFileSystem.grant(
+    this.certFileSystem.grant(
       certbotTaskDefinition.taskRole,
       'elasticfilesystem:ClientWrite',
     );
     certbotTaskDefinition.addVolume({
       name: 'certVolume',
       efsVolumeConfiguration: {
-        fileSystemId: certFileSystem.fileSystemId,
+        fileSystemId: this.certFileSystem.fileSystemId,
       },
     });
     certbotContainer.addMountPoints({
@@ -316,7 +323,7 @@ export class LowCostECS extends lib.Stack {
     });
 
     const certbotRunTask = new sfn_tasks.EcsRunTask(this, 'CreateCertificate', {
-      cluster: cluster,
+      cluster: this.cluster,
       taskDefinition: certbotTaskDefinition,
       launchTarget: new sfn_tasks.EcsEc2LaunchTarget(),
       integrationPattern: sfn.IntegrationPattern.RUN_JOB,
@@ -346,14 +353,14 @@ export class LowCostECS extends lib.Stack {
      */
     const serverTaskDefinition =
       props.serverTaskDefinition ?? this.sampleSeverTask(records, logGroup);
-    certFileSystem.grant(
+    this.certFileSystem.grant(
       serverTaskDefinition.taskRole,
       'elasticfilesystem:ClientMount',
     );
     serverTaskDefinition.addVolume({
       name: 'certVolume',
       efsVolumeConfiguration: {
-        fileSystemId: certFileSystem.fileSystemId,
+        fileSystemId: this.certFileSystem.fileSystemId,
       },
     });
     serverTaskDefinition.defaultContainer?.addMountPoints({
@@ -396,8 +403,8 @@ export class LowCostECS extends lib.Stack {
     );
     certbotStateMachine.grantStartExecution(serverTaskDefinition.taskRole);
 
-    new ecs.Ec2Service(this, 'Service', {
-      cluster: cluster,
+    this.service = new ecs.Ec2Service(this, 'Service', {
+      cluster: this.cluster,
       taskDefinition: serverTaskDefinition,
       desiredCount: 1,
       minHealthyPercent: 0,
