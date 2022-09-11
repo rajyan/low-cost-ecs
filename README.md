@@ -60,9 +60,14 @@ Set your own task definition, and other props. Read [`EasyCerverProps` documenta
 
 # Why
 
+ECS may often seem expensive when used for personal development purposes, because of the cost of load balancer.
+The application load balancer is a great service because it is easy to set up managed ACM certificates, it scales, and has dynamic port mapping, 
+but it is over-featured for running 1 ECS service.
 
+However, to run a ECS sever without a load balancer, you need to associate an Elastic IP to the host instance, and install your certificate by yourself.
+This construct aims to automate these work and deploying resources to run low-cost ECS server.
 
-# Overview
+[//]: # (# Overview)
 
 # Cost
 

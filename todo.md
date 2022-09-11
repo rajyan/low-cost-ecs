@@ -1,4 +1,4 @@
 # todo
 
-* update README
+* update Overview
 * add properties to expose
