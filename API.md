@@ -464,6 +464,11 @@ The construct to start the search from.
 | <code><a href="#low-cost-ecs.LowCostECS.property.nestedStackParent">nestedStackParent</a></code> | <code>aws-cdk-lib.Stack</code> | If this is a nested stack, returns it's parent stack. |
 | <code><a href="#low-cost-ecs.LowCostECS.property.nestedStackResource">nestedStackResource</a></code> | <code>aws-cdk-lib.CfnResource</code> | If this is a nested stack, this represents its `AWS::CloudFormation::Stack` resource. |
 | <code><a href="#low-cost-ecs.LowCostECS.property.terminationProtection">terminationProtection</a></code> | <code>boolean</code> | Whether termination protection is enabled for this stack. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.certFileSystem">certFileSystem</a></code> | <code>aws-cdk-lib.aws_efs.FileSystem</code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECS.property.cluster">cluster</a></code> | <code>aws-cdk-lib.aws_ecs.Cluster</code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECS.property.hostAutoScalingGroup">hostAutoScalingGroup</a></code> | <code>aws-cdk-lib.aws_autoscaling.AutoScalingGroup</code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECS.property.service">service</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2Service</code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECS.property.vpc">vpc</a></code> | <code>aws-cdk-lib.aws_ec2.IVpc</code> | *No description.* |
 
 ---
 
@@ -794,6 +799,56 @@ public readonly terminationProtection: boolean;
 - *Type:* boolean
 
 Whether termination protection is enabled for this stack.
+
+---
+
+##### `certFileSystem`<sup>Required</sup> <a name="certFileSystem" id="low-cost-ecs.LowCostECS.property.certFileSystem"></a>
+
+```typescript
+public readonly certFileSystem: FileSystem;
+```
+
+- *Type:* aws-cdk-lib.aws_efs.FileSystem
+
+---
+
+##### `cluster`<sup>Required</sup> <a name="cluster" id="low-cost-ecs.LowCostECS.property.cluster"></a>
+
+```typescript
+public readonly cluster: Cluster;
+```
+
+- *Type:* aws-cdk-lib.aws_ecs.Cluster
+
+---
+
+##### `hostAutoScalingGroup`<sup>Required</sup> <a name="hostAutoScalingGroup" id="low-cost-ecs.LowCostECS.property.hostAutoScalingGroup"></a>
+
+```typescript
+public readonly hostAutoScalingGroup: AutoScalingGroup;
+```
+
+- *Type:* aws-cdk-lib.aws_autoscaling.AutoScalingGroup
+
+---
+
+##### `service`<sup>Required</sup> <a name="service" id="low-cost-ecs.LowCostECS.property.service"></a>
+
+```typescript
+public readonly service: Ec2Service;
+```
+
+- *Type:* aws-cdk-lib.aws_ecs.Ec2Service
+
+---
+
+##### `vpc`<sup>Required</sup> <a name="vpc" id="low-cost-ecs.LowCostECS.property.vpc"></a>
+
+```typescript
+public readonly vpc: IVpc;
+```
+
+- *Type:* aws-cdk-lib.aws_ec2.IVpc
 
 ---
 

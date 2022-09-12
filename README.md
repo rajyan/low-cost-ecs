@@ -24,8 +24,9 @@ Edit settings in `bin/low-cost-ecs.ts` and deploy the cdk construct. [Public hos
 
 ```
 git clone https://github.com/rajyan/low-cost-ecs.git
+yarn install
 # edit settings in bin/low-cost-ecs.ts
-npx cdk deploy
+./node_modules/.bin/cdk deploy
 ```
 
 Access to configured `recordDomainNames` and see that the nginx sample server has been deployed.
@@ -48,8 +49,8 @@ class SampleStack extends Stack {
         super(scope, id, props);
 
         const vpc = { /** Your VPC */ };
-        const securityGroup = {/** Your security group */ };
-        const serverTaskDefinition = {/** Your task definition */ };
+        const securityGroup = { /** Your security group */ };
+        const serverTaskDefinition = { /** Your task definition */ };
 
         new LowCostECS(this, 'LowCostECS', {
             hostedZoneDomain: "rajyan.net",
@@ -79,8 +80,8 @@ Resources generated in this stack
   * ECS-optimized Amazon Linux 2 AMI instance auto-scaling group
   * Automatically associated with Elastic IP on instance initialization
 * ECS Service
-  * TLS/SSL certificate installation on default container startup
-  * Certificate EFS mounted on `/etc/letsencrypt`
+  * TLS/SSL certificate installation before default container startup
+  * Certificate EFS mounted on default container as `/etc/letsencrypt`
 * Others
   * VPC with only public subnets (no NAT Gateways to decrease cost)
   * Security groups with minimum inbounds
@@ -129,7 +130,7 @@ aws ecs execute-command \
 
 # Limitations
 
-The ECS service occupies the host port, only one service can be run at a time.
+The ECS service occupies the host port, so only one service can be run at a time.
 The old task must be terminated before the new task launches, and this causes downtime on release.
 
 Also, if you make changes that require recreating service, you may need to manually terminate the task of old the service.

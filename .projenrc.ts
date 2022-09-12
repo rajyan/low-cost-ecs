@@ -43,6 +43,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   projenrcTs: true,
 });
 
+project.tsconfigDev.addInclude('examples/**/*.ts');
 // workaround until fixed https://youtrack.jetbrains.com/issue/WEB-57089/ESLint823-TypeError-thislibOptionsparse-is-not-a-function
 project.addDevDeps('eslint@8.22.0');
 
