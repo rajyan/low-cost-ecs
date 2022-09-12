@@ -5,17 +5,17 @@
 
 # Low-Cost ECS
 
-A CDK construct that provides easy and [low-cost](#cost) ECS on EC2 server setup without a load balancer.
+A CDK construct that provides an easy and [low-cost](#cost) ECS on EC2 server setup without a load balancer.
 
 **This construct is for development purposes only**. See [Limitations](#limitations).
 
 # Why
 
 ECS may often seem expensive when used for personal development purposes, due to the cost of the load balancer.
-The application load balancer is a great service that is easy to set up managed ACM certificates, it scales, and has dynamic port mappings and so on, but it is over-featured for running 1 ECS task.
+The application load balancer is a great service that is easy to set up managed ACM certificates, easy scaling, and has dynamic port mappings..., but it is over-featured for running 1 ECS task.
 
 However, to run an ECS server without a load balancer, you need to associate an Elastic IP to the host instance and install your certificate to your service every time you start up the server.
-This construct aims to automate these works and to make it easy to deploy resources to run a low-cost ECS server.
+This construct aims to automate these works and make it easy to deploy resources to run a low-cost ECS server.
 
 # Try it out!
 
@@ -29,7 +29,7 @@ yarn install
 ./node_modules/.bin/cdk deploy
 ```
 
-Access to configured `recordDomainNames` and see that the nginx sample server has been deployed.
+Access the configured `recordDomainNames` and see that the Nginx sample server has been deployed.
 
 # Installation
 
@@ -108,8 +108,7 @@ After your 12 Months Free period, setting [`hostInstanceSpotPrice`](https://gith
 
 * SSM Session Manager
 
-SSM manager is pre-installed (in ECS-optimized Amazon Linux 2 AMI) in the host instance and `AmazonSSMManagedInstanceCore` is added to the host instance role
-to access and debug in your host instance.
+SSM manager is pre-installed in the host instance (by ECS-optimized Amazon Linux 2 AMI) and `AmazonSSMManagedInstanceCore` is added to the host instance role to access and debug in your host instance.
 
 ```
 aws ssm start-session --target $INSTANCE_ID
@@ -117,7 +116,7 @@ aws ssm start-session --target $INSTANCE_ID
 
 * ECS Exec
 
-Service ECS Exec is enabled, so execute commands can be used to debug in your server task container.
+Service ECS Exec is enabled, so execute commands can be used to debug your server task container.
 
 ```
 aws ecs execute-command \
@@ -130,7 +129,7 @@ aws ecs execute-command \
 
 # Limitations
 
-The ECS service occupies the host port, so only one service can be run at a time.
+Because the ECS service occupies a host port, only one task can be executed at a time.
 The old task must be terminated before the new task launches, and this causes downtime on release.
 
-Also, if you make changes that require recreating service, you may need to manually terminate the task of old the service.
+Also, if you make changes that require recreating the service, you may need to manually terminate the task of the old service.
