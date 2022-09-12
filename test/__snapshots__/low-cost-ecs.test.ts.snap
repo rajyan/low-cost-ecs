@@ -2,6 +2,34 @@
 
 exports[`Template matches snapshot 1`] = `
 Object {
+  "Outputs": Object {
+    "ClusterName": Object {
+      "Value": Object {
+        "Ref": "ClusterEB0386A7",
+      },
+    },
+    "PublicIpAddress": Object {
+      "Value": Object {
+        "Ref": "HostInstanceIp",
+      },
+    },
+    "ServiceName": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "ServiceD69D759B",
+          "Name",
+        ],
+      },
+    },
+    "certbotStateMachineName": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "StateMachine2E01A3A5",
+          "Name",
+        ],
+      },
+    },
+  },
   "Parameters": Object {
     "BootstrapVersion": Object {
       "Default": "/cdk-bootstrap/hnb659fds/version",
