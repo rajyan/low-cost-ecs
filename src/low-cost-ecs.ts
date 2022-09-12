@@ -431,7 +431,7 @@ export class LowCostECS extends lib.Stack {
     );
     const nginxContainer = nginxTaskDefinition.addContainer('NginxContainer', {
       image: ecs.ContainerImage.fromAsset(
-        path.join(__dirname, '../containers/nginx-proxy'),
+        path.join(__dirname, '../examples/containers/nginx'),
       ),
       containerName: 'nginx',
       memoryReservationMiB: 64,
