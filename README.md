@@ -19,8 +19,8 @@ This construct aims to automate these works and to make it easy to deploy resour
 
 # Try it out!
 
-The easiest way to try this construct is to clone this repository and deploy the sample server.
-Edit settings in `bin/low-cost-ecs.ts` and deploy the cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) is required.
+The easiest way to try the construct is to clone this repository and deploy the sample server.
+Edit settings in `examples/minimum.ts` and deploy the cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) is required.
 
 ```
 git clone https://github.com/rajyan/low-cost-ecs.git
