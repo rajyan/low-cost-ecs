@@ -1,5 +1,5 @@
-[![NPM version](https://badge.fury.io/js/low-cost-ecs.svg)](https://www.npmjs.com/package/low-cost-ecs)
-[![PyPI version](https://badge.fury.io/py/low-cost-ecs.svg)](https://pypi.org/project/low-cost-ecs)
+[![NPM version](https://img.shields.io/npm/v/low-cost-ecs?color=brightgreen)](https://www.npmjs.com/package/low-cost-ecs)
+[![PyPI version](https://img.shields.io/pypi/v/low-cost-ecs?color=brightgreen)](https://pypi.org/project/low-cost-ecs)
 [![Release](https://github.com/rajyan/low-cost-ecs/workflows/release/badge.svg)](https://github.com/rajyan/low-cost-ecs/actions/workflows/release.yml)
 [<img src="https://constructs.dev/badge?package=low-cost-ecs" width="150">](https://constructs.dev/packages/low-cost-ecs)
 
