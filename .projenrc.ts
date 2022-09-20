@@ -38,6 +38,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   depsUpgradeOptions: {
     workflowOptions: {
       schedule: UpgradeDependenciesSchedule.WEEKLY,
+      labels: ['auto-approve'],
     },
   },
   projenrcTs: true,
