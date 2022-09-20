@@ -3,7 +3,7 @@ import { LowCostECS } from '../src';
 
 const app = new App();
 
-new LowCostECS(app, 'LowCostECSStack', {
+export const minimumStack = new LowCostECS(app, 'LowCostECSStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,

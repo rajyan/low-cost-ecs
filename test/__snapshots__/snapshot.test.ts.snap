@@ -1,0 +1,5561 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test snapshot of examples all props 1`] = `
+Object {
+  "Outputs": Object {
+    "ClusterName": Object {
+      "Value": Object {
+        "Ref": "ClusterEB0386A7",
+      },
+    },
+    "PublicIpAddress": Object {
+      "Value": Object {
+        "Ref": "HostInstanceIp",
+      },
+    },
+    "ServiceName": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "ServiceD69D759B",
+          "Name",
+        ],
+      },
+    },
+    "certbotStateMachineName": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "StateMachine2E01A3A5",
+          "Name",
+        ],
+      },
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "ARecordtest1rajyannet8E51D089": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "test1.rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "HostInstanceIp",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "ARecordtest2rajyannet5EBC02CB": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "test2.rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "HostInstanceIp",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "CertbotScheduleRuleBCE26D73": Object {
+      "Properties": Object {
+        "ScheduleExpression": "rate(10 days)",
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Ref": "StateMachine2E01A3A5",
+            },
+            "Id": "Target0",
+            "RoleArn": Object {
+              "Fn::GetAtt": Array [
+                "StateMachineEventsRoleDBCDECD1",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CertbotTaskDefinitionE960D6F7": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Command": Array [
+              "certonly",
+              "--verbose",
+              "--preferred-challenges=dns-01",
+              "--dns-route53",
+              "--dns-route53-propagation-seconds=300",
+              "--non-interactive",
+              "--agree-tos",
+              "--expand",
+              "-m",
+              "kitakita7617@gmail.com",
+              "--cert-name",
+              "test1.rajyan.net",
+              "-d",
+              "test1.rajyan.net",
+              "-d",
+              "test2.rajyan.net",
+            ],
+            "Essential": true,
+            "Image": "certbot/dns-route53:test",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": "test",
+                "awslogs-region": "region",
+                "awslogs-stream-prefix": "test",
+              },
+            },
+            "MemoryReservation": 64,
+            "MountPoints": Array [
+              Object {
+                "ContainerPath": "/etc/letsencrypt",
+                "ReadOnly": false,
+                "SourceVolume": "certVolume",
+              },
+            ],
+            "Name": "certbot",
+          },
+        ],
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "CertbotTaskDefinitionExecutionRole2F04CE67",
+            "Arn",
+          ],
+        },
+        "Family": "LowCostECSStackCertbotTaskDefinitionE5EFEBED",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EC2",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "CertbotTaskDefinitionTaskRoleE5A17CA8",
+            "Arn",
+          ],
+        },
+        "Volumes": Array [
+          Object {
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "FileSystem8A8E25C0",
+              },
+            },
+            "Name": "certVolume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CertbotTaskDefinitionExecutionRole2F04CE67": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:logs:region:account-id:log-group:test:*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3",
+        "Roles": Array [
+          Object {
+            "Ref": "CertbotTaskDefinitionExecutionRole2F04CE67",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "route53:ListHostedZones",
+                "route53:GetChange",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "route53:ChangeResourceRecordSets",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":route53:::hostedzone/DUMMY",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "elasticfilesystem:ClientWrite",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FileSystem8A8E25C0",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9",
+        "Roles": Array [
+          Object {
+            "Ref": "CertbotTaskDefinitionTaskRoleE5A17CA8",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CertbotTaskDefinitionTaskRoleE5A17CA8": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterEB0386A7": Object {
+      "Properties": Object {
+        "ClusterSettings": Array [
+          Object {
+            "Name": "containerInsights",
+            "Value": "enabled",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::Cluster",
+    },
+    "ClusterHostInstanceCapacityASG6B791030": Object {
+      "Properties": Object {
+        "LaunchConfigurationName": Object {
+          "Ref": "ClusterHostInstanceCapacityLaunchConfig812B5EE6",
+        },
+        "MaxSize": "1",
+        "MinSize": "1",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "PropagateAtLaunch": true,
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+        "VPCZoneIdentifier": Array [
+          Object {
+            "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
+          },
+          Object {
+            "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
+          },
+          Object {
+            "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPublicSubnet3SubnetBE12F0B65CC33245",
+          },
+        ],
+      },
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "UpdatePolicy": Object {
+        "AutoScalingReplacingUpdate": Object {
+          "WillReplace": true,
+        },
+        "AutoScalingScheduledAction": Object {
+          "IgnoreUnmodifiedGroupSizeProperties": true,
+        },
+      },
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunction54F7233E": Object {
+      "DependsOn": Array [
+        "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRoleDefaultPolicy8F439785",
+        "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "import boto3, json, os, time
+
+ecs = boto3.client('ecs')
+autoscaling = boto3.client('autoscaling')
+
+
+def lambda_handler(event, context):
+  print(json.dumps(dict(event, ResponseURL='...')))
+  cluster = os.environ['CLUSTER']
+  snsTopicArn = event['Records'][0]['Sns']['TopicArn']
+  lifecycle_event = json.loads(event['Records'][0]['Sns']['Message'])
+  instance_id = lifecycle_event.get('EC2InstanceId')
+  if not instance_id:
+    print('Got event without EC2InstanceId: %s', json.dumps(dict(event, ResponseURL='...')))
+    return
+
+  instance_arn = container_instance_arn(cluster, instance_id)
+  print('Instance %s has container instance ARN %s' % (lifecycle_event['EC2InstanceId'], instance_arn))
+
+  if not instance_arn:
+    return
+
+  task_arns = container_instance_task_arns(cluster, instance_arn)
+
+  if task_arns:
+    print('Instance ARN %s has task ARNs %s' % (instance_arn, ', '.join(task_arns)))
+
+  while has_tasks(cluster, instance_arn, task_arns):
+    time.sleep(10)
+
+  try:
+    print('Terminating instance %s' % instance_id)
+    autoscaling.complete_lifecycle_action(
+        LifecycleActionResult='CONTINUE',
+        **pick(lifecycle_event, 'LifecycleHookName', 'LifecycleActionToken', 'AutoScalingGroupName'))
+  except Exception as e:
+    # Lifecycle action may have already completed.
+    print(str(e))
+
+
+def container_instance_arn(cluster, instance_id):
+  """Turn an instance ID into a container instance ARN."""
+  arns = ecs.list_container_instances(cluster=cluster, filter='ec2InstanceId==' + instance_id)['containerInstanceArns']
+  if not arns:
+    return None
+  return arns[0]
+
+def container_instance_task_arns(cluster, instance_arn):
+  """Fetch tasks for a container instance ARN."""
+  arns = ecs.list_tasks(cluster=cluster, containerInstance=instance_arn)['taskArns']
+  return arns
+
+def has_tasks(cluster, instance_arn, task_arns):
+  """Return True if the instance is running tasks for the given cluster."""
+  instances = ecs.describe_container_instances(cluster=cluster, containerInstances=[instance_arn])['containerInstances']
+  if not instances:
+    return False
+  instance = instances[0]
+
+  if instance['status'] == 'ACTIVE':
+    # Start draining, then try again later
+    set_container_instance_to_draining(cluster, instance_arn)
+    return True
+
+  task_count = None
+
+  if task_arns:
+    # Fetch details for tasks running on the container instance
+    tasks = ecs.describe_tasks(cluster=cluster, tasks=task_arns)['tasks']
+    if tasks:
+      # Consider any non-stopped tasks as running
+      task_count = sum(task['lastStatus'] != 'STOPPED' for task in tasks) + instance['pendingTasksCount']
+
+  if not task_count:
+    # Fallback to instance task counts if detailed task information is unavailable
+    task_count = instance['runningTasksCount'] + instance['pendingTasksCount']
+
+  print('Instance %s has %s tasks' % (instance_arn, task_count))
+
+  return task_count > 0
+
+def set_container_instance_to_draining(cluster, instance_arn):
+  ecs.update_container_instances_state(
+      cluster=cluster,
+      containerInstances=[instance_arn], status='DRAINING')
+
+
+def pick(dct, *keys):
+  """Pick a subset of a dict."""
+  return {k: v for k, v in dct.items() if k in keys}
+",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "CLUSTER": Object {
+              "Ref": "ClusterEB0386A7",
+            },
+          },
+        },
+        "Handler": "index.lambda_handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.9",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+        "Timeout": 310,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionAllowInvokeLowCostECSStackClusterHostInstanceCapacityLifecycleHookDrainHookTopicFADE73FE7DA1F73C": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityDrainECSHookFunction54F7233E",
+            "Arn",
+          ],
+        },
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": Object {
+          "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRoleDefaultPolicy8F439785": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceAttribute",
+                "ec2:DescribeInstanceStatus",
+                "ec2:DescribeHosts",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "autoscaling:CompleteLifecycleAction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":autoscaling:ap-northeast-1:731017969493:autoScalingGroup:*:autoScalingGroupName/",
+                    Object {
+                      "Ref": "ClusterHostInstanceCapacityASG6B791030",
+                    },
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:DescribeContainerInstances",
+                "ecs:DescribeTasks",
+              ],
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "ClusterEB0386A7",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "ecs:ListContainerInstances",
+                "ecs:SubmitContainerStateChange",
+                "ecs:SubmitTaskStateChange",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ClusterEB0386A7",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:UpdateContainerInstancesState",
+                "ecs:ListTasks",
+              ],
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "ClusterEB0386A7",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRoleDefaultPolicy8F439785",
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionTopic0973DF5F": Object {
+      "Properties": Object {
+        "Endpoint": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityDrainECSHookFunction54F7233E",
+            "Arn",
+          ],
+        },
+        "Protocol": "lambda",
+        "TopicArn": Object {
+          "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "ClusterHostInstanceCapacityInstanceProfileD7C1621F": Object {
+      "Properties": Object {
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityInstanceRole2FB29380",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "ClusterHostInstanceCapacityInstanceRole2FB29380": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecs:DeregisterContainerInstance",
+                "ecs:RegisterContainerInstance",
+                "ecs:Submit*",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ClusterEB0386A7",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:Poll",
+                "ecs:StartTelemetrySession",
+              ],
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "ClusterEB0386A7",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "ecs:DiscoverPollEndpoint",
+                "ecr:GetAuthorizationToken",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "ec2:DescribeAddresses",
+                "ec2:AssociateAddress",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24",
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityInstanceRole2FB29380",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF": Object {
+      "Properties": Object {
+        "GroupDescription": "LowCostECSStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+        "VpcId": Object {
+          "Fn::ImportValue": "TestStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ClusterHostInstanceCapacityInstanceSecurityGroupfromLowCostECSStackFileSystemSecurityGroup61CD2DA52049FDF81316": Object {
+      "Properties": Object {
+        "Description": "from LowCostECSStackFileSystemSecurityGroup61CD2DA5:2049",
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "ClusterHostInstanceCapacityLaunchConfig812B5EE6": Object {
+      "DependsOn": Array [
+        "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24",
+        "ClusterHostInstanceCapacityInstanceRole2FB29380",
+      ],
+      "Properties": Object {
+        "AssociatePublicIpAddress": true,
+        "IamInstanceProfile": Object {
+          "Ref": "ClusterHostInstanceCapacityInstanceProfileD7C1621F",
+        },
+        "ImageId": "dummy-value-for-/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id",
+        "InstanceType": "t3.micro",
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+              "GroupId",
+            ],
+          },
+          "test",
+        ],
+        "SpotPrice": "0.010",
+        "UserData": Object {
+          "Fn::Base64": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "#!/bin/bash
+echo ECS_CLUSTER=",
+                Object {
+                  "Ref": "ClusterEB0386A7",
+                },
+                " >> /etc/ecs/ecs.config
+sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.169.254/32 --jump DROP
+sudo service iptables save
+echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
+INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:test ec2 describe-addresses --region ap-northeast-1 --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-northeast-1 --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
+              ],
+            ],
+          },
+        },
+      },
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHook6243850B": Object {
+      "DependsOn": Array [
+        "ClusterHostInstanceCapacityLifecycleHookDrainHookRoleDefaultPolicy35BCAE4E",
+        "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286",
+      ],
+      "Properties": Object {
+        "AutoScalingGroupName": Object {
+          "Ref": "ClusterHostInstanceCapacityASG6B791030",
+        },
+        "DefaultResult": "CONTINUE",
+        "HeartbeatTimeout": 300,
+        "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING",
+        "NotificationTargetARN": Object {
+          "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+        },
+        "RoleARN": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::AutoScaling::LifecycleHook",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "autoscaling.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHookRoleDefaultPolicy35BCAE4E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClusterHostInstanceCapacityLifecycleHookDrainHookRoleDefaultPolicy35BCAE4E",
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "EmailSubscriptionBC065AF0": Object {
+      "Properties": Object {
+        "Endpoint": "kitakita7617@gmail.com",
+        "Protocol": "email",
+        "TopicArn": Object {
+          "Ref": "TopicBFC7AF6E",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "FileSystem8A8E25C0": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "Encrypted": true,
+        "FileSystemTags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/FileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "FileSystemEfsMountTarget1586453F0": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPrivateSubnet1Subnet536B997AFD4CC940",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemEfsMountTarget24B8EBB43": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPrivateSubnet2Subnet3788AAA1380949A3",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemEfsMountTarget37C2F9139": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPrivateSubnet3SubnetF258B56EC7CF32DD",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemSecurityGroupBFA44C6B": Object {
+      "Properties": Object {
+        "GroupDescription": "LowCostECSStack/FileSystemSecurityGroup",
+        "VpcId": Object {
+          "Fn::ImportValue": "TestStack:ExportsOutputRefVpc8378EB38272D6E3A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "FileSystemSecurityGroupfromLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201204972FE26F8": Object {
+      "Properties": Object {
+        "Description": "from LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "FileSystemSecurityGrouptoLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC520120495D8E9EBD": Object {
+      "Properties": Object {
+        "Description": "to LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "HostInstanceIp": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStackHostInstanceIp5CA32C2B",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "NginxTaskDefinition76C3FF98": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "DependsOn": Array [
+              Object {
+                "Condition": "COMPLETE",
+                "ContainerName": "aws-cli",
+              },
+            ],
+            "Environment": Array [
+              Object {
+                "Name": "SERVER_NAME",
+                "Value": "test1.rajyan.net test2.rajyan.net",
+              },
+              Object {
+                "Name": "CERT_NAME",
+                "Value": "test1.rajyan.net",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Sub": "731017969493.dkr.ecr.ap-northeast-1.\${AWS::URLSuffix}/cdk-hnb659fds-[HASH REMOVED]",
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": "test",
+                "awslogs-region": "region",
+                "awslogs-stream-prefix": "nginx-proxy",
+              },
+            },
+            "MemoryReservation": 64,
+            "MountPoints": Array [
+              Object {
+                "ContainerPath": "/etc/letsencrypt",
+                "ReadOnly": true,
+                "SourceVolume": "certVolume",
+              },
+            ],
+            "Name": "nginx",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 80,
+                "HostPort": 80,
+                "Protocol": "tcp",
+              },
+              Object {
+                "ContainerPort": 443,
+                "HostPort": 443,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+          Object {
+            "Command": Array [
+              Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "set -eux
+          aws configure set region ap-northeast-1 && \\
+          aws configure set output text && \\
+          EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
+                    Object {
+                      "Ref": "StateMachine2E01A3A5",
+                    },
+                    " --query executionArn) && \\
+          until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
+          do
+            echo "Waiting for $EXECUTION_ARN"
+            sleep 10
+          done",
+                  ],
+                ],
+              },
+            ],
+            "EntryPoint": Array [
+              "/bin/bash",
+              "-c",
+            ],
+            "Essential": false,
+            "Image": "amazon/aws-cli:test",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": "test",
+                "awslogs-region": "region",
+                "awslogs-stream-prefix": "test",
+              },
+            },
+            "MemoryReservation": 64,
+            "Name": "aws-cli",
+          },
+        ],
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "NginxTaskDefinitionExecutionRoleF9920D6F",
+            "Arn",
+          ],
+        },
+        "Family": "LowCostECSStackNginxTaskDefinitionA38AB494",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EC2",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "NginxTaskDefinitionTaskRole4E6E78AD",
+            "Arn",
+          ],
+        },
+        "Volumes": Array [
+          Object {
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "FileSystem8A8E25C0",
+              },
+            },
+            "Name": "certVolume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:ap-northeast-1:731017969493:repository/cdk-hnb659fds-container-assets-731017969493-ap-northeast-1",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:logs:region:account-id:log-group:test:*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC",
+        "Roles": Array [
+          Object {
+            "Ref": "NginxTaskDefinitionExecutionRoleF9920D6F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "NginxTaskDefinitionExecutionRoleF9920D6F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "NginxTaskDefinitionTaskRole4E6E78AD": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "elasticfilesystem:ClientMount",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FileSystem8A8E25C0",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "states:DescribeExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":states:ap-northeast-1:731017969493:execution:",
+                    Object {
+                      "Fn::Select": Array [
+                        6,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "StateMachine2E01A3A5",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "states:StartExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "StateMachine2E01A3A5",
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED",
+        "Roles": Array [
+          Object {
+            "Ref": "NginxTaskDefinitionTaskRole4E6E78AD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ServiceD69D759B": Object {
+      "Properties": Object {
+        "Cluster": Object {
+          "Ref": "ClusterEB0386A7",
+        },
+        "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
+          "MaximumPercent": 100,
+          "MinimumHealthyPercent": 0,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "LaunchType": "EC2",
+        "SchedulingStrategy": "REPLICA",
+        "TaskDefinition": Object {
+          "Ref": "NginxTaskDefinition76C3FF98",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "StateMachine2E01A3A5": Object {
+      "DependsOn": Array [
+        "StateMachineRoleDefaultPolicyDF1E6607",
+        "StateMachineRoleB840431D",
+      ],
+      "Properties": Object {
+        "DefinitionString": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{"StartAt":"CreateCertificate","States":{"CreateCertificate":{"End":true,"Retry":[{"ErrorEquals":["States.ALL"],"IntervalSeconds":20}],"Catch":[{"ErrorEquals":["States.ALL"],"Next":"SendEmailOnFailure"}],"Type":"Task","Resource":"arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::ecs:runTask.sync","Parameters":{"Cluster":"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "ClusterEB0386A7",
+                  "Arn",
+                ],
+              },
+              "","TaskDefinition":"LowCostECSStackCertbotTaskDefinitionE5EFEBED","LaunchType":"EC2"}},"SendEmailOnFailure":{"Next":"Fail","Type":"Task","Resource":"arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sns:publish","Parameters":{"TopicArn":"",
+              Object {
+                "Ref": "TopicBFC7AF6E",
+              },
+              "","Message.$":"$"}},"Fail":{"Type":"Fail"}}}",
+            ],
+          ],
+        },
+        "RoleArn": Object {
+          "Fn::GetAtt": Array [
+            "StateMachineRoleB840431D",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::StepFunctions::StateMachine",
+    },
+    "StateMachineEventsRoleDBCDECD1": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "StateMachineEventsRoleDefaultPolicyFB602CA9": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "states:StartExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "StateMachine2E01A3A5",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "StateMachineEventsRoleDefaultPolicyFB602CA9",
+        "Roles": Array [
+          Object {
+            "Ref": "StateMachineEventsRoleDBCDECD1",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "StateMachineRoleB840431D": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "states.ap-northeast-1.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "StateMachineRoleDefaultPolicyDF1E6607": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ecs:RunTask",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        2,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        3,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        4,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        0,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    "/",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:StopTask",
+                "ecs:DescribeTasks",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "CertbotTaskDefinitionTaskRoleE5A17CA8",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::GetAtt": Array [
+                    "CertbotTaskDefinitionExecutionRole2F04CE67",
+                    "Arn",
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "events:PutTargets",
+                "events:PutRule",
+                "events:DescribeRule",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":events:ap-northeast-1:731017969493:rule/StepFunctionsGetEventsForECSTaskRule",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "TopicBFC7AF6E",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "StateMachineRoleDefaultPolicyDF1E6607",
+        "Roles": Array [
+          Object {
+            "Ref": "StateMachineRoleB840431D",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TopicBFC7AF6E": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`Test snapshot of examples autoscaling 1`] = `
+Object {
+  "Outputs": Object {
+    "ClusterName": Object {
+      "Value": Object {
+        "Ref": "ClusterEB0386A7",
+      },
+    },
+    "PublicIpAddress": Object {
+      "Value": Object {
+        "Ref": "HostInstanceIp",
+      },
+    },
+    "ServiceName": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "ServiceD69D759B",
+          "Name",
+        ],
+      },
+    },
+    "certbotStateMachineName": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "StateMachine2E01A3A5",
+          "Name",
+        ],
+      },
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "ARecordtest1rajyannet8E51D089": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "test1.rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "HostInstanceIp",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "ARecordtest2rajyannet5EBC02CB": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "test2.rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "HostInstanceIp",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "CertbotScheduleRuleBCE26D73": Object {
+      "Properties": Object {
+        "ScheduleExpression": "rate(60 days)",
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Ref": "StateMachine2E01A3A5",
+            },
+            "Id": "Target0",
+            "RoleArn": Object {
+              "Fn::GetAtt": Array [
+                "StateMachineEventsRoleDBCDECD1",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CertbotTaskDefinitionE960D6F7": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Command": Array [
+              "certonly",
+              "--verbose",
+              "--preferred-challenges=dns-01",
+              "--dns-route53",
+              "--dns-route53-propagation-seconds=300",
+              "--non-interactive",
+              "--agree-tos",
+              "--expand",
+              "-m",
+              "kitakita7617@gmail.com",
+              "--cert-name",
+              "test1.rajyan.net",
+              "-d",
+              "test1.rajyan.net",
+              "-d",
+              "test2.rajyan.net",
+            ],
+            "Essential": true,
+            "Image": "certbot/dns-route53:v1.29.0",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LogGroupF5B46931",
+                },
+                "awslogs-region": "ap-northeast-1",
+                "awslogs-stream-prefix": "v1.29.0",
+              },
+            },
+            "MemoryReservation": 64,
+            "MountPoints": Array [
+              Object {
+                "ContainerPath": "/etc/letsencrypt",
+                "ReadOnly": false,
+                "SourceVolume": "certVolume",
+              },
+            ],
+            "Name": "certbot",
+          },
+        ],
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "CertbotTaskDefinitionExecutionRole2F04CE67",
+            "Arn",
+          ],
+        },
+        "Family": "LowCostECSStackCertbotTaskDefinitionE5EFEBED",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EC2",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "CertbotTaskDefinitionTaskRoleE5A17CA8",
+            "Arn",
+          ],
+        },
+        "Volumes": Array [
+          Object {
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "FileSystem8A8E25C0",
+              },
+            },
+            "Name": "certVolume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CertbotTaskDefinitionExecutionRole2F04CE67": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LogGroupF5B46931",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3",
+        "Roles": Array [
+          Object {
+            "Ref": "CertbotTaskDefinitionExecutionRole2F04CE67",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "route53:ListHostedZones",
+                "route53:GetChange",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "route53:ChangeResourceRecordSets",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":route53:::hostedzone/DUMMY",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "elasticfilesystem:ClientWrite",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FileSystem8A8E25C0",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9",
+        "Roles": Array [
+          Object {
+            "Ref": "CertbotTaskDefinitionTaskRoleE5A17CA8",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CertbotTaskDefinitionTaskRoleE5A17CA8": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterEB0386A7": Object {
+      "Type": "AWS::ECS::Cluster",
+    },
+    "ClusterHostInstanceCapacityASG6B791030": Object {
+      "Properties": Object {
+        "LaunchConfigurationName": Object {
+          "Ref": "ClusterHostInstanceCapacityLaunchConfig812B5EE6",
+        },
+        "MaxSize": "1",
+        "MinSize": "1",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "PropagateAtLaunch": true,
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+        "VPCZoneIdentifier": Array [
+          Object {
+            "Ref": "VpcPublicSubnetSubnet1SubnetC1C3749F",
+          },
+          Object {
+            "Ref": "VpcPublicSubnetSubnet2Subnet2294BBD1",
+          },
+          Object {
+            "Ref": "VpcPublicSubnetSubnet3SubnetFDC17AA4",
+          },
+        ],
+      },
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "UpdatePolicy": Object {
+        "AutoScalingReplacingUpdate": Object {
+          "WillReplace": true,
+        },
+        "AutoScalingScheduledAction": Object {
+          "IgnoreUnmodifiedGroupSizeProperties": true,
+        },
+      },
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunction54F7233E": Object {
+      "DependsOn": Array [
+        "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRoleDefaultPolicy8F439785",
+        "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "import boto3, json, os, time
+
+ecs = boto3.client('ecs')
+autoscaling = boto3.client('autoscaling')
+
+
+def lambda_handler(event, context):
+  print(json.dumps(dict(event, ResponseURL='...')))
+  cluster = os.environ['CLUSTER']
+  snsTopicArn = event['Records'][0]['Sns']['TopicArn']
+  lifecycle_event = json.loads(event['Records'][0]['Sns']['Message'])
+  instance_id = lifecycle_event.get('EC2InstanceId')
+  if not instance_id:
+    print('Got event without EC2InstanceId: %s', json.dumps(dict(event, ResponseURL='...')))
+    return
+
+  instance_arn = container_instance_arn(cluster, instance_id)
+  print('Instance %s has container instance ARN %s' % (lifecycle_event['EC2InstanceId'], instance_arn))
+
+  if not instance_arn:
+    return
+
+  task_arns = container_instance_task_arns(cluster, instance_arn)
+
+  if task_arns:
+    print('Instance ARN %s has task ARNs %s' % (instance_arn, ', '.join(task_arns)))
+
+  while has_tasks(cluster, instance_arn, task_arns):
+    time.sleep(10)
+
+  try:
+    print('Terminating instance %s' % instance_id)
+    autoscaling.complete_lifecycle_action(
+        LifecycleActionResult='CONTINUE',
+        **pick(lifecycle_event, 'LifecycleHookName', 'LifecycleActionToken', 'AutoScalingGroupName'))
+  except Exception as e:
+    # Lifecycle action may have already completed.
+    print(str(e))
+
+
+def container_instance_arn(cluster, instance_id):
+  """Turn an instance ID into a container instance ARN."""
+  arns = ecs.list_container_instances(cluster=cluster, filter='ec2InstanceId==' + instance_id)['containerInstanceArns']
+  if not arns:
+    return None
+  return arns[0]
+
+def container_instance_task_arns(cluster, instance_arn):
+  """Fetch tasks for a container instance ARN."""
+  arns = ecs.list_tasks(cluster=cluster, containerInstance=instance_arn)['taskArns']
+  return arns
+
+def has_tasks(cluster, instance_arn, task_arns):
+  """Return True if the instance is running tasks for the given cluster."""
+  instances = ecs.describe_container_instances(cluster=cluster, containerInstances=[instance_arn])['containerInstances']
+  if not instances:
+    return False
+  instance = instances[0]
+
+  if instance['status'] == 'ACTIVE':
+    # Start draining, then try again later
+    set_container_instance_to_draining(cluster, instance_arn)
+    return True
+
+  task_count = None
+
+  if task_arns:
+    # Fetch details for tasks running on the container instance
+    tasks = ecs.describe_tasks(cluster=cluster, tasks=task_arns)['tasks']
+    if tasks:
+      # Consider any non-stopped tasks as running
+      task_count = sum(task['lastStatus'] != 'STOPPED' for task in tasks) + instance['pendingTasksCount']
+
+  if not task_count:
+    # Fallback to instance task counts if detailed task information is unavailable
+    task_count = instance['runningTasksCount'] + instance['pendingTasksCount']
+
+  print('Instance %s has %s tasks' % (instance_arn, task_count))
+
+  return task_count > 0
+
+def set_container_instance_to_draining(cluster, instance_arn):
+  ecs.update_container_instances_state(
+      cluster=cluster,
+      containerInstances=[instance_arn], status='DRAINING')
+
+
+def pick(dct, *keys):
+  """Pick a subset of a dict."""
+  return {k: v for k, v in dct.items() if k in keys}
+",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "CLUSTER": Object {
+              "Ref": "ClusterEB0386A7",
+            },
+          },
+        },
+        "Handler": "index.lambda_handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.9",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+        "Timeout": 310,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionAllowInvokeLowCostECSStackClusterHostInstanceCapacityLifecycleHookDrainHookTopicFADE73FE7DA1F73C": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityDrainECSHookFunction54F7233E",
+            "Arn",
+          ],
+        },
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": Object {
+          "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRoleDefaultPolicy8F439785": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceAttribute",
+                "ec2:DescribeInstanceStatus",
+                "ec2:DescribeHosts",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "autoscaling:CompleteLifecycleAction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":autoscaling:ap-northeast-1:731017969493:autoScalingGroup:*:autoScalingGroupName/",
+                    Object {
+                      "Ref": "ClusterHostInstanceCapacityASG6B791030",
+                    },
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:DescribeContainerInstances",
+                "ecs:DescribeTasks",
+              ],
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "ClusterEB0386A7",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "ecs:ListContainerInstances",
+                "ecs:SubmitContainerStateChange",
+                "ecs:SubmitTaskStateChange",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ClusterEB0386A7",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:UpdateContainerInstancesState",
+                "ecs:ListTasks",
+              ],
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "ClusterEB0386A7",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRoleDefaultPolicy8F439785",
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionTopic0973DF5F": Object {
+      "Properties": Object {
+        "Endpoint": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityDrainECSHookFunction54F7233E",
+            "Arn",
+          ],
+        },
+        "Protocol": "lambda",
+        "TopicArn": Object {
+          "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "ClusterHostInstanceCapacityInstanceProfileD7C1621F": Object {
+      "Properties": Object {
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityInstanceRole2FB29380",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "ClusterHostInstanceCapacityInstanceRole2FB29380": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecs:DeregisterContainerInstance",
+                "ecs:RegisterContainerInstance",
+                "ecs:Submit*",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ClusterEB0386A7",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:Poll",
+                "ecs:StartTelemetrySession",
+              ],
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "ClusterEB0386A7",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "ecs:DiscoverPollEndpoint",
+                "ecr:GetAuthorizationToken",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "ec2:DescribeAddresses",
+                "ec2:AssociateAddress",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24",
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityInstanceRole2FB29380",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF": Object {
+      "Properties": Object {
+        "GroupDescription": "LowCostECSStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:443",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+          Object {
+            "CidrIpv6": "::/0",
+            "Description": "from ::/0:80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+          Object {
+            "CidrIpv6": "::/0",
+            "Description": "from ::/0:443",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ClusterHostInstanceCapacityInstanceSecurityGroupfromLowCostECSStackFileSystemSecurityGroup61CD2DA52049FDF81316": Object {
+      "Properties": Object {
+        "Description": "from LowCostECSStackFileSystemSecurityGroup61CD2DA5:2049",
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "ClusterHostInstanceCapacityLaunchConfig812B5EE6": Object {
+      "DependsOn": Array [
+        "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24",
+        "ClusterHostInstanceCapacityInstanceRole2FB29380",
+      ],
+      "Properties": Object {
+        "AssociatePublicIpAddress": true,
+        "IamInstanceProfile": Object {
+          "Ref": "ClusterHostInstanceCapacityInstanceProfileD7C1621F",
+        },
+        "ImageId": "dummy-value-for-/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id",
+        "InstanceType": "t2.micro",
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+              "GroupId",
+            ],
+          },
+        ],
+        "SpotPrice": "0.0050",
+        "UserData": Object {
+          "Fn::Base64": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "#!/bin/bash
+echo ECS_CLUSTER=",
+                Object {
+                  "Ref": "ClusterEB0386A7",
+                },
+                " >> /etc/ecs/ecs.config
+sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.169.254/32 --jump DROP
+sudo service iptables save
+echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
+INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region ap-northeast-1 --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-northeast-1 --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
+              ],
+            ],
+          },
+        },
+      },
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHook6243850B": Object {
+      "DependsOn": Array [
+        "ClusterHostInstanceCapacityLifecycleHookDrainHookRoleDefaultPolicy35BCAE4E",
+        "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286",
+      ],
+      "Properties": Object {
+        "AutoScalingGroupName": Object {
+          "Ref": "ClusterHostInstanceCapacityASG6B791030",
+        },
+        "DefaultResult": "CONTINUE",
+        "HeartbeatTimeout": 300,
+        "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING",
+        "NotificationTargetARN": Object {
+          "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+        },
+        "RoleARN": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::AutoScaling::LifecycleHook",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "autoscaling.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHookRoleDefaultPolicy35BCAE4E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClusterHostInstanceCapacityLifecycleHookDrainHookRoleDefaultPolicy35BCAE4E",
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "ClusterHostInstanceCapacityScheduledActionDecreaseAtNight1023BED2": Object {
+      "Properties": Object {
+        "AutoScalingGroupName": Object {
+          "Ref": "ClusterHostInstanceCapacityASG6B791030",
+        },
+        "DesiredCapacity": 0,
+        "Recurrence": "0 23 * * *",
+        "TimeZone": "Asia/Tokyo",
+      },
+      "Type": "AWS::AutoScaling::ScheduledAction",
+    },
+    "ClusterHostInstanceCapacityScheduledActionIncreaseAtMorningE903155F": Object {
+      "Properties": Object {
+        "AutoScalingGroupName": Object {
+          "Ref": "ClusterHostInstanceCapacityASG6B791030",
+        },
+        "DesiredCapacity": 1,
+        "Recurrence": "0 8 * * *",
+        "TimeZone": "Asia/Tokyo",
+      },
+      "Type": "AWS::AutoScaling::ScheduledAction",
+    },
+    "EmailSubscriptionBC065AF0": Object {
+      "Properties": Object {
+        "Endpoint": "kitakita7617@gmail.com",
+        "Protocol": "email",
+        "TopicArn": Object {
+          "Ref": "TopicBFC7AF6E",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "FileSystem8A8E25C0": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Encrypted": true,
+        "FileSystemTags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/FileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "FileSystemEfsMountTarget1586453F0": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet1SubnetC1C3749F",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemEfsMountTarget24B8EBB43": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet2Subnet2294BBD1",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemEfsMountTarget37C2F9139": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet3SubnetFDC17AA4",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemSecurityGroupBFA44C6B": Object {
+      "Properties": Object {
+        "GroupDescription": "LowCostECSStack/FileSystemSecurityGroup",
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "FileSystemSecurityGroupfromLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201204972FE26F8": Object {
+      "Properties": Object {
+        "Description": "from LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "FileSystemSecurityGrouptoLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC520120495D8E9EBD": Object {
+      "Properties": Object {
+        "Description": "to LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "HostInstanceIp": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStackHostInstanceIp5CA32C2B",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "LogGroupF5B46931": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 731,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "NginxTaskDefinition76C3FF98": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "DependsOn": Array [
+              Object {
+                "Condition": "COMPLETE",
+                "ContainerName": "aws-cli",
+              },
+            ],
+            "Environment": Array [
+              Object {
+                "Name": "SERVER_NAME",
+                "Value": "test1.rajyan.net test2.rajyan.net",
+              },
+              Object {
+                "Name": "CERT_NAME",
+                "Value": "test1.rajyan.net",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Sub": "731017969493.dkr.ecr.ap-northeast-1.\${AWS::URLSuffix}/cdk-hnb659fds-[HASH REMOVED]",
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LogGroupF5B46931",
+                },
+                "awslogs-region": "ap-northeast-1",
+                "awslogs-stream-prefix": "nginx-proxy",
+              },
+            },
+            "MemoryReservation": 64,
+            "MountPoints": Array [
+              Object {
+                "ContainerPath": "/etc/letsencrypt",
+                "ReadOnly": true,
+                "SourceVolume": "certVolume",
+              },
+            ],
+            "Name": "nginx",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 80,
+                "HostPort": 80,
+                "Protocol": "tcp",
+              },
+              Object {
+                "ContainerPort": 443,
+                "HostPort": 443,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+          Object {
+            "Command": Array [
+              Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "set -eux
+          aws configure set region ap-northeast-1 && \\
+          aws configure set output text && \\
+          EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
+                    Object {
+                      "Ref": "StateMachine2E01A3A5",
+                    },
+                    " --query executionArn) && \\
+          until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
+          do
+            echo "Waiting for $EXECUTION_ARN"
+            sleep 10
+          done",
+                  ],
+                ],
+              },
+            ],
+            "EntryPoint": Array [
+              "/bin/bash",
+              "-c",
+            ],
+            "Essential": false,
+            "Image": "amazon/aws-cli:latest",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LogGroupF5B46931",
+                },
+                "awslogs-region": "ap-northeast-1",
+                "awslogs-stream-prefix": "latest",
+              },
+            },
+            "MemoryReservation": 64,
+            "Name": "aws-cli",
+          },
+        ],
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "NginxTaskDefinitionExecutionRoleF9920D6F",
+            "Arn",
+          ],
+        },
+        "Family": "LowCostECSStackNginxTaskDefinitionA38AB494",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EC2",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "NginxTaskDefinitionTaskRole4E6E78AD",
+            "Arn",
+          ],
+        },
+        "Volumes": Array [
+          Object {
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "FileSystem8A8E25C0",
+              },
+            },
+            "Name": "certVolume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:ap-northeast-1:731017969493:repository/cdk-hnb659fds-container-assets-731017969493-ap-northeast-1",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LogGroupF5B46931",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC",
+        "Roles": Array [
+          Object {
+            "Ref": "NginxTaskDefinitionExecutionRoleF9920D6F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "NginxTaskDefinitionExecutionRoleF9920D6F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "NginxTaskDefinitionTaskRole4E6E78AD": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "elasticfilesystem:ClientMount",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FileSystem8A8E25C0",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "states:DescribeExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":states:ap-northeast-1:731017969493:execution:",
+                    Object {
+                      "Fn::Select": Array [
+                        6,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "StateMachine2E01A3A5",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "states:StartExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "StateMachine2E01A3A5",
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED",
+        "Roles": Array [
+          Object {
+            "Ref": "NginxTaskDefinitionTaskRole4E6E78AD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ServiceD69D759B": Object {
+      "Properties": Object {
+        "Cluster": Object {
+          "Ref": "ClusterEB0386A7",
+        },
+        "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
+          "MaximumPercent": 100,
+          "MinimumHealthyPercent": 0,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "LaunchType": "EC2",
+        "SchedulingStrategy": "REPLICA",
+        "TaskDefinition": Object {
+          "Ref": "NginxTaskDefinition76C3FF98",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "StateMachine2E01A3A5": Object {
+      "DependsOn": Array [
+        "StateMachineRoleDefaultPolicyDF1E6607",
+        "StateMachineRoleB840431D",
+      ],
+      "Properties": Object {
+        "DefinitionString": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{"StartAt":"CreateCertificate","States":{"CreateCertificate":{"End":true,"Retry":[{"ErrorEquals":["States.ALL"],"IntervalSeconds":20}],"Catch":[{"ErrorEquals":["States.ALL"],"Next":"SendEmailOnFailure"}],"Type":"Task","Resource":"arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::ecs:runTask.sync","Parameters":{"Cluster":"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "ClusterEB0386A7",
+                  "Arn",
+                ],
+              },
+              "","TaskDefinition":"LowCostECSStackCertbotTaskDefinitionE5EFEBED","LaunchType":"EC2"}},"SendEmailOnFailure":{"Next":"Fail","Type":"Task","Resource":"arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sns:publish","Parameters":{"TopicArn":"",
+              Object {
+                "Ref": "TopicBFC7AF6E",
+              },
+              "","Message.$":"$"}},"Fail":{"Type":"Fail"}}}",
+            ],
+          ],
+        },
+        "RoleArn": Object {
+          "Fn::GetAtt": Array [
+            "StateMachineRoleB840431D",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::StepFunctions::StateMachine",
+    },
+    "StateMachineEventsRoleDBCDECD1": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "StateMachineEventsRoleDefaultPolicyFB602CA9": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "states:StartExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "StateMachine2E01A3A5",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "StateMachineEventsRoleDefaultPolicyFB602CA9",
+        "Roles": Array [
+          Object {
+            "Ref": "StateMachineEventsRoleDBCDECD1",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "StateMachineRoleB840431D": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "states.ap-northeast-1.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "StateMachineRoleDefaultPolicyDF1E6607": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ecs:RunTask",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        2,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        3,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        4,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        0,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    "/",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:StopTask",
+                "ecs:DescribeTasks",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "CertbotTaskDefinitionTaskRoleE5A17CA8",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::GetAtt": Array [
+                    "CertbotTaskDefinitionExecutionRole2F04CE67",
+                    "Arn",
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "events:PutTargets",
+                "events:PutRule",
+                "events:DescribeRule",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":events:ap-northeast-1:731017969493:rule/StepFunctionsGetEventsForECSTaskRule",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "TopicBFC7AF6E",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "StateMachineRoleDefaultPolicyDF1E6607",
+        "Roles": Array [
+          Object {
+            "Ref": "StateMachineRoleB840431D",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TopicBFC7AF6E": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+    "Vpc8378EB38": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "VpcIGWD7BA715C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "VpcPublicSubnetSubnet1DefaultRoute8657BB78": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet1RouteTable54741E8C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnetSubnet1RouteTable54741E8C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnetSubnet1RouteTableAssociation12F076E3": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet1RouteTable54741E8C",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet1SubnetC1C3749F",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnetSubnet1SubnetC1C3749F": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "PublicSubnet",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnetSubnet2DefaultRoute27ACE0CE": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet2RouteTableC47A3F8E",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnetSubnet2RouteTableAssociation4749FF4D": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet2RouteTableC47A3F8E",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet2Subnet2294BBD1",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnetSubnet2RouteTableC47A3F8E": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnetSubnet2Subnet2294BBD1": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.64.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "PublicSubnet",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnetSubnet3DefaultRoute76177F6D": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet3RouteTable53BC55FE",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnetSubnet3RouteTable53BC55FE": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnetSubnet3RouteTableAssociationC9BC8F75": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet3RouteTable53BC55FE",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet3SubnetFDC17AA4",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnetSubnet3SubnetFDC17AA4": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.128.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "PublicSubnet",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcVPCGWBF912B6E": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`Test snapshot of examples minimum 1`] = `
+Object {
+  "Outputs": Object {
+    "ClusterName": Object {
+      "Value": Object {
+        "Ref": "ClusterEB0386A7",
+      },
+    },
+    "PublicIpAddress": Object {
+      "Value": Object {
+        "Ref": "HostInstanceIp",
+      },
+    },
+    "ServiceName": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "ServiceD69D759B",
+          "Name",
+        ],
+      },
+    },
+    "certbotStateMachineName": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "StateMachine2E01A3A5",
+          "Name",
+        ],
+      },
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "ARecordrajyannetCBEE3AC8": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "HostInstanceIp",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "CertbotScheduleRuleBCE26D73": Object {
+      "Properties": Object {
+        "ScheduleExpression": "rate(60 days)",
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Ref": "StateMachine2E01A3A5",
+            },
+            "Id": "Target0",
+            "RoleArn": Object {
+              "Fn::GetAtt": Array [
+                "StateMachineEventsRoleDBCDECD1",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CertbotTaskDefinitionE960D6F7": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Command": Array [
+              "certonly",
+              "--verbose",
+              "--preferred-challenges=dns-01",
+              "--dns-route53",
+              "--dns-route53-propagation-seconds=300",
+              "--non-interactive",
+              "--agree-tos",
+              "--expand",
+              "-m",
+              "kitakita7617@gmail.com",
+              "--cert-name",
+              "rajyan.net",
+              "-d",
+              "rajyan.net",
+            ],
+            "Essential": true,
+            "Image": "certbot/dns-route53:v1.29.0",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LogGroupF5B46931",
+                },
+                "awslogs-region": "ap-northeast-1",
+                "awslogs-stream-prefix": "v1.29.0",
+              },
+            },
+            "MemoryReservation": 64,
+            "MountPoints": Array [
+              Object {
+                "ContainerPath": "/etc/letsencrypt",
+                "ReadOnly": false,
+                "SourceVolume": "certVolume",
+              },
+            ],
+            "Name": "certbot",
+          },
+        ],
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "CertbotTaskDefinitionExecutionRole2F04CE67",
+            "Arn",
+          ],
+        },
+        "Family": "LowCostECSStackCertbotTaskDefinitionE5EFEBED",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EC2",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "CertbotTaskDefinitionTaskRoleE5A17CA8",
+            "Arn",
+          ],
+        },
+        "Volumes": Array [
+          Object {
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "FileSystem8A8E25C0",
+              },
+            },
+            "Name": "certVolume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CertbotTaskDefinitionExecutionRole2F04CE67": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LogGroupF5B46931",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3",
+        "Roles": Array [
+          Object {
+            "Ref": "CertbotTaskDefinitionExecutionRole2F04CE67",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "route53:ListHostedZones",
+                "route53:GetChange",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "route53:ChangeResourceRecordSets",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":route53:::hostedzone/DUMMY",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "elasticfilesystem:ClientWrite",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FileSystem8A8E25C0",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9",
+        "Roles": Array [
+          Object {
+            "Ref": "CertbotTaskDefinitionTaskRoleE5A17CA8",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CertbotTaskDefinitionTaskRoleE5A17CA8": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterEB0386A7": Object {
+      "Type": "AWS::ECS::Cluster",
+    },
+    "ClusterHostInstanceCapacityASG6B791030": Object {
+      "Properties": Object {
+        "LaunchConfigurationName": Object {
+          "Ref": "ClusterHostInstanceCapacityLaunchConfig812B5EE6",
+        },
+        "MaxSize": "1",
+        "MinSize": "1",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "PropagateAtLaunch": true,
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+        "VPCZoneIdentifier": Array [
+          Object {
+            "Ref": "VpcPublicSubnetSubnet1SubnetC1C3749F",
+          },
+          Object {
+            "Ref": "VpcPublicSubnetSubnet2Subnet2294BBD1",
+          },
+          Object {
+            "Ref": "VpcPublicSubnetSubnet3SubnetFDC17AA4",
+          },
+        ],
+      },
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "UpdatePolicy": Object {
+        "AutoScalingReplacingUpdate": Object {
+          "WillReplace": true,
+        },
+        "AutoScalingScheduledAction": Object {
+          "IgnoreUnmodifiedGroupSizeProperties": true,
+        },
+      },
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunction54F7233E": Object {
+      "DependsOn": Array [
+        "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRoleDefaultPolicy8F439785",
+        "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ZipFile": "import boto3, json, os, time
+
+ecs = boto3.client('ecs')
+autoscaling = boto3.client('autoscaling')
+
+
+def lambda_handler(event, context):
+  print(json.dumps(dict(event, ResponseURL='...')))
+  cluster = os.environ['CLUSTER']
+  snsTopicArn = event['Records'][0]['Sns']['TopicArn']
+  lifecycle_event = json.loads(event['Records'][0]['Sns']['Message'])
+  instance_id = lifecycle_event.get('EC2InstanceId')
+  if not instance_id:
+    print('Got event without EC2InstanceId: %s', json.dumps(dict(event, ResponseURL='...')))
+    return
+
+  instance_arn = container_instance_arn(cluster, instance_id)
+  print('Instance %s has container instance ARN %s' % (lifecycle_event['EC2InstanceId'], instance_arn))
+
+  if not instance_arn:
+    return
+
+  task_arns = container_instance_task_arns(cluster, instance_arn)
+
+  if task_arns:
+    print('Instance ARN %s has task ARNs %s' % (instance_arn, ', '.join(task_arns)))
+
+  while has_tasks(cluster, instance_arn, task_arns):
+    time.sleep(10)
+
+  try:
+    print('Terminating instance %s' % instance_id)
+    autoscaling.complete_lifecycle_action(
+        LifecycleActionResult='CONTINUE',
+        **pick(lifecycle_event, 'LifecycleHookName', 'LifecycleActionToken', 'AutoScalingGroupName'))
+  except Exception as e:
+    # Lifecycle action may have already completed.
+    print(str(e))
+
+
+def container_instance_arn(cluster, instance_id):
+  """Turn an instance ID into a container instance ARN."""
+  arns = ecs.list_container_instances(cluster=cluster, filter='ec2InstanceId==' + instance_id)['containerInstanceArns']
+  if not arns:
+    return None
+  return arns[0]
+
+def container_instance_task_arns(cluster, instance_arn):
+  """Fetch tasks for a container instance ARN."""
+  arns = ecs.list_tasks(cluster=cluster, containerInstance=instance_arn)['taskArns']
+  return arns
+
+def has_tasks(cluster, instance_arn, task_arns):
+  """Return True if the instance is running tasks for the given cluster."""
+  instances = ecs.describe_container_instances(cluster=cluster, containerInstances=[instance_arn])['containerInstances']
+  if not instances:
+    return False
+  instance = instances[0]
+
+  if instance['status'] == 'ACTIVE':
+    # Start draining, then try again later
+    set_container_instance_to_draining(cluster, instance_arn)
+    return True
+
+  task_count = None
+
+  if task_arns:
+    # Fetch details for tasks running on the container instance
+    tasks = ecs.describe_tasks(cluster=cluster, tasks=task_arns)['tasks']
+    if tasks:
+      # Consider any non-stopped tasks as running
+      task_count = sum(task['lastStatus'] != 'STOPPED' for task in tasks) + instance['pendingTasksCount']
+
+  if not task_count:
+    # Fallback to instance task counts if detailed task information is unavailable
+    task_count = instance['runningTasksCount'] + instance['pendingTasksCount']
+
+  print('Instance %s has %s tasks' % (instance_arn, task_count))
+
+  return task_count > 0
+
+def set_container_instance_to_draining(cluster, instance_arn):
+  ecs.update_container_instances_state(
+      cluster=cluster,
+      containerInstances=[instance_arn], status='DRAINING')
+
+
+def pick(dct, *keys):
+  """Pick a subset of a dict."""
+  return {k: v for k, v in dct.items() if k in keys}
+",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "CLUSTER": Object {
+              "Ref": "ClusterEB0386A7",
+            },
+          },
+        },
+        "Handler": "index.lambda_handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.9",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+        "Timeout": 310,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionAllowInvokeLowCostECSStackClusterHostInstanceCapacityLifecycleHookDrainHookTopicFADE73FE7DA1F73C": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityDrainECSHookFunction54F7233E",
+            "Arn",
+          ],
+        },
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": Object {
+          "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRoleDefaultPolicy8F439785": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceAttribute",
+                "ec2:DescribeInstanceStatus",
+                "ec2:DescribeHosts",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "autoscaling:CompleteLifecycleAction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":autoscaling:ap-northeast-1:731017969493:autoScalingGroup:*:autoScalingGroupName/",
+                    Object {
+                      "Ref": "ClusterHostInstanceCapacityASG6B791030",
+                    },
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:DescribeContainerInstances",
+                "ecs:DescribeTasks",
+              ],
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "ClusterEB0386A7",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "ecs:ListContainerInstances",
+                "ecs:SubmitContainerStateChange",
+                "ecs:SubmitTaskStateChange",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ClusterEB0386A7",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:UpdateContainerInstancesState",
+                "ecs:ListTasks",
+              ],
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "ClusterEB0386A7",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRoleDefaultPolicy8F439785",
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityDrainECSHookFunctionServiceRole930143CF",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClusterHostInstanceCapacityDrainECSHookFunctionTopic0973DF5F": Object {
+      "Properties": Object {
+        "Endpoint": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityDrainECSHookFunction54F7233E",
+            "Arn",
+          ],
+        },
+        "Protocol": "lambda",
+        "TopicArn": Object {
+          "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "ClusterHostInstanceCapacityInstanceProfileD7C1621F": Object {
+      "Properties": Object {
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityInstanceRole2FB29380",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "ClusterHostInstanceCapacityInstanceRole2FB29380": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecs:DeregisterContainerInstance",
+                "ecs:RegisterContainerInstance",
+                "ecs:Submit*",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ClusterEB0386A7",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:Poll",
+                "ecs:StartTelemetrySession",
+              ],
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "ClusterEB0386A7",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "ecs:DiscoverPollEndpoint",
+                "ecr:GetAuthorizationToken",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "ec2:DescribeAddresses",
+                "ec2:AssociateAddress",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24",
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityInstanceRole2FB29380",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF": Object {
+      "Properties": Object {
+        "GroupDescription": "LowCostECSStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:443",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+          Object {
+            "CidrIpv6": "::/0",
+            "Description": "from ::/0:80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+          Object {
+            "CidrIpv6": "::/0",
+            "Description": "from ::/0:443",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ClusterHostInstanceCapacityInstanceSecurityGroupfromLowCostECSStackFileSystemSecurityGroup61CD2DA52049FDF81316": Object {
+      "Properties": Object {
+        "Description": "from LowCostECSStackFileSystemSecurityGroup61CD2DA5:2049",
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "ClusterHostInstanceCapacityLaunchConfig812B5EE6": Object {
+      "DependsOn": Array [
+        "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24",
+        "ClusterHostInstanceCapacityInstanceRole2FB29380",
+      ],
+      "Properties": Object {
+        "AssociatePublicIpAddress": true,
+        "IamInstanceProfile": Object {
+          "Ref": "ClusterHostInstanceCapacityInstanceProfileD7C1621F",
+        },
+        "ImageId": "dummy-value-for-/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id",
+        "InstanceType": "t2.micro",
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+              "GroupId",
+            ],
+          },
+        ],
+        "UserData": Object {
+          "Fn::Base64": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "#!/bin/bash
+echo ECS_CLUSTER=",
+                Object {
+                  "Ref": "ClusterEB0386A7",
+                },
+                " >> /etc/ecs/ecs.config
+sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.169.254/32 --jump DROP
+sudo service iptables save
+echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
+INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region ap-northeast-1 --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-northeast-1 --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
+              ],
+            ],
+          },
+        },
+      },
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHook6243850B": Object {
+      "DependsOn": Array [
+        "ClusterHostInstanceCapacityLifecycleHookDrainHookRoleDefaultPolicy35BCAE4E",
+        "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286",
+      ],
+      "Properties": Object {
+        "AutoScalingGroupName": Object {
+          "Ref": "ClusterHostInstanceCapacityASG6B791030",
+        },
+        "DefaultResult": "CONTINUE",
+        "HeartbeatTimeout": 300,
+        "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING",
+        "NotificationTargetARN": Object {
+          "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+        },
+        "RoleARN": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::AutoScaling::LifecycleHook",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "autoscaling.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHookRoleDefaultPolicy35BCAE4E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClusterHostInstanceCapacityLifecycleHookDrainHookRoleDefaultPolicy35BCAE4E",
+        "Roles": Array [
+          Object {
+            "Ref": "ClusterHostInstanceCapacityLifecycleHookDrainHookRole8F376286",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClusterHostInstanceCapacityLifecycleHookDrainHookTopic68232BAE": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "EmailSubscriptionBC065AF0": Object {
+      "Properties": Object {
+        "Endpoint": "kitakita7617@gmail.com",
+        "Protocol": "email",
+        "TopicArn": Object {
+          "Ref": "TopicBFC7AF6E",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "FileSystem8A8E25C0": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Encrypted": true,
+        "FileSystemTags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/FileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "FileSystemEfsMountTarget1586453F0": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet1SubnetC1C3749F",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemEfsMountTarget24B8EBB43": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet2Subnet2294BBD1",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemEfsMountTarget37C2F9139": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "FileSystem8A8E25C0",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "FileSystemSecurityGroupBFA44C6B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet3SubnetFDC17AA4",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "FileSystemSecurityGroupBFA44C6B": Object {
+      "Properties": Object {
+        "GroupDescription": "LowCostECSStack/FileSystemSecurityGroup",
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "FileSystemSecurityGroupfromLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201204972FE26F8": Object {
+      "Properties": Object {
+        "Description": "from LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "FileSystemSecurityGrouptoLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC520120495D8E9EBD": Object {
+      "Properties": Object {
+        "Description": "to LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
+            "GroupId",
+          ],
+        },
+        "FromPort": 2049,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "FileSystemSecurityGroupBFA44C6B",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "HostInstanceIp": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStackHostInstanceIp5CA32C2B",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "LogGroupF5B46931": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 731,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "NginxTaskDefinition76C3FF98": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "DependsOn": Array [
+              Object {
+                "Condition": "COMPLETE",
+                "ContainerName": "aws-cli",
+              },
+            ],
+            "Environment": Array [
+              Object {
+                "Name": "SERVER_NAME",
+                "Value": "rajyan.net",
+              },
+              Object {
+                "Name": "CERT_NAME",
+                "Value": "rajyan.net",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Sub": "731017969493.dkr.ecr.ap-northeast-1.\${AWS::URLSuffix}/cdk-hnb659fds-[HASH REMOVED]",
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LogGroupF5B46931",
+                },
+                "awslogs-region": "ap-northeast-1",
+                "awslogs-stream-prefix": "nginx-proxy",
+              },
+            },
+            "MemoryReservation": 64,
+            "MountPoints": Array [
+              Object {
+                "ContainerPath": "/etc/letsencrypt",
+                "ReadOnly": true,
+                "SourceVolume": "certVolume",
+              },
+            ],
+            "Name": "nginx",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 80,
+                "HostPort": 80,
+                "Protocol": "tcp",
+              },
+              Object {
+                "ContainerPort": 443,
+                "HostPort": 443,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+          Object {
+            "Command": Array [
+              Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "set -eux
+          aws configure set region ap-northeast-1 && \\
+          aws configure set output text && \\
+          EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
+                    Object {
+                      "Ref": "StateMachine2E01A3A5",
+                    },
+                    " --query executionArn) && \\
+          until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
+          do
+            echo "Waiting for $EXECUTION_ARN"
+            sleep 10
+          done",
+                  ],
+                ],
+              },
+            ],
+            "EntryPoint": Array [
+              "/bin/bash",
+              "-c",
+            ],
+            "Essential": false,
+            "Image": "amazon/aws-cli:latest",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LogGroupF5B46931",
+                },
+                "awslogs-region": "ap-northeast-1",
+                "awslogs-stream-prefix": "latest",
+              },
+            },
+            "MemoryReservation": 64,
+            "Name": "aws-cli",
+          },
+        ],
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "NginxTaskDefinitionExecutionRoleF9920D6F",
+            "Arn",
+          ],
+        },
+        "Family": "LowCostECSStackNginxTaskDefinitionA38AB494",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EC2",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "NginxTaskDefinitionTaskRole4E6E78AD",
+            "Arn",
+          ],
+        },
+        "Volumes": Array [
+          Object {
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "FileSystem8A8E25C0",
+              },
+            },
+            "Name": "certVolume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:ap-northeast-1:731017969493:repository/cdk-hnb659fds-container-assets-731017969493-ap-northeast-1",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LogGroupF5B46931",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC",
+        "Roles": Array [
+          Object {
+            "Ref": "NginxTaskDefinitionExecutionRoleF9920D6F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "NginxTaskDefinitionExecutionRoleF9920D6F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "NginxTaskDefinitionTaskRole4E6E78AD": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "elasticfilesystem:ClientMount",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FileSystem8A8E25C0",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "states:DescribeExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":states:ap-northeast-1:731017969493:execution:",
+                    Object {
+                      "Fn::Select": Array [
+                        6,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "StateMachine2E01A3A5",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "states:StartExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "StateMachine2E01A3A5",
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED",
+        "Roles": Array [
+          Object {
+            "Ref": "NginxTaskDefinitionTaskRole4E6E78AD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ServiceD69D759B": Object {
+      "Properties": Object {
+        "Cluster": Object {
+          "Ref": "ClusterEB0386A7",
+        },
+        "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
+          "MaximumPercent": 100,
+          "MinimumHealthyPercent": 0,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "LaunchType": "EC2",
+        "SchedulingStrategy": "REPLICA",
+        "TaskDefinition": Object {
+          "Ref": "NginxTaskDefinition76C3FF98",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "StateMachine2E01A3A5": Object {
+      "DependsOn": Array [
+        "StateMachineRoleDefaultPolicyDF1E6607",
+        "StateMachineRoleB840431D",
+      ],
+      "Properties": Object {
+        "DefinitionString": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{"StartAt":"CreateCertificate","States":{"CreateCertificate":{"End":true,"Retry":[{"ErrorEquals":["States.ALL"],"IntervalSeconds":20}],"Catch":[{"ErrorEquals":["States.ALL"],"Next":"SendEmailOnFailure"}],"Type":"Task","Resource":"arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::ecs:runTask.sync","Parameters":{"Cluster":"",
+              Object {
+                "Fn::GetAtt": Array [
+                  "ClusterEB0386A7",
+                  "Arn",
+                ],
+              },
+              "","TaskDefinition":"LowCostECSStackCertbotTaskDefinitionE5EFEBED","LaunchType":"EC2"}},"SendEmailOnFailure":{"Next":"Fail","Type":"Task","Resource":"arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sns:publish","Parameters":{"TopicArn":"",
+              Object {
+                "Ref": "TopicBFC7AF6E",
+              },
+              "","Message.$":"$"}},"Fail":{"Type":"Fail"}}}",
+            ],
+          ],
+        },
+        "RoleArn": Object {
+          "Fn::GetAtt": Array [
+            "StateMachineRoleB840431D",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::StepFunctions::StateMachine",
+    },
+    "StateMachineEventsRoleDBCDECD1": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "StateMachineEventsRoleDefaultPolicyFB602CA9": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "states:StartExecution",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "StateMachine2E01A3A5",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "StateMachineEventsRoleDefaultPolicyFB602CA9",
+        "Roles": Array [
+          Object {
+            "Ref": "StateMachineEventsRoleDBCDECD1",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "StateMachineRoleB840431D": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "states.ap-northeast-1.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "StateMachineRoleDefaultPolicyDF1E6607": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ecs:RunTask",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        2,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        3,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        4,
+                        Object {
+                          "Fn::Split": Array [
+                            ":",
+                            Object {
+                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ":",
+                    Object {
+                      "Fn::Select": Array [
+                        0,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    "/",
+                    Object {
+                      "Fn::Select": Array [
+                        1,
+                        Object {
+                          "Fn::Split": Array [
+                            "/",
+                            Object {
+                              "Fn::Select": Array [
+                                5,
+                                Object {
+                                  "Fn::Split": Array [
+                                    ":",
+                                    Object {
+                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ecs:StopTask",
+                "ecs:DescribeTasks",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "CertbotTaskDefinitionTaskRoleE5A17CA8",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::GetAtt": Array [
+                    "CertbotTaskDefinitionExecutionRole2F04CE67",
+                    "Arn",
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "events:PutTargets",
+                "events:PutRule",
+                "events:DescribeRule",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":events:ap-northeast-1:731017969493:rule/StepFunctionsGetEventsForECSTaskRule",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "TopicBFC7AF6E",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "StateMachineRoleDefaultPolicyDF1E6607",
+        "Roles": Array [
+          Object {
+            "Ref": "StateMachineRoleB840431D",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TopicBFC7AF6E": Object {
+      "Type": "AWS::SNS::Topic",
+    },
+    "Vpc8378EB38": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "VpcIGWD7BA715C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "VpcPublicSubnetSubnet1DefaultRoute8657BB78": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet1RouteTable54741E8C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnetSubnet1RouteTable54741E8C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnetSubnet1RouteTableAssociation12F076E3": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet1RouteTable54741E8C",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet1SubnetC1C3749F",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnetSubnet1SubnetC1C3749F": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "PublicSubnet",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnetSubnet2DefaultRoute27ACE0CE": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet2RouteTableC47A3F8E",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnetSubnet2RouteTableAssociation4749FF4D": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet2RouteTableC47A3F8E",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet2Subnet2294BBD1",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnetSubnet2RouteTableC47A3F8E": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnetSubnet2Subnet2294BBD1": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.64.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "PublicSubnet",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnetSubnet3DefaultRoute76177F6D": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet3RouteTable53BC55FE",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnetSubnet3RouteTable53BC55FE": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnetSubnet3RouteTableAssociationC9BC8F75": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnetSubnet3RouteTable53BC55FE",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnetSubnet3SubnetFDC17AA4",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnetSubnet3SubnetFDC17AA4": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.128.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "PublicSubnet",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcVPCGWBF912B6E": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
