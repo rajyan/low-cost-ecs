@@ -31,10 +31,6 @@ jspm_packages/
 *.tgz
 .yarn-integrity
 .cache
-.idea/
-cdk.out/
-cdk.context.json
-yarn-error.log
 !/.projenrc.js
 /test-reports/
 junit.xml
@@ -55,3 +51,7 @@ junit.xml
 .jsii
 tsconfig.json
 !/API.md
+.idea/
+cdk.out/
+cdk.context.json
+yarn-error.log

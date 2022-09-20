@@ -1,7 +1,6 @@
 import { awscdk } from 'projen';
 import { UpgradeDependenciesSchedule } from 'projen/lib/javascript';
 
-const excludes = ['.idea/', 'cdk.out/', 'cdk.context.json', 'yarn-error.log'];
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Yohta Kimura',
   authorAddress: 'kitakita7617@gmail.com',
@@ -29,9 +28,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
     distName: 'low-cost-ecs',
     module: 'low_cost_ecs',
   },
-
-  npmignore: excludes,
-  gitignore: excludes,
   autoApproveOptions: {
     allowedUsernames: ['rajyan'],
   },
@@ -43,6 +39,10 @@ const project = new awscdk.AwsCdkConstructLibrary({
   },
   projenrcTs: true,
 });
+
+const excludes = ['.idea/', 'cdk.out/', 'cdk.context.json', 'yarn-error.log'];
+project.npmignore?.exclude(...excludes);
+project.gitignore.exclude(...excludes);
 
 project.tsconfigDev.addInclude('examples/**/*.ts');
 
