@@ -4,7 +4,7 @@ import { LowCostECS } from '../src';
 
 const app = new App();
 
-const stack = new LowCostECS(app, 'LowCostECSStack', {
+export const autoscalingStack = new LowCostECS(app, 'LowCostECSStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
@@ -14,7 +14,7 @@ const stack = new LowCostECS(app, 'LowCostECSStack', {
   email: 'kitakita7617@gmail.com',
   hostInstanceSpotPrice: '0.0050',
 });
-stack.hostAutoScalingGroup.scaleOnSchedule('IncreaseAtMorning', {
+autoscalingStack.hostAutoScalingGroup.scaleOnSchedule('IncreaseAtMorning', {
   timeZone: 'Asia/Tokyo',
   schedule: Schedule.cron({
     minute: '0',
@@ -22,7 +22,7 @@ stack.hostAutoScalingGroup.scaleOnSchedule('IncreaseAtMorning', {
   }),
   desiredCapacity: 1,
 });
-stack.hostAutoScalingGroup.scaleOnSchedule('DecreaseAtNight', {
+autoscalingStack.hostAutoScalingGroup.scaleOnSchedule('DecreaseAtNight', {
   timeZone: 'Asia/Tokyo',
   schedule: Schedule.cron({
     minute: '0',
