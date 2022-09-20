@@ -40,11 +40,6 @@ export const allPropsStack = new LowCostECS(app, 'LowCostECSStack', {
         hostPort: 80,
         protocol: Protocol.TCP,
       }],
-      mountPoints: [{
-        containerPath: '/tmp',
-        sourceVolume: 'test-volume',
-        readOnly: true,
-      }],
     }],
     volumes: [{
       name: 'test-volume',

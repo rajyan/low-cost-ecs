@@ -1043,11 +1043,6 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region ap-n
             "Memory": 32,
             "MountPoints": Array [
               Object {
-                "ContainerPath": "/tmp",
-                "ReadOnly": true,
-                "SourceVolume": "test-volume",
-              },
-              Object {
                 "ContainerPath": "/etc/letsencrypt",
                 "ReadOnly": true,
                 "SourceVolume": "certVolume",

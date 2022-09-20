@@ -118,17 +118,13 @@ export interface LowCostECSProps extends lib.StackProps {
    *
    * @default - Nginx server task definition defined in createSampleTaskDefinition()
    */
-  readonly serverTaskDefinition?: TaskDefinitionOptions;
+  readonly serverTaskDefinition?: LowCostECSTaskDefinitionOptions;
 }
 
-interface TaskDefinitionOptions extends lib.StackProps {
-  taskDefinition?: ecs.Ec2TaskDefinitionProps;
-  containers: (ecs.ContainerDefinitionOptions & {
-    containerName: string;
-    portMappings?: ecs.PortMapping[];
-    mountPoints?: ecs.MountPoint[];
-  })[];
-  volumes?: ecs.Volume[];
+export interface LowCostECSTaskDefinitionOptions {
+  readonly taskDefinition?: ecs.Ec2TaskDefinitionProps;
+  readonly containers: ecs.ContainerDefinitionOptions[];
+  readonly volumes?: ecs.Volume[];
 }
 
 export class LowCostECS extends lib.Stack {
@@ -433,16 +429,15 @@ export class LowCostECS extends lib.Stack {
     new lib.CfnOutput(this, 'ServiceName', { value: this.service.serviceName });
   }
 
-  private createTaskDefinition(taskDefinitionOptions: TaskDefinitionOptions) : ecs.Ec2TaskDefinition {
+  private createTaskDefinition(taskDefinitionOptions: LowCostECSTaskDefinitionOptions) : ecs.Ec2TaskDefinition {
     const serverTaskDefinition = new ecs.Ec2TaskDefinition(
       this,
       'ServerTaskDefinition',
       taskDefinitionOptions.taskDefinition,
     );
-    taskDefinitionOptions.containers?.forEach((props) => {
-      const container = serverTaskDefinition.addContainer(props.containerName, props);
+    taskDefinitionOptions.containers?.forEach((props, index) => {
+      const container = serverTaskDefinition.addContainer(props.containerName ?? `container${index}`, props);
       container.addPortMappings(...(props.portMappings ?? []));
-      container.addMountPoints(...(props.mountPoints ?? []));
     });
     taskDefinitionOptions.volumes?.forEach((props) => serverTaskDefinition.addVolume(props));
     return serverTaskDefinition;
