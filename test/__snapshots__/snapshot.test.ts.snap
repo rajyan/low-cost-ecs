@@ -517,7 +517,7 @@ def pick(dct, *keys):
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":autoscaling:ap-northeast-1:731017969493:autoScalingGroup:*:autoScalingGroupName/",
+                    ":autoscaling:test-region:test-account:autoScalingGroup:*:autoScalingGroupName/",
                     Object {
                       "Ref": "ClusterHostInstanceCapacityASG6B791030",
                     },
@@ -620,7 +620,17 @@ def pick(dct, *keys):
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": "ec2.amazonaws.com",
+                "Service": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "ec2.",
+                      Object {
+                        "Ref": "AWS::URLSuffix",
+                      },
+                    ],
+                  ],
+                },
               },
             },
           ],
@@ -795,8 +805,8 @@ sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.16
 sudo service iptables save
 echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
 INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:testTag ec2 describe-addresses --region ap-northeast-1 --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
-docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region ap-northeast-1 --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:testTag ec2 describe-addresses --region test-region --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test-region --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
               ],
             ],
           },
@@ -1069,7 +1079,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region ap-n
                   "",
                   Array [
                     "set -eux
-          aws configure set region ap-northeast-1 && \\
+          aws configure set region test-region && \\
           aws configure set output text && \\
           EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
                     Object {
@@ -1219,7 +1229,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region ap-n
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":states:ap-northeast-1:731017969493:execution:",
+                    ":states:test-region:test-account:execution:",
                     Object {
                       "Fn::Select": Array [
                         6,
@@ -1398,7 +1408,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region ap-n
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": "states.ap-northeast-1.amazonaws.com",
+                "Service": "states.test-region.amazonaws.com",
               },
             },
           ],
@@ -1567,7 +1577,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region ap-n
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":events:ap-northeast-1:731017969493:rule/StepFunctionsGetEventsForECSTaskRule",
+                    ":events:test-region:test-account:rule/StepFunctionsGetEventsForECSTaskRule",
                   ],
                 ],
               },
@@ -1742,7 +1752,7 @@ Object {
                 "awslogs-group": Object {
                   "Ref": "LogGroupF5B46931",
                 },
-                "awslogs-region": "ap-northeast-1",
+                "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "v1.29.0",
               },
             },
@@ -2141,7 +2151,7 @@ def pick(dct, *keys):
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":autoscaling:ap-northeast-1:731017969493:autoScalingGroup:*:autoScalingGroupName/",
+                    ":autoscaling:test-region:test-account:autoScalingGroup:*:autoScalingGroupName/",
                     Object {
                       "Ref": "ClusterHostInstanceCapacityASG6B791030",
                     },
@@ -2244,7 +2254,17 @@ def pick(dct, *keys):
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": "ec2.amazonaws.com",
+                "Service": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "ec2.",
+                      Object {
+                        "Ref": "AWS::URLSuffix",
+                      },
+                    ],
+                  ],
+                },
               },
             },
           ],
@@ -2448,8 +2468,8 @@ sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.16
 sudo service iptables save
 echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
 INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region ap-northeast-1 --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
-docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-northeast-1 --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region test-region --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-region --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
               ],
             ],
           },
@@ -2733,7 +2753,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
             ],
             "Essential": true,
             "Image": Object {
-              "Fn::Sub": "731017969493.dkr.ecr.ap-northeast-1.\${AWS::URLSuffix}/cdk-hnb659fds-[HASH REMOVED]",
+              "Fn::Sub": "test-account.dkr.ecr.test-region.\${AWS::URLSuffix}/cdk-hnb659fds-[HASH REMOVED]",
             },
             "LogConfiguration": Object {
               "LogDriver": "awslogs",
@@ -2741,7 +2761,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                 "awslogs-group": Object {
                   "Ref": "LogGroupF5B46931",
                 },
-                "awslogs-region": "ap-northeast-1",
+                "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "nginx-proxy",
               },
             },
@@ -2774,7 +2794,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                   "",
                   Array [
                     "set -eux
-          aws configure set region ap-northeast-1 && \\
+          aws configure set region test-region && \\
           aws configure set output text && \\
           EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
                     Object {
@@ -2802,7 +2822,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                 "awslogs-group": Object {
                   "Ref": "LogGroupF5B46931",
                 },
-                "awslogs-region": "ap-northeast-1",
+                "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "latest",
               },
             },
@@ -2859,7 +2879,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecr:ap-northeast-1:731017969493:repository/cdk-hnb659fds-container-assets-731017969493-ap-northeast-1",
+                    ":ecr:test-region:test-account:repository/cdk-hnb659fds-container-assets-test-account-test-region",
                   ],
                 ],
               },
@@ -2953,7 +2973,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":states:ap-northeast-1:731017969493:execution:",
+                    ":states:test-region:test-account:execution:",
                     Object {
                       "Fn::Select": Array [
                         6,
@@ -3132,7 +3152,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": "states.ap-northeast-1.amazonaws.com",
+                "Service": "states.test-region.amazonaws.com",
               },
             },
           ],
@@ -3301,7 +3321,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":events:ap-northeast-1:731017969493:rule/StepFunctionsGetEventsForECSTaskRule",
+                    ":events:test-region:test-account:rule/StepFunctionsGetEventsForECSTaskRule",
                   ],
                 ],
               },
@@ -3692,7 +3712,7 @@ Object {
                 "awslogs-group": Object {
                   "Ref": "LogGroupF5B46931",
                 },
-                "awslogs-region": "ap-northeast-1",
+                "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "v1.29.0",
               },
             },
@@ -4091,7 +4111,7 @@ def pick(dct, *keys):
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":autoscaling:ap-northeast-1:731017969493:autoScalingGroup:*:autoScalingGroupName/",
+                    ":autoscaling:test-region:test-account:autoScalingGroup:*:autoScalingGroupName/",
                     Object {
                       "Ref": "ClusterHostInstanceCapacityASG6B791030",
                     },
@@ -4194,7 +4214,17 @@ def pick(dct, *keys):
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": "ec2.amazonaws.com",
+                "Service": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "ec2.",
+                      Object {
+                        "Ref": "AWS::URLSuffix",
+                      },
+                    ],
+                  ],
+                },
               },
             },
           ],
@@ -4397,8 +4427,8 @@ sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.16
 sudo service iptables save
 echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
 INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region ap-northeast-1 --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
-docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-northeast-1 --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region test-region --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-region --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
               ],
             ],
           },
@@ -4660,7 +4690,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
             ],
             "Essential": true,
             "Image": Object {
-              "Fn::Sub": "731017969493.dkr.ecr.ap-northeast-1.\${AWS::URLSuffix}/cdk-hnb659fds-[HASH REMOVED]",
+              "Fn::Sub": "test-account.dkr.ecr.test-region.\${AWS::URLSuffix}/cdk-hnb659fds-[HASH REMOVED]",
             },
             "LogConfiguration": Object {
               "LogDriver": "awslogs",
@@ -4668,7 +4698,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                 "awslogs-group": Object {
                   "Ref": "LogGroupF5B46931",
                 },
-                "awslogs-region": "ap-northeast-1",
+                "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "nginx-proxy",
               },
             },
@@ -4701,7 +4731,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                   "",
                   Array [
                     "set -eux
-          aws configure set region ap-northeast-1 && \\
+          aws configure set region test-region && \\
           aws configure set output text && \\
           EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
                     Object {
@@ -4729,7 +4759,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                 "awslogs-group": Object {
                   "Ref": "LogGroupF5B46931",
                 },
-                "awslogs-region": "ap-northeast-1",
+                "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "latest",
               },
             },
@@ -4786,7 +4816,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecr:ap-northeast-1:731017969493:repository/cdk-hnb659fds-container-assets-731017969493-ap-northeast-1",
+                    ":ecr:test-region:test-account:repository/cdk-hnb659fds-container-assets-test-account-test-region",
                   ],
                 ],
               },
@@ -4880,7 +4910,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":states:ap-northeast-1:731017969493:execution:",
+                    ":states:test-region:test-account:execution:",
                     Object {
                       "Fn::Select": Array [
                         6,
@@ -5059,7 +5089,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": "states.ap-northeast-1.amazonaws.com",
+                "Service": "states.test-region.amazonaws.com",
               },
             },
           ],
@@ -5228,7 +5258,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region ap-no
                     Object {
                       "Ref": "AWS::Partition",
                     },
-                    ":events:ap-northeast-1:731017969493:rule/StepFunctionsGetEventsForECSTaskRule",
+                    ":events:test-region:test-account:rule/StepFunctionsGetEventsForECSTaskRule",
                   ],
                 ],
               },
