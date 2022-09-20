@@ -887,8 +887,8 @@ const lowCostECSProps: LowCostECSProps = { ... }
 | <code><a href="#low-cost-ecs.LowCostECSProps.property.logGroup">logGroup</a></code> | <code>aws-cdk-lib.aws_logs.ILogGroup</code> | Log group of the certbot task and the aws-cli task. |
 | <code><a href="#low-cost-ecs.LowCostECSProps.property.recordDomainNames">recordDomainNames</a></code> | <code>string[]</code> | Domain names for A records to elastic ip of ECS host instance. |
 | <code><a href="#low-cost-ecs.LowCostECSProps.property.removalPolicy">removalPolicy</a></code> | <code>aws-cdk-lib.RemovalPolicy</code> | Removal policy for the file system and log group (if using default). |
-| <code><a href="#low-cost-ecs.LowCostECSProps.property.securityGroup">securityGroup</a></code> | <code>aws-cdk-lib.aws_ec2.SecurityGroup</code> | Security group of the ECS host instance. |
-| <code><a href="#low-cost-ecs.LowCostECSProps.property.serverTaskDefinition">serverTaskDefinition</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2TaskDefinition</code> | Task definition for the server ecs task. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.securityGroup">securityGroup</a></code> | <code>aws-cdk-lib.aws_ec2.ISecurityGroup</code> | Security group of the ECS host instance. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.serverTaskDefinition">serverTaskDefinition</a></code> | <code><a href="#low-cost-ecs.LowCostECSTaskDefinitionOptions">LowCostECSTaskDefinitionOptions</a></code> | Task definition for the server ecs task. |
 | <code><a href="#low-cost-ecs.LowCostECSProps.property.vpc">vpc</a></code> | <code>aws-cdk-lib.aws_ec2.IVpc</code> | Vpc of the ECS host instance and cluster. |
 
 ---
@@ -1199,10 +1199,10 @@ Removal policy for the file system and log group (if using default).
 ##### `securityGroup`<sup>Optional</sup> <a name="securityGroup" id="low-cost-ecs.LowCostECSProps.property.securityGroup"></a>
 
 ```typescript
-public readonly securityGroup: SecurityGroup;
+public readonly securityGroup: ISecurityGroup;
 ```
 
-- *Type:* aws-cdk-lib.aws_ec2.SecurityGroup
+- *Type:* aws-cdk-lib.aws_ec2.ISecurityGroup
 - *Default:* Creates security group with allowAllOutbound and ingress rule (ipv4, ipv6) => (tcp 80, 443).
 
 Security group of the ECS host instance.
@@ -1212,11 +1212,11 @@ Security group of the ECS host instance.
 ##### `serverTaskDefinition`<sup>Optional</sup> <a name="serverTaskDefinition" id="low-cost-ecs.LowCostECSProps.property.serverTaskDefinition"></a>
 
 ```typescript
-public readonly serverTaskDefinition: Ec2TaskDefinition;
+public readonly serverTaskDefinition: LowCostECSTaskDefinitionOptions;
 ```
 
-- *Type:* aws-cdk-lib.aws_ecs.Ec2TaskDefinition
-- *Default:* Nginx server task definition defined in sampleServerTask()
+- *Type:* <a href="#low-cost-ecs.LowCostECSTaskDefinitionOptions">LowCostECSTaskDefinitionOptions</a>
+- *Default:* Nginx server task definition defined in createSampleTaskDefinition()
 
 Task definition for the server ecs task.
 
@@ -1232,6 +1232,56 @@ public readonly vpc: IVpc;
 - *Default:* Creates vpc with only public subnets and no NAT gateways.
 
 Vpc of the ECS host instance and cluster.
+
+---
+
+### LowCostECSTaskDefinitionOptions <a name="LowCostECSTaskDefinitionOptions" id="low-cost-ecs.LowCostECSTaskDefinitionOptions"></a>
+
+#### Initializer <a name="Initializer" id="low-cost-ecs.LowCostECSTaskDefinitionOptions.Initializer"></a>
+
+```typescript
+import { LowCostECSTaskDefinitionOptions } from 'low-cost-ecs'
+
+const lowCostECSTaskDefinitionOptions: LowCostECSTaskDefinitionOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#low-cost-ecs.LowCostECSTaskDefinitionOptions.property.containers">containers</a></code> | <code>aws-cdk-lib.aws_ecs.ContainerDefinitionOptions[]</code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECSTaskDefinitionOptions.property.taskDefinition">taskDefinition</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2TaskDefinitionProps</code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECSTaskDefinitionOptions.property.volumes">volumes</a></code> | <code>aws-cdk-lib.aws_ecs.Volume[]</code> | *No description.* |
+
+---
+
+##### `containers`<sup>Required</sup> <a name="containers" id="low-cost-ecs.LowCostECSTaskDefinitionOptions.property.containers"></a>
+
+```typescript
+public readonly containers: ContainerDefinitionOptions[];
+```
+
+- *Type:* aws-cdk-lib.aws_ecs.ContainerDefinitionOptions[]
+
+---
+
+##### `taskDefinition`<sup>Optional</sup> <a name="taskDefinition" id="low-cost-ecs.LowCostECSTaskDefinitionOptions.property.taskDefinition"></a>
+
+```typescript
+public readonly taskDefinition: Ec2TaskDefinitionProps;
+```
+
+- *Type:* aws-cdk-lib.aws_ecs.Ec2TaskDefinitionProps
+
+---
+
+##### `volumes`<sup>Optional</sup> <a name="volumes" id="low-cost-ecs.LowCostECSTaskDefinitionOptions.property.volumes"></a>
+
+```typescript
+public readonly volumes: Volume[];
+```
+
+- *Type:* aws-cdk-lib.aws_ecs.Volume[]
 
 ---
 
