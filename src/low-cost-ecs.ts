@@ -51,7 +51,7 @@ export interface LowCostECSProps extends lib.StackProps {
    *
    * @default - Creates security group with allowAllOutbound and ingress rule (ipv4, ipv6) => (tcp 80, 443).
    */
-  readonly securityGroup?: ec2.SecurityGroup;
+  readonly securityGroup?: ec2.ISecurityGroup;
 
   /**
    * Instance type of the ECS host instance.
@@ -119,7 +119,7 @@ export interface LowCostECSProps extends lib.StackProps {
    * @default - Nginx server task definition defined in sampleServerTask()
    */
   readonly serverTaskDefinition?: ecs.Ec2TaskDefinition;
-};
+}
 
 export class LowCostECS extends lib.Stack {
   readonly vpc: ec2.IVpc;
