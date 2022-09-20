@@ -116,9 +116,19 @@ export interface LowCostECSProps extends lib.StackProps {
   /**
    * Task definition for the server ecs task.
    *
-   * @default - Nginx server task definition defined in sampleServerTask()
+   * @default - Nginx server task definition defined in createSampleTaskDefinition()
    */
-  readonly serverTaskDefinition?: ecs.Ec2TaskDefinition;
+  readonly serverTaskDefinition?: TaskDefinitionOptions;
+}
+
+interface TaskDefinitionOptions extends lib.StackProps {
+  taskDefinition?: ecs.Ec2TaskDefinitionProps;
+  containers: (ecs.ContainerDefinitionOptions & {
+    containerName: string;
+    portMappings?: ecs.PortMapping[];
+    mountPoints?: ecs.MountPoint[];
+  })[];
+  volumes?: ecs.Volume[];
 }
 
 export class LowCostECS extends lib.Stack {
@@ -351,8 +361,10 @@ export class LowCostECS extends lib.Stack {
     /**
      * Server ECS task
      */
-    const serverTaskDefinition =
-      props.serverTaskDefinition ?? this.sampleSeverTask(records, logGroup);
+    const serverTaskDefinition = props.serverTaskDefinition
+      ? this.createTaskDefinition(props.serverTaskDefinition)
+      : this.createSampleTaskDefinition(records, logGroup);
+
     this.certFileSystem.grant(
       serverTaskDefinition.taskRole,
       'elasticfilesystem:ClientMount',
@@ -421,7 +433,22 @@ export class LowCostECS extends lib.Stack {
     new lib.CfnOutput(this, 'ServiceName', { value: this.service.serviceName });
   }
 
-  private sampleSeverTask(
+  private createTaskDefinition(taskDefinitionOptions: TaskDefinitionOptions) : ecs.Ec2TaskDefinition {
+    const serverTaskDefinition = new ecs.Ec2TaskDefinition(
+      this,
+      'ServerTaskDefinition',
+      taskDefinitionOptions.taskDefinition,
+    );
+    taskDefinitionOptions.containers?.forEach((props) => {
+      const container = serverTaskDefinition.addContainer(props.containerName, props);
+      container.addPortMappings(...(props.portMappings ?? []));
+      container.addMountPoints(...(props.mountPoints ?? []));
+    });
+    taskDefinitionOptions.volumes?.forEach((props) => serverTaskDefinition.addVolume(props));
+    return serverTaskDefinition;
+  }
+
+  private createSampleTaskDefinition(
     records: string[],
     logGroup: ILogGroup,
   ): ecs.Ec2TaskDefinition {

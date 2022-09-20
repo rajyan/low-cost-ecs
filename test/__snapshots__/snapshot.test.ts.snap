@@ -110,13 +110,13 @@ Object {
               "test2.rajyan.net",
             ],
             "Essential": true,
-            "Image": "certbot/dns-route53:test",
+            "Image": "certbot/dns-route53:testTag",
             "LogConfiguration": Object {
               "LogDriver": "awslogs",
               "Options": Object {
                 "awslogs-group": "test",
                 "awslogs-region": "region",
-                "awslogs-stream-prefix": "test",
+                "awslogs-stream-prefix": "testTag",
               },
             },
             "MemoryReservation": 64,
@@ -777,7 +777,7 @@ def pick(dct, *keys):
               "GroupId",
             ],
           },
-          "test",
+          "test-sg-id",
         ],
         "SpotPrice": "0.010",
         "UserData": Object {
@@ -795,8 +795,8 @@ sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.16
 sudo service iptables save
 echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
 INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:test ec2 describe-addresses --region ap-northeast-1 --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
-docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-northeast-1 --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:testTag ec2 describe-addresses --region ap-northeast-1 --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region ap-northeast-1 --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
               ],
             ],
           },
@@ -1028,7 +1028,7 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
       },
       "Type": "AWS::EC2::EIP",
     },
-    "NginxTaskDefinition76C3FF98": Object {
+    "ServerTaskDefinitionC335BC21": Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
           Object {
@@ -1038,37 +1038,22 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
                 "ContainerName": "aws-cli",
               },
             ],
-            "Environment": Array [
-              Object {
-                "Name": "SERVER_NAME",
-                "Value": "test1.rajyan.net test2.rajyan.net",
-              },
-              Object {
-                "Name": "CERT_NAME",
-                "Value": "test1.rajyan.net",
-              },
-            ],
             "Essential": true,
-            "Image": Object {
-              "Fn::Sub": "731017969493.dkr.ecr.ap-northeast-1.\${AWS::URLSuffix}/cdk-hnb659fds-[HASH REMOVED]",
-            },
-            "LogConfiguration": Object {
-              "LogDriver": "awslogs",
-              "Options": Object {
-                "awslogs-group": "test",
-                "awslogs-region": "region",
-                "awslogs-stream-prefix": "nginx-proxy",
-              },
-            },
-            "MemoryReservation": 64,
+            "Image": "test-image",
+            "Memory": 32,
             "MountPoints": Array [
+              Object {
+                "ContainerPath": "/tmp",
+                "ReadOnly": true,
+                "SourceVolume": "test-volume",
+              },
               Object {
                 "ContainerPath": "/etc/letsencrypt",
                 "ReadOnly": true,
                 "SourceVolume": "certVolume",
               },
             ],
-            "Name": "nginx",
+            "Name": "test-container",
             "PortMappings": Array [
               Object {
                 "ContainerPort": 80,
@@ -1076,8 +1061,8 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
                 "Protocol": "tcp",
               },
               Object {
-                "ContainerPort": 443,
-                "HostPort": 443,
+                "ContainerPort": 80,
+                "HostPort": 80,
                 "Protocol": "tcp",
               },
             ],
@@ -1110,13 +1095,13 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
               "-c",
             ],
             "Essential": false,
-            "Image": "amazon/aws-cli:test",
+            "Image": "amazon/aws-cli:testTag",
             "LogConfiguration": Object {
               "LogDriver": "awslogs",
               "Options": Object {
                 "awslogs-group": "test",
                 "awslogs-region": "region",
-                "awslogs-stream-prefix": "test",
+                "awslogs-stream-prefix": "testTag",
               },
             },
             "MemoryReservation": 64,
@@ -1125,22 +1110,25 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
         ],
         "ExecutionRoleArn": Object {
           "Fn::GetAtt": Array [
-            "NginxTaskDefinitionExecutionRoleF9920D6F",
+            "ServerTaskDefinitionExecutionRole12EB5AAA",
             "Arn",
           ],
         },
-        "Family": "LowCostECSStackNginxTaskDefinitionA38AB494",
+        "Family": "LowCostECSStackServerTaskDefinition63753AD9",
         "NetworkMode": "bridge",
         "RequiresCompatibilities": Array [
           "EC2",
         ],
         "TaskRoleArn": Object {
           "Fn::GetAtt": Array [
-            "NginxTaskDefinitionTaskRole4E6E78AD",
+            "ServerTaskDefinitionTaskRole97899EC4",
             "Arn",
           ],
         },
         "Volumes": Array [
+          Object {
+            "Name": "test-volume",
+          },
           Object {
             "EFSVolumeConfiguration": Object {
               "FilesystemId": Object {
@@ -1153,35 +1141,27 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC": Object {
+    "ServerTaskDefinitionExecutionRole12EB5AAA": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServerTaskDefinitionExecutionRoleDefaultPolicy8E08E6CD": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
-            Object {
-              "Action": Array [
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ecr:ap-northeast-1:731017969493:repository/cdk-hnb659fds-container-assets-731017969493-ap-northeast-1",
-                  ],
-                ],
-              },
-            },
-            Object {
-              "Action": "ecr:GetAuthorizationToken",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
             Object {
               "Action": Array [
                 "logs:CreateLogStream",
@@ -1193,16 +1173,16 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC",
+        "PolicyName": "ServerTaskDefinitionExecutionRoleDefaultPolicy8E08E6CD",
         "Roles": Array [
           Object {
-            "Ref": "NginxTaskDefinitionExecutionRoleF9920D6F",
+            "Ref": "ServerTaskDefinitionExecutionRole12EB5AAA",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "NginxTaskDefinitionExecutionRoleF9920D6F": Object {
+    "ServerTaskDefinitionTaskRole97899EC4": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -1219,24 +1199,7 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
       },
       "Type": "AWS::IAM::Role",
     },
-    "NginxTaskDefinitionTaskRole4E6E78AD": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED": Object {
+    "ServerTaskDefinitionTaskRoleDefaultPolicyCAC579D5": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -1314,10 +1277,10 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED",
+        "PolicyName": "ServerTaskDefinitionTaskRoleDefaultPolicyCAC579D5",
         "Roles": Array [
           Object {
-            "Ref": "NginxTaskDefinitionTaskRole4E6E78AD",
+            "Ref": "ServerTaskDefinitionTaskRole97899EC4",
           },
         ],
       },
@@ -1345,7 +1308,7 @@ docker run --net=host amazon/aws-cli:test ec2 associate-address --region ap-nort
         "LaunchType": "EC2",
         "SchedulingStrategy": "REPLICA",
         "TaskDefinition": Object {
-          "Ref": "NginxTaskDefinition76C3FF98",
+          "Ref": "ServerTaskDefinitionC335BC21",
         },
       },
       "Type": "AWS::ECS::Service",
