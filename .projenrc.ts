@@ -44,6 +44,13 @@ const project = new awscdk.AwsCdkConstructLibrary({
 });
 
 project.tsconfigDev.addInclude('examples/**/*.ts');
+
+// Remove '--updateSnapshot' from test task
+// Work around until https://github.com/projen/projen/issues/1144 is solved
+const testTask = project.tasks.tryFind('test');
+const newTestCommand = testTask!.steps[0]!.exec!.replace(' --updateSnapshot', '');
+testTask!.reset(newTestCommand);
+
 // workaround until fixed https://youtrack.jetbrains.com/issue/WEB-57089/ESLint823-TypeError-thislibOptionsparse-is-not-a-function
 project.addDevDeps('eslint@8.22.0');
 
