@@ -2,8 +2,11 @@ process.env.CDK_DEFAULT_ACCOUNT = 'test-account';
 process.env.CDK_DEFAULT_REGION = 'test-region';
 
 import { Template } from 'aws-cdk-lib/assertions';
+// @ts-ignore
 import { allPropsStack } from '../examples/all-props';
+// @ts-ignore
 import { autoscalingStack } from '../examples/autoscaling';
+// @ts-ignore
 import { minimumStack } from '../examples/minimum';
 
 expect.addSnapshotSerializer({
