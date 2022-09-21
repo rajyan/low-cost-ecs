@@ -1,5 +1,6 @@
 import { App } from 'aws-cdk-lib';
 import { Match, Template } from 'aws-cdk-lib/assertions';
+import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { LowCostECS } from '../lib';
 
 test('stack with minimum props', () => {
@@ -87,6 +88,10 @@ test('stack with minimum props', () => {
           ReadOnly: true,
           SourceVolume: 'certVolume',
         }],
+        DependsOn: [{
+          Condition: 'COMPLETE',
+          ContainerName: 'aws-cli',
+        }],
       },
       {
         Name: 'aws-cli',
@@ -117,20 +122,142 @@ test('stack with minimum props', () => {
   });
 });
 
-test('stack without default container', () => {
-  const app = new App();
-  const stack = new LowCostECS(app, 'LowCostECS', {
-    env: {
-      account: 'test-account',
-      region: 'test-region',
-    },
-    hostedZoneDomain: 'test.rajyan.net',
-    email: 'test@email.com',
-    serverTaskDefinition: {
-      containers: [],
-    },
+describe('server task definition props', () => {
+  it('can add a essential container', () => {
+    const app = new App();
+    const stack = new LowCostECS(app, 'LowCostECS', {
+      env: {
+        account: 'test-account',
+        region: 'test-region',
+      },
+      hostedZoneDomain: 'test.rajyan.net',
+      email: 'test@email.com',
+      serverTaskDefinition: {
+        containers: [{
+          containerName: 'test',
+          image: ContainerImage.fromRegistry('test-image'),
+          memoryReservationMiB: 64,
+          essential: true,
+        }],
+      },
+    });
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::ECS::TaskDefinition', {
+      ContainerDefinitions: [
+        {
+          Name: 'test',
+          Image: 'test-image',
+          Essential: true,
+          MemoryReservation: 64,
+        },
+        {
+          Name: 'aws-cli',
+          Essential: false,
+          Image: 'amazon/aws-cli:latest',
+        },
+      ],
+    });
   });
-  expect(() => {
-    Template.fromStack(stack);
-  }).toThrow(new Error('Validation failed with the following errors:\n  [LowCostECS/Service] A TaskDefinition must have at least one essential container'));
+
+  it('creates a container name if not set', () => {
+    const app = new App();
+    const stack = new LowCostECS(app, 'LowCostECS', {
+      env: {
+        account: 'test-account',
+        region: 'test-region',
+      },
+      hostedZoneDomain: 'test.rajyan.net',
+      email: 'test@email.com',
+      serverTaskDefinition: {
+        containers: [{
+          image: ContainerImage.fromRegistry('test-image'),
+          memoryReservationMiB: 64,
+          essential: true,
+        }],
+      },
+    });
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::ECS::TaskDefinition', {
+      ContainerDefinitions: [
+        {
+          Name: 'container0',
+          Image: 'test-image',
+          MemoryReservation: 64,
+          Essential: true,
+        },
+        {
+          Name: 'aws-cli',
+          Essential: false,
+          Image: 'amazon/aws-cli:latest',
+        },
+      ],
+    });
+  });
+
+  it('can set a port mapping for container', () => {
+    const app = new App();
+    const stack = new LowCostECS(app, 'LowCostECS', {
+      env: {
+        account: 'test-account',
+        region: 'test-region',
+      },
+      hostedZoneDomain: 'test.rajyan.net',
+      email: 'test@email.com',
+      serverTaskDefinition: {
+        containers: [{
+          image: ContainerImage.fromRegistry('test-image'),
+          memoryReservationMiB: 64,
+          essential: true,
+          portMappings: [{
+            containerPort: 443,
+            hostPort: 443,
+          }],
+        }],
+      },
+    });
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::ECS::TaskDefinition', {
+      ContainerDefinitions: [
+        {
+          Name: 'container0',
+          Image: 'test-image',
+          MemoryReservation: 64,
+          Essential: true,
+          PortMappings: [
+            {
+              ContainerPort: 443,
+              HostPort: 443,
+              Protocol: 'tcp',
+            },
+          ],
+        },
+        {
+          Name: 'aws-cli',
+          Essential: false,
+          Image: 'amazon/aws-cli:latest',
+        },
+      ],
+    });
+  });
+
+  it('throws an error if no default container', () => {
+    const app = new App();
+    expect(() => {
+      new LowCostECS(app, 'LowCostECS', {
+        env: {
+          account: 'test-account',
+          region: 'test-region',
+        },
+        hostedZoneDomain: 'test.rajyan.net',
+        email: 'test@email.com',
+        serverTaskDefinition: {
+          containers: [{
+            containerName: 'test-not-essential',
+            image: ContainerImage.fromRegistry('test-image'),
+            essential: false,
+          }],
+        },
+      });
+    }).toThrow(new Error('defaultContainer is required for serverTaskDefinition. Add at least one essential container.'));
+  });
 });

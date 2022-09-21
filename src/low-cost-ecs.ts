@@ -361,6 +361,10 @@ export class LowCostECS extends lib.Stack {
       ? this.createTaskDefinition(props.serverTaskDefinition)
       : this.createSampleTaskDefinition(records, logGroup);
 
+    if (!serverTaskDefinition.defaultContainer) {
+      throw new Error('defaultContainer is required for serverTaskDefinition. Add at least one essential container.');
+    }
+
     this.certFileSystem.grant(
       serverTaskDefinition.taskRole,
       'elasticfilesystem:ClientMount',
@@ -371,7 +375,7 @@ export class LowCostECS extends lib.Stack {
         fileSystemId: this.certFileSystem.fileSystemId,
       },
     });
-    serverTaskDefinition.defaultContainer?.addMountPoints({
+    serverTaskDefinition.defaultContainer.addMountPoints({
       sourceVolume: 'certVolume',
       containerPath: '/etc/letsencrypt',
       readOnly: true,
@@ -380,7 +384,7 @@ export class LowCostECS extends lib.Stack {
     /**
      * AWS cli container to execute certbot sfn before the default container startup.
      */
-    serverTaskDefinition.defaultContainer?.addContainerDependencies({
+    serverTaskDefinition.defaultContainer.addContainerDependencies({
       container: serverTaskDefinition.addContainer('AWSCliContainer', {
         image: ecs.ContainerImage.fromRegistry(`amazon/aws-cli:${awsCliTag}`),
         containerName: 'aws-cli',
@@ -435,11 +439,10 @@ export class LowCostECS extends lib.Stack {
       'ServerTaskDefinition',
       taskDefinitionOptions.taskDefinition,
     );
-    taskDefinitionOptions.containers?.forEach((props, index) => {
-      const container = serverTaskDefinition.addContainer(props.containerName ?? `container${index}`, props);
-      container.addPortMappings(...(props.portMappings ?? []));
+    taskDefinitionOptions.containers.forEach((containerDefinition, index) => {
+      serverTaskDefinition.addContainer(containerDefinition.containerName ?? `container${index}`, containerDefinition);
     });
-    taskDefinitionOptions.volumes?.forEach((props) => serverTaskDefinition.addVolume(props));
+    taskDefinitionOptions.volumes?.forEach((volume) => serverTaskDefinition.addVolume(volume));
     return serverTaskDefinition;
   }
 

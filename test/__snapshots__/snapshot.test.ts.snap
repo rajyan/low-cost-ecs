@@ -1065,11 +1065,6 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
                 "HostPort": 80,
                 "Protocol": "tcp",
               },
-              Object {
-                "ContainerPort": 80,
-                "HostPort": 80,
-                "Protocol": "tcp",
-              },
             ],
           },
           Object {
