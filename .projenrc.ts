@@ -52,7 +52,4 @@ const testTask = project.tasks.tryFind('test');
 const newTestCommand = testTask!.steps[0]!.exec!.replace(' --updateSnapshot', '');
 testTask!.reset(newTestCommand);
 
-// workaround until fixed https://youtrack.jetbrains.com/issue/WEB-57089/ESLint823-TypeError-thislibOptionsparse-is-not-a-function
-project.addDevDeps('eslint@8.22.0');
-
 project.synth();
