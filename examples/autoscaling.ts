@@ -1,20 +1,22 @@
-import { App } from 'aws-cdk-lib';
+import { App, Stack } from 'aws-cdk-lib';
 import { Schedule } from 'aws-cdk-lib/aws-autoscaling';
 import { LowCostECS } from '../src';
 
 const app = new App();
-
-export const autoscalingStack = new LowCostECS(app, 'LowCostECSStack', {
+const stack = new Stack(app, 'TestStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
+});
+
+export const autoscaling = new LowCostECS(stack, 'LowCostECS', {
   hostedZoneDomain: 'rajyan.net',
   recordDomainNames: ['test1.rajyan.net', 'test2.rajyan.net'],
   email: 'kitakita7617@gmail.com',
   hostInstanceSpotPrice: '0.0050',
 });
-autoscalingStack.hostAutoScalingGroup.scaleOnSchedule('IncreaseAtMorning', {
+autoscaling.hostAutoScalingGroup.scaleOnSchedule('IncreaseAtMorning', {
   timeZone: 'Asia/Tokyo',
   schedule: Schedule.cron({
     minute: '0',
@@ -22,7 +24,7 @@ autoscalingStack.hostAutoScalingGroup.scaleOnSchedule('IncreaseAtMorning', {
   }),
   desiredCapacity: 1,
 });
-autoscalingStack.hostAutoScalingGroup.scaleOnSchedule('DecreaseAtNight', {
+autoscaling.hostAutoScalingGroup.scaleOnSchedule('DecreaseAtNight', {
   timeZone: 'Asia/Tokyo',
   schedule: Schedule.cron({
     minute: '0',

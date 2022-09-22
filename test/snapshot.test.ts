@@ -1,13 +1,15 @@
+import { Stack } from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
+
 process.env.CDK_DEFAULT_ACCOUNT = 'test-account';
 process.env.CDK_DEFAULT_REGION = 'test-region';
 
-import { Template } from 'aws-cdk-lib/assertions';
 // @ts-ignore
-import { allPropsStack } from '../examples/all-props';
+import { allProps } from '../examples/all-props';
 // @ts-ignore
-import { autoscalingStack } from '../examples/autoscaling';
+import { autoscaling } from '../examples/autoscaling';
 // @ts-ignore
-import { minimumStack } from '../examples/minimum';
+import { minimum } from '../examples/minimum';
 
 expect.addSnapshotSerializer({
   test: (val) => typeof val === 'string',
@@ -22,7 +24,7 @@ expect.addSnapshotSerializer({
 });
 
 describe('Test snapshot of examples', () => {
-  test('minimum', () => expect(Template.fromStack(minimumStack)).toMatchSnapshot());
-  test('all props', () => expect(Template.fromStack(allPropsStack)).toMatchSnapshot());
-  test('autoscaling', () => expect(Template.fromStack(autoscalingStack)).toMatchSnapshot());
+  test('minimum', () => expect(Template.fromStack(Stack.of(minimum))).toMatchSnapshot());
+  test('all props', () => expect(Template.fromStack(Stack.of(allProps))).toMatchSnapshot());
+  test('autoscaling', () => expect(Template.fromStack(Stack.of(autoscaling))).toMatchSnapshot());
 });

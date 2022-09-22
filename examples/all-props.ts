@@ -12,11 +12,7 @@ const stack = new Stack(app, 'TestStack', {
   },
 });
 
-export const allPropsStack = new LowCostECS(app, 'LowCostECSStack', {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-  },
+export const allProps = new LowCostECS(stack, 'LowCostECS', {
   hostedZoneDomain: 'rajyan.net',
   email: 'kitakita7617@gmail.com',
   awsCliDockerTag: 'testTag',

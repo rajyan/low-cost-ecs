@@ -14,7 +14,7 @@ import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
 import * as sfn_tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
 
-export interface LowCostECSProps extends lib.StackProps {
+export interface LowCostECSProps {
   /**
    * Domain name of the hosted zone.
    */
@@ -127,19 +127,21 @@ export interface LowCostECSTaskDefinitionOptions {
   readonly volumes?: ecs.Volume[];
 }
 
-export class LowCostECS extends lib.Stack {
+export class LowCostECS extends Construct {
   readonly vpc: ec2.IVpc;
   readonly hostAutoScalingGroup: AutoScalingGroup;
   readonly certFileSystem: FileSystem;
+  readonly topic: Topic;
   readonly cluster: ecs.Cluster;
+  readonly serverTaskDefinition: ecs.Ec2TaskDefinition;
   readonly service: ecs.Ec2Service;
 
   constructor(scope: Construct, id: string, props: LowCostECSProps) {
-    super(scope, id, props);
+    super(scope, id);
 
     this.vpc =
       props.vpc ??
-      new ec2.Vpc(this, 'Vpc', {
+      new ec2.Vpc(scope, 'Vpc', {
         natGateways: 0,
         subnetConfiguration: [
           {
@@ -149,7 +151,7 @@ export class LowCostECS extends lib.Stack {
         ],
       });
 
-    this.cluster = new ecs.Cluster(this, 'Cluster', {
+    this.cluster = new ecs.Cluster(scope, 'Cluster', {
       vpc: this.vpc,
       containerInsights: props.containerInsights,
     });
@@ -170,6 +172,7 @@ export class LowCostECS extends lib.Stack {
     });
 
     if (props.securityGroup) {
+      this.hostAutoScalingGroup.node.tryRemoveChild('InstanceSecurityGroup');
       this.hostAutoScalingGroup.addSecurityGroup(props.securityGroup);
     } else {
       this.hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(80));
@@ -321,9 +324,9 @@ export class LowCostECS extends lib.Stack {
      * Schedule Certbot certificate create/renew on Step Functions
      * Sends email notification on certbot failure
      */
-    const topic = new Topic(this, 'Topic');
+    this.topic = new Topic(this, 'Topic');
     new Subscription(this, 'EmailSubscription', {
-      topic: topic,
+      topic: this.topic,
       protocol: SubscriptionProtocol.EMAIL,
       endpoint: props.email,
     });
@@ -336,7 +339,7 @@ export class LowCostECS extends lib.Stack {
     });
     certbotRunTask.addCatch(
       new sfn_tasks.SnsPublish(this, 'SendEmailOnFailure', {
-        topic: topic,
+        topic: this.topic,
         message: sfn.TaskInput.fromJsonPathAt('$'),
       }).next(new sfn.Fail(this, 'Fail')),
     );
@@ -357,25 +360,25 @@ export class LowCostECS extends lib.Stack {
     /**
      * Server ECS task
      */
-    const serverTaskDefinition = props.serverTaskDefinition
+    this.serverTaskDefinition = props.serverTaskDefinition
       ? this.createTaskDefinition(props.serverTaskDefinition)
       : this.createSampleTaskDefinition(records, logGroup);
 
-    if (!serverTaskDefinition.defaultContainer) {
+    if (!this.serverTaskDefinition.defaultContainer) {
       throw new Error('defaultContainer is required for serverTaskDefinition. Add at least one essential container.');
     }
 
     this.certFileSystem.grant(
-      serverTaskDefinition.taskRole,
+      this.serverTaskDefinition.taskRole,
       'elasticfilesystem:ClientMount',
     );
-    serverTaskDefinition.addVolume({
+    this.serverTaskDefinition.addVolume({
       name: 'certVolume',
       efsVolumeConfiguration: {
         fileSystemId: this.certFileSystem.fileSystemId,
       },
     });
-    serverTaskDefinition.defaultContainer.addMountPoints({
+    this.serverTaskDefinition.defaultContainer.addMountPoints({
       sourceVolume: 'certVolume',
       containerPath: '/etc/letsencrypt',
       readOnly: true,
@@ -384,8 +387,8 @@ export class LowCostECS extends lib.Stack {
     /**
      * AWS cli container to execute certbot sfn before the default container startup.
      */
-    serverTaskDefinition.defaultContainer.addContainerDependencies({
-      container: serverTaskDefinition.addContainer('AWSCliContainer', {
+    this.serverTaskDefinition.defaultContainer.addContainerDependencies({
+      container: this.serverTaskDefinition.addContainer('AWSCliContainer', {
         image: ecs.ContainerImage.fromRegistry(`amazon/aws-cli:${awsCliTag}`),
         containerName: 'aws-cli',
         memoryReservationMiB: 64,
@@ -410,14 +413,14 @@ export class LowCostECS extends lib.Stack {
       condition: ecs.ContainerDependencyCondition.COMPLETE,
     });
     certbotStateMachine.grantExecution(
-      serverTaskDefinition.taskRole,
+      this.serverTaskDefinition.taskRole,
       'states:DescribeExecution',
     );
-    certbotStateMachine.grantStartExecution(serverTaskDefinition.taskRole);
+    certbotStateMachine.grantStartExecution(this.serverTaskDefinition.taskRole);
 
     this.service = new ecs.Ec2Service(this, 'Service', {
       cluster: this.cluster,
-      taskDefinition: serverTaskDefinition,
+      taskDefinition: this.serverTaskDefinition,
       desiredCount: 1,
       minHealthyPercent: 0,
       maxHealthyPercent: 100,
