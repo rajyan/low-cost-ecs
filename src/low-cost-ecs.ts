@@ -116,7 +116,7 @@ export interface LowCostECSProps {
   /**
    * Task definition for the server ecs task.
    *
-   * @default - Nginx server task definition defined in createSampleTaskDefinition()
+   * @default - Nginx server task definition defined in sampleTaskDefinition()
    */
   readonly serverTaskDefinition?: LowCostECSTaskDefinitionOptions;
 }
@@ -360,9 +360,7 @@ export class LowCostECS extends Construct {
     /**
      * Server ECS task
      */
-    this.serverTaskDefinition = props.serverTaskDefinition
-      ? this.createTaskDefinition(props.serverTaskDefinition)
-      : this.createSampleTaskDefinition(records, logGroup);
+    this.serverTaskDefinition = this.createTaskDefinition(props.serverTaskDefinition ?? this.sampleTaskDefinition(records, logGroup));
 
     if (!this.serverTaskDefinition.defaultContainer) {
       throw new Error('defaultContainer is required for serverTaskDefinition. Add at least one essential container.');
@@ -431,7 +429,7 @@ export class LowCostECS extends Construct {
     });
 
     new lib.CfnOutput(this, 'PublicIpAddress', { value: hostInstanceIp.ref });
-    new lib.CfnOutput(this, 'certbotStateMachineName', { value: certbotStateMachine.stateMachineName });
+    new lib.CfnOutput(this, 'CertbotStateMachineName', { value: certbotStateMachine.stateMachineName });
     new lib.CfnOutput(this, 'ClusterName', { value: this.cluster.clusterName });
     new lib.CfnOutput(this, 'ServiceName', { value: this.service.serviceName });
   }
@@ -449,44 +447,37 @@ export class LowCostECS extends Construct {
     return serverTaskDefinition;
   }
 
-  private createSampleTaskDefinition(
+  private sampleTaskDefinition(
     records: string[],
     logGroup: ILogGroup,
-  ): ecs.Ec2TaskDefinition {
-    const nginxTaskDefinition = new ecs.Ec2TaskDefinition(
-      this,
-      'NginxTaskDefinition',
-    );
-    const nginxContainer = nginxTaskDefinition.addContainer('NginxContainer', {
-      image: ecs.ContainerImage.fromAsset(
-        path.join(__dirname, '../examples/containers/nginx'),
-      ),
-      containerName: 'nginx',
-      memoryReservationMiB: 64,
-      essential: true,
-      environment: {
-        SERVER_NAME: records.join(' '),
-        CERT_NAME: records[0],
-      },
-      logging: ecs.LogDrivers.awsLogs({
-        logGroup: logGroup,
-        streamPrefix: 'nginx-proxy',
-      }),
-    });
-
-    nginxContainer.addPortMappings(
-      {
-        hostPort: 80,
-        containerPort: 80,
-        protocol: ecs.Protocol.TCP,
-      },
-      {
-        hostPort: 443,
-        containerPort: 443,
-        protocol: ecs.Protocol.TCP,
-      },
-    );
-
-    return nginxTaskDefinition;
+  ): LowCostECSTaskDefinitionOptions {
+    return {
+      containers: [{
+        image: ecs.ContainerImage.fromAsset(
+          path.join(__dirname, '../examples/containers/nginx'),
+        ),
+        containerName: 'nginx',
+        memoryReservationMiB: 64,
+        essential: true,
+        environment: {
+          SERVER_NAME: records.join(' '),
+          CERT_NAME: records[0],
+        },
+        logging: ecs.LogDrivers.awsLogs({
+          logGroup: logGroup,
+          streamPrefix: 'sample',
+        }),
+        portMappings: [{
+          hostPort: 80,
+          containerPort: 80,
+          protocol: ecs.Protocol.TCP,
+        },
+        {
+          hostPort: 443,
+          containerPort: 443,
+          protocol: ecs.Protocol.TCP,
+        }],
+      }],
+    };
   }
 }
