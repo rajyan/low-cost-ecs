@@ -1,15 +1,16 @@
-import { App } from 'aws-cdk-lib';
+import { Stack } from 'aws-cdk-lib';
 import { Match, Template } from 'aws-cdk-lib/assertions';
 import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { LowCostECS } from '../lib';
 
 test('stack with minimum props', () => {
-  const app = new App();
-  const stack = new LowCostECS(app, 'LowCostECS', {
+  const stack = new Stack(undefined, 'TestStack', {
     env: {
       account: 'test-account',
       region: 'test-region',
     },
+  });
+  new LowCostECS(stack, 'LowCostECS', {
     hostedZoneDomain: 'test.rajyan.net',
     email: 'test@email.com',
   });
@@ -124,12 +125,13 @@ test('stack with minimum props', () => {
 
 describe('server task definition props', () => {
   it('can add a essential container', () => {
-    const app = new App();
-    const stack = new LowCostECS(app, 'LowCostECS', {
+    const stack = new Stack(undefined, 'TestStack', {
       env: {
         account: 'test-account',
         region: 'test-region',
       },
+    });
+    new LowCostECS(stack, 'LowCostECS', {
       hostedZoneDomain: 'test.rajyan.net',
       email: 'test@email.com',
       serverTaskDefinition: {
@@ -160,12 +162,13 @@ describe('server task definition props', () => {
   });
 
   it('creates a container name if not set', () => {
-    const app = new App();
-    const stack = new LowCostECS(app, 'LowCostECS', {
+    const stack = new Stack(undefined, 'TestStack', {
       env: {
         account: 'test-account',
         region: 'test-region',
       },
+    });
+    new LowCostECS(stack, 'LowCostECS', {
       hostedZoneDomain: 'test.rajyan.net',
       email: 'test@email.com',
       serverTaskDefinition: {
@@ -195,12 +198,13 @@ describe('server task definition props', () => {
   });
 
   it('can set a port mapping for container', () => {
-    const app = new App();
-    const stack = new LowCostECS(app, 'LowCostECS', {
+    const stack = new Stack(undefined, 'TestStack', {
       env: {
         account: 'test-account',
         region: 'test-region',
       },
+    });
+    new LowCostECS(stack, 'LowCostECS', {
       hostedZoneDomain: 'test.rajyan.net',
       email: 'test@email.com',
       serverTaskDefinition: {
@@ -241,13 +245,14 @@ describe('server task definition props', () => {
   });
 
   it('throws an error if no default container', () => {
-    const app = new App();
+    const stack = new Stack(undefined, 'TestStack', {
+      env: {
+        account: 'test-account',
+        region: 'test-region',
+      },
+    });
     expect(() => {
-      new LowCostECS(app, 'LowCostECS', {
-        env: {
-          account: 'test-account',
-          region: 'test-region',
-        },
+      new LowCostECS(stack, 'LowCostECS', {
         hostedZoneDomain: 'test.rajyan.net',
         email: 'test@email.com',
         serverTaskDefinition: {

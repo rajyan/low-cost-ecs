@@ -3,28 +3,28 @@
 exports[`Test snapshot of examples all props 1`] = `
 Object {
   "Outputs": Object {
-    "ClusterName": Object {
+    "LowCostECSClusterName647E1020": Object {
       "Value": Object {
         "Ref": "ClusterEB0386A7",
       },
     },
-    "PublicIpAddress": Object {
+    "LowCostECSPublicIpAddressA02E4592": Object {
       "Value": Object {
-        "Ref": "HostInstanceIp",
+        "Ref": "LowCostECSHostInstanceIp2CB96CE8",
       },
     },
-    "ServiceName": Object {
+    "LowCostECSServiceNameB1505605": Object {
       "Value": Object {
         "Fn::GetAtt": Array [
-          "ServiceD69D759B",
+          "LowCostECSService95E677AB",
           "Name",
         ],
       },
     },
-    "certbotStateMachineName": Object {
+    "LowCostECScertbotStateMachineNameEF0D4588": Object {
       "Value": Object {
         "Fn::GetAtt": Array [
-          "StateMachine2E01A3A5",
+          "LowCostECSStateMachine236A22ED",
           "Name",
         ],
       },
@@ -38,236 +38,6 @@ Object {
     },
   },
   "Resources": Object {
-    "ARecordtest1rajyannet8E51D089": Object {
-      "Properties": Object {
-        "HostedZoneId": "DUMMY",
-        "Name": "test1.rajyan.net.",
-        "ResourceRecords": Array [
-          Object {
-            "Ref": "HostInstanceIp",
-          },
-        ],
-        "TTL": "1800",
-        "Type": "A",
-      },
-      "Type": "AWS::Route53::RecordSet",
-    },
-    "ARecordtest2rajyannet5EBC02CB": Object {
-      "Properties": Object {
-        "HostedZoneId": "DUMMY",
-        "Name": "test2.rajyan.net.",
-        "ResourceRecords": Array [
-          Object {
-            "Ref": "HostInstanceIp",
-          },
-        ],
-        "TTL": "1800",
-        "Type": "A",
-      },
-      "Type": "AWS::Route53::RecordSet",
-    },
-    "CertbotScheduleRuleBCE26D73": Object {
-      "Properties": Object {
-        "ScheduleExpression": "rate(10 days)",
-        "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Ref": "StateMachine2E01A3A5",
-            },
-            "Id": "Target0",
-            "RoleArn": Object {
-              "Fn::GetAtt": Array [
-                "StateMachineEventsRoleDBCDECD1",
-                "Arn",
-              ],
-            },
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "CertbotTaskDefinitionE960D6F7": Object {
-      "Properties": Object {
-        "ContainerDefinitions": Array [
-          Object {
-            "Command": Array [
-              "certonly",
-              "--verbose",
-              "--preferred-challenges=dns-01",
-              "--dns-route53",
-              "--dns-route53-propagation-seconds=300",
-              "--non-interactive",
-              "--agree-tos",
-              "--expand",
-              "-m",
-              "kitakita7617@gmail.com",
-              "--cert-name",
-              "test1.rajyan.net",
-              "-d",
-              "test1.rajyan.net",
-              "-d",
-              "test2.rajyan.net",
-            ],
-            "Essential": true,
-            "Image": "certbot/dns-route53:testTag",
-            "LogConfiguration": Object {
-              "LogDriver": "awslogs",
-              "Options": Object {
-                "awslogs-group": "test",
-                "awslogs-region": "region",
-                "awslogs-stream-prefix": "testTag",
-              },
-            },
-            "MemoryReservation": 64,
-            "MountPoints": Array [
-              Object {
-                "ContainerPath": "/etc/letsencrypt",
-                "ReadOnly": false,
-                "SourceVolume": "certVolume",
-              },
-            ],
-            "Name": "certbot",
-          },
-        ],
-        "ExecutionRoleArn": Object {
-          "Fn::GetAtt": Array [
-            "CertbotTaskDefinitionExecutionRole2F04CE67",
-            "Arn",
-          ],
-        },
-        "Family": "LowCostECSStackCertbotTaskDefinitionE5EFEBED",
-        "NetworkMode": "bridge",
-        "RequiresCompatibilities": Array [
-          "EC2",
-        ],
-        "TaskRoleArn": Object {
-          "Fn::GetAtt": Array [
-            "CertbotTaskDefinitionTaskRoleE5A17CA8",
-            "Arn",
-          ],
-        },
-        "Volumes": Array [
-          Object {
-            "EFSVolumeConfiguration": Object {
-              "FilesystemId": Object {
-                "Ref": "FileSystem8A8E25C0",
-              },
-            },
-            "Name": "certVolume",
-          },
-        ],
-      },
-      "Type": "AWS::ECS::TaskDefinition",
-    },
-    "CertbotTaskDefinitionExecutionRole2F04CE67": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": "arn:aws:logs:region:account-id:log-group:test:*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3",
-        "Roles": Array [
-          Object {
-            "Ref": "CertbotTaskDefinitionExecutionRole2F04CE67",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "route53:ListHostedZones",
-                "route53:GetChange",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            Object {
-              "Action": "route53:ChangeResourceRecordSets",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":route53:::hostedzone/DUMMY",
-                  ],
-                ],
-              },
-            },
-            Object {
-              "Action": "elasticfilesystem:ClientWrite",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "FileSystem8A8E25C0",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9",
-        "Roles": Array [
-          Object {
-            "Ref": "CertbotTaskDefinitionTaskRoleE5A17CA8",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CertbotTaskDefinitionTaskRoleE5A17CA8": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "ClusterEB0386A7": Object {
       "Properties": Object {
         "ClusterSettings": Array [
@@ -290,18 +60,18 @@ Object {
           Object {
             "Key": "Name",
             "PropagateAtLaunch": true,
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
         "VPCZoneIdentifier": Array [
           Object {
-            "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPublicSubnet1Subnet5C2D37C4FFA2B456",
+            "Ref": "VpcPublicSubnet1Subnet5C2D37C4",
           },
           Object {
-            "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPublicSubnet2Subnet691E08A351552740",
+            "Ref": "VpcPublicSubnet2Subnet691E08A3",
           },
           Object {
-            "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPublicSubnet3SubnetBE12F0B65CC33245",
+            "Ref": "VpcPublicSubnet3SubnetBE12F0B6",
           },
         ],
       },
@@ -432,14 +202,14 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
         "Timeout": 310,
       },
       "Type": "AWS::Lambda::Function",
     },
-    "ClusterHostInstanceCapacityDrainECSHookFunctionAllowInvokeLowCostECSStackClusterHostInstanceCapacityLifecycleHookDrainHookTopicFADE73FE7DA1F73C": Object {
+    "ClusterHostInstanceCapacityDrainECSHookFunctionAllowInvokeTestStackClusterHostInstanceCapacityLifecycleHookDrainHookTopicF2E65AC531E91D26": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
@@ -486,7 +256,7 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -653,7 +423,7 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -727,7 +497,7 @@ def pick(dct, *keys):
     },
     "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF": Object {
       "Properties": Object {
-        "GroupDescription": "LowCostECSStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
+        "GroupDescription": "TestStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
         "SecurityGroupEgress": Array [
           Object {
             "CidrIp": "0.0.0.0/0",
@@ -738,18 +508,18 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
         "VpcId": Object {
-          "Fn::ImportValue": "TestStack:ExportsOutputRefVpc8378EB38272D6E3A",
+          "Ref": "Vpc8378EB38",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "ClusterHostInstanceCapacityInstanceSecurityGroupfromLowCostECSStackFileSystemSecurityGroup61CD2DA52049FDF81316": Object {
+    "ClusterHostInstanceCapacityInstanceSecurityGroupfromTestStackLowCostECSFileSystemSecurityGroup3BACAC07204908F72F6E": Object {
       "Properties": Object {
-        "Description": "from LowCostECSStackFileSystemSecurityGroup61CD2DA5:2049",
+        "Description": "from TestStackLowCostECSFileSystemSecurityGroup3BACAC07:2049",
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
@@ -760,7 +530,7 @@ def pick(dct, *keys):
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": Object {
           "Fn::GetAtt": Array [
-            "FileSystemSecurityGroupBFA44C6B",
+            "LowCostECSFileSystemSecurityGroup7C1A7991",
             "GroupId",
           ],
         },
@@ -805,7 +575,7 @@ sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.16
 sudo service iptables save
 echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
 INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:testTag ec2 describe-addresses --region test-region --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:testTag ec2 describe-addresses --region test-region --filter Name=tag:Name,Values=TestStackLowCostECSHostInstanceIpCECE5013 --query 'Addresses[].AllocationId' --output text | head)
 docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test-region --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
               ],
             ],
@@ -855,7 +625,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -889,109 +659,346 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
       "Type": "AWS::SNS::Topic",
     },
-    "EmailSubscriptionBC065AF0": Object {
+    "LogGroupPolicyResourcePolicy6FA18555": Object {
+      "Properties": Object {
+        "PolicyDocument": "{"Statement":[{"Action":["logs:CreateLogStream","logs:PutLogEvents"],"Effect":"Allow","Principal":{"AWS":"test-account"},"Resource":"arn:aws:logs:region:account-id:log-group:test:*"},{"Action":["logs:CreateLogStream","logs:PutLogEvents"],"Effect":"Allow","Principal":{"AWS":"test-account"},"Resource":"arn:aws:logs:region:account-id:log-group:test:*"}],"Version":"2012-10-17"}",
+        "PolicyName": "TestStackLogGroupPolicy48BAD2C5",
+      },
+      "Type": "AWS::Logs::ResourcePolicy",
+    },
+    "LowCostECSARecordtest1rajyannet97B482C0": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "test1.rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "LowCostECSHostInstanceIp2CB96CE8",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "LowCostECSARecordtest2rajyannet8F8185B4": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "test2.rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "LowCostECSHostInstanceIp2CB96CE8",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "LowCostECSCertbotScheduleRule604ECD25": Object {
+      "Properties": Object {
+        "ScheduleExpression": "rate(10 days)",
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Ref": "LowCostECSStateMachine236A22ED",
+            },
+            "Id": "Target0",
+            "RoleArn": Object {
+              "Fn::GetAtt": Array [
+                "LowCostECSStateMachineEventsRoleAB571CF6",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "LowCostECSCertbotTaskDefinitionAD2990AC": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Command": Array [
+              "certonly",
+              "--verbose",
+              "--preferred-challenges=dns-01",
+              "--dns-route53",
+              "--dns-route53-propagation-seconds=300",
+              "--non-interactive",
+              "--agree-tos",
+              "--expand",
+              "-m",
+              "kitakita7617@gmail.com",
+              "--cert-name",
+              "test1.rajyan.net",
+              "-d",
+              "test1.rajyan.net",
+              "-d",
+              "test2.rajyan.net",
+            ],
+            "Essential": true,
+            "Image": "certbot/dns-route53:testTag",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": "test",
+                "awslogs-region": "region",
+                "awslogs-stream-prefix": "testTag",
+              },
+            },
+            "MemoryReservation": 64,
+            "MountPoints": Array [
+              Object {
+                "ContainerPath": "/etc/letsencrypt",
+                "ReadOnly": false,
+                "SourceVolume": "certVolume",
+              },
+            ],
+            "Name": "certbot",
+          },
+        ],
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E",
+            "Arn",
+          ],
+        },
+        "Family": "TestStackLowCostECSCertbotTaskDefinition977C5973",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EC2",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00",
+            "Arn",
+          ],
+        },
+        "Volumes": Array [
+          Object {
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "LowCostECSFileSystem847967FC",
+              },
+            },
+            "Name": "certVolume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LowCostECSCertbotTaskDefinitionExecutionRoleDefaultPolicy39733254": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:logs:region:account-id:log-group:test:*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LowCostECSCertbotTaskDefinitionExecutionRoleDefaultPolicy39733254",
+        "Roles": Array [
+          Object {
+            "Ref": "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LowCostECSCertbotTaskDefinitionTaskRoleDefaultPolicy222DE000": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "route53:ListHostedZones",
+                "route53:GetChange",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "route53:ChangeResourceRecordSets",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":route53:::hostedzone/DUMMY",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "elasticfilesystem:ClientWrite",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LowCostECSFileSystem847967FC",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LowCostECSCertbotTaskDefinitionTaskRoleDefaultPolicy222DE000",
+        "Roles": Array [
+          Object {
+            "Ref": "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LowCostECSEmailSubscription5C24A57F": Object {
       "Properties": Object {
         "Endpoint": "kitakita7617@gmail.com",
         "Protocol": "email",
         "TopicArn": Object {
-          "Ref": "TopicBFC7AF6E",
+          "Ref": "LowCostECSTopicE71E72ED",
         },
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "FileSystem8A8E25C0": Object {
+    "LowCostECSFileSystem847967FC": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
         "Encrypted": true,
         "FileSystemTags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/FileSystem",
+            "Value": "TestStack/LowCostECS/FileSystem",
           },
         ],
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Retain",
     },
-    "FileSystemEfsMountTarget1586453F0": Object {
+    "LowCostECSFileSystemEfsMountTarget1BBA308EB": Object {
       "Properties": Object {
         "FileSystemId": Object {
-          "Ref": "FileSystem8A8E25C0",
+          "Ref": "LowCostECSFileSystem847967FC",
         },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
+              "LowCostECSFileSystemSecurityGroup7C1A7991",
               "GroupId",
             ],
           },
         ],
         "SubnetId": Object {
-          "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPrivateSubnet1Subnet536B997AFD4CC940",
+          "Ref": "VpcPrivateSubnet1Subnet536B997A",
         },
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "FileSystemEfsMountTarget24B8EBB43": Object {
+    "LowCostECSFileSystemEfsMountTarget2D5EF7BBC": Object {
       "Properties": Object {
         "FileSystemId": Object {
-          "Ref": "FileSystem8A8E25C0",
+          "Ref": "LowCostECSFileSystem847967FC",
         },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
+              "LowCostECSFileSystemSecurityGroup7C1A7991",
               "GroupId",
             ],
           },
         ],
         "SubnetId": Object {
-          "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPrivateSubnet2Subnet3788AAA1380949A3",
+          "Ref": "VpcPrivateSubnet2Subnet3788AAA1",
         },
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "FileSystemEfsMountTarget37C2F9139": Object {
+    "LowCostECSFileSystemEfsMountTarget3A37833C2": Object {
       "Properties": Object {
         "FileSystemId": Object {
-          "Ref": "FileSystem8A8E25C0",
+          "Ref": "LowCostECSFileSystem847967FC",
         },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
+              "LowCostECSFileSystemSecurityGroup7C1A7991",
               "GroupId",
             ],
           },
         ],
         "SubnetId": Object {
-          "Fn::ImportValue": "TestStack:ExportsOutputRefVpcPrivateSubnet3SubnetF258B56EC7CF32DD",
+          "Ref": "VpcPrivateSubnet3SubnetF258B56E",
         },
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "FileSystemSecurityGroupBFA44C6B": Object {
+    "LowCostECSFileSystemSecurityGroup7C1A7991": Object {
       "Properties": Object {
-        "GroupDescription": "LowCostECSStack/FileSystemSecurityGroup",
+        "GroupDescription": "TestStack/LowCostECS/FileSystemSecurityGroup",
         "VpcId": Object {
-          "Fn::ImportValue": "TestStack:ExportsOutputRefVpc8378EB38272D6E3A",
+          "Ref": "Vpc8378EB38",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "FileSystemSecurityGroupfromLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201204972FE26F8": Object {
+    "LowCostECSFileSystemSecurityGroupfromTestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B92049FDC55036": Object {
       "Properties": Object {
-        "Description": "from LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "Description": "from TestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B9:2049",
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "FileSystemSecurityGroupBFA44C6B",
+            "LowCostECSFileSystemSecurityGroup7C1A7991",
             "GroupId",
           ],
         },
@@ -1006,9 +1013,9 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "FileSystemSecurityGrouptoLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC520120495D8E9EBD": Object {
+    "LowCostECSFileSystemSecurityGrouptoTestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B92049E8C52016": Object {
       "Properties": Object {
-        "Description": "to LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "Description": "to TestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B9:2049",
         "DestinationSecurityGroupId": Object {
           "Fn::GetAtt": Array [
             "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
@@ -1018,7 +1025,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "FileSystemSecurityGroupBFA44C6B",
+            "LowCostECSFileSystemSecurityGroup7C1A7991",
             "GroupId",
           ],
         },
@@ -1027,18 +1034,18 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "HostInstanceIp": Object {
+    "LowCostECSHostInstanceIp2CB96CE8": Object {
       "Properties": Object {
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStackHostInstanceIp5CA32C2B",
+            "Value": "TestStackLowCostECSHostInstanceIpCECE5013",
           },
         ],
       },
       "Type": "AWS::EC2::EIP",
     },
-    "ServerTaskDefinitionC335BC21": Object {
+    "LowCostECSServerTaskDefinitionD959764E": Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
           Object {
@@ -1078,7 +1085,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
           aws configure set output text && \\
           EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
                     Object {
-                      "Ref": "StateMachine2E01A3A5",
+                      "Ref": "LowCostECSStateMachine236A22ED",
                     },
                     " --query executionArn) && \\
           until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
@@ -1110,18 +1117,18 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
         ],
         "ExecutionRoleArn": Object {
           "Fn::GetAtt": Array [
-            "ServerTaskDefinitionExecutionRole12EB5AAA",
+            "LowCostECSServerTaskDefinitionExecutionRole56B544B3",
             "Arn",
           ],
         },
-        "Family": "LowCostECSStackServerTaskDefinition63753AD9",
+        "Family": "TestStackLowCostECSServerTaskDefinition35240CEA",
         "NetworkMode": "bridge",
         "RequiresCompatibilities": Array [
           "EC2",
         ],
         "TaskRoleArn": Object {
           "Fn::GetAtt": Array [
-            "ServerTaskDefinitionTaskRole97899EC4",
+            "LowCostECSServerTaskDefinitionTaskRole53DB453D",
             "Arn",
           ],
         },
@@ -1132,7 +1139,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
           Object {
             "EFSVolumeConfiguration": Object {
               "FilesystemId": Object {
-                "Ref": "FileSystem8A8E25C0",
+                "Ref": "LowCostECSFileSystem847967FC",
               },
             },
             "Name": "certVolume",
@@ -1141,7 +1148,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "ServerTaskDefinitionExecutionRole12EB5AAA": Object {
+    "LowCostECSServerTaskDefinitionExecutionRole56B544B3": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -1158,7 +1165,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
       },
       "Type": "AWS::IAM::Role",
     },
-    "ServerTaskDefinitionExecutionRoleDefaultPolicy8E08E6CD": Object {
+    "LowCostECSServerTaskDefinitionExecutionRoleDefaultPolicy96FB0053": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -1173,16 +1180,16 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "ServerTaskDefinitionExecutionRoleDefaultPolicy8E08E6CD",
+        "PolicyName": "LowCostECSServerTaskDefinitionExecutionRoleDefaultPolicy96FB0053",
         "Roles": Array [
           Object {
-            "Ref": "ServerTaskDefinitionExecutionRole12EB5AAA",
+            "Ref": "LowCostECSServerTaskDefinitionExecutionRole56B544B3",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "ServerTaskDefinitionTaskRole97899EC4": Object {
+    "LowCostECSServerTaskDefinitionTaskRole53DB453D": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -1199,7 +1206,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
       },
       "Type": "AWS::IAM::Role",
     },
-    "ServerTaskDefinitionTaskRoleDefaultPolicyCAC579D5": Object {
+    "LowCostECSServerTaskDefinitionTaskRoleDefaultPolicyBDF632A7": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -1208,7 +1215,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "FileSystem8A8E25C0",
+                  "LowCostECSFileSystem847967FC",
                   "Arn",
                 ],
               },
@@ -1232,7 +1239,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "StateMachine2E01A3A5",
+                              "Ref": "LowCostECSStateMachine236A22ED",
                             },
                           ],
                         },
@@ -1247,7 +1254,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
               "Action": "states:StartExecution",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "StateMachine2E01A3A5",
+                "Ref": "LowCostECSStateMachine236A22ED",
               },
             },
             Object {
@@ -1277,16 +1284,16 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "ServerTaskDefinitionTaskRoleDefaultPolicyCAC579D5",
+        "PolicyName": "LowCostECSServerTaskDefinitionTaskRoleDefaultPolicyBDF632A7",
         "Roles": Array [
           Object {
-            "Ref": "ServerTaskDefinitionTaskRole97899EC4",
+            "Ref": "LowCostECSServerTaskDefinitionTaskRole53DB453D",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "ServiceD69D759B": Object {
+    "LowCostECSService95E677AB": Object {
       "Properties": Object {
         "Cluster": Object {
           "Ref": "ClusterEB0386A7",
@@ -1308,15 +1315,15 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
         "LaunchType": "EC2",
         "SchedulingStrategy": "REPLICA",
         "TaskDefinition": Object {
-          "Ref": "ServerTaskDefinitionC335BC21",
+          "Ref": "LowCostECSServerTaskDefinitionD959764E",
         },
       },
       "Type": "AWS::ECS::Service",
     },
-    "StateMachine2E01A3A5": Object {
+    "LowCostECSStateMachine236A22ED": Object {
       "DependsOn": Array [
-        "StateMachineRoleDefaultPolicyDF1E6607",
-        "StateMachineRoleB840431D",
+        "LowCostECSStateMachineRoleDefaultPolicy7D009A46",
+        "LowCostECSStateMachineRole6D7317FD",
       ],
       "Properties": Object {
         "DefinitionString": Object {
@@ -1334,13 +1341,13 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
                   "Arn",
                 ],
               },
-              "","TaskDefinition":"LowCostECSStackCertbotTaskDefinitionE5EFEBED","LaunchType":"EC2"}},"SendEmailOnFailure":{"Next":"Fail","Type":"Task","Resource":"arn:",
+              "","TaskDefinition":"TestStackLowCostECSCertbotTaskDefinition977C5973","LaunchType":"EC2"}},"SendEmailOnFailure":{"Next":"Fail","Type":"Task","Resource":"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
               ":states:::sns:publish","Parameters":{"TopicArn":"",
               Object {
-                "Ref": "TopicBFC7AF6E",
+                "Ref": "LowCostECSTopicE71E72ED",
               },
               "","Message.$":"$"}},"Fail":{"Type":"Fail"}}}",
             ],
@@ -1348,14 +1355,14 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
         },
         "RoleArn": Object {
           "Fn::GetAtt": Array [
-            "StateMachineRoleB840431D",
+            "LowCostECSStateMachineRole6D7317FD",
             "Arn",
           ],
         },
       },
       "Type": "AWS::StepFunctions::StateMachine",
     },
-    "StateMachineEventsRoleDBCDECD1": Object {
+    "LowCostECSStateMachineEventsRoleAB571CF6": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -1372,7 +1379,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
       },
       "Type": "AWS::IAM::Role",
     },
-    "StateMachineEventsRoleDefaultPolicyFB602CA9": Object {
+    "LowCostECSStateMachineEventsRoleDefaultPolicy71755946": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -1380,22 +1387,22 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
               "Action": "states:StartExecution",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "StateMachine2E01A3A5",
+                "Ref": "LowCostECSStateMachine236A22ED",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "StateMachineEventsRoleDefaultPolicyFB602CA9",
+        "PolicyName": "LowCostECSStateMachineEventsRoleDefaultPolicy71755946",
         "Roles": Array [
           Object {
-            "Ref": "StateMachineEventsRoleDBCDECD1",
+            "Ref": "LowCostECSStateMachineEventsRoleAB571CF6",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "StateMachineRoleB840431D": Object {
+    "LowCostECSStateMachineRole6D7317FD": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -1412,7 +1419,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
       },
       "Type": "AWS::IAM::Role",
     },
-    "StateMachineRoleDefaultPolicyDF1E6607": Object {
+    "LowCostECSStateMachineRoleDefaultPolicy7D009A46": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -1431,7 +1438,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -1445,7 +1452,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -1459,7 +1466,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -1473,7 +1480,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -1493,7 +1500,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
                                   "Fn::Split": Array [
                                     ":",
                                     Object {
-                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                      "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                                     },
                                   ],
                                 },
@@ -1517,7 +1524,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
                                   "Fn::Split": Array [
                                     ":",
                                     Object {
-                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                      "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                                     },
                                   ],
                                 },
@@ -1545,13 +1552,13 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
               "Resource": Array [
                 Object {
                   "Fn::GetAtt": Array [
-                    "CertbotTaskDefinitionTaskRoleE5A17CA8",
+                    "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00",
                     "Arn",
                   ],
                 },
                 Object {
                   "Fn::GetAtt": Array [
-                    "CertbotTaskDefinitionExecutionRole2F04CE67",
+                    "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E",
                     "Arn",
                   ],
                 },
@@ -1581,23 +1588,537 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
               "Action": "sns:Publish",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "TopicBFC7AF6E",
+                "Ref": "LowCostECSTopicE71E72ED",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "StateMachineRoleDefaultPolicyDF1E6607",
+        "PolicyName": "LowCostECSStateMachineRoleDefaultPolicy7D009A46",
         "Roles": Array [
           Object {
-            "Ref": "StateMachineRoleB840431D",
+            "Ref": "LowCostECSStateMachineRole6D7317FD",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TopicBFC7AF6E": Object {
+    "LowCostECSTopicE71E72ED": Object {
       "Type": "AWS::SNS::Topic",
+    },
+    "Vpc8378EB38": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "VpcIGWD7BA715C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "VpcPrivateSubnet1DefaultRouteBE02A9ED": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "VpcPublicSubnet1NATGateway4D7517AA",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet1RouteTableB2C5B500",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPrivateSubnet1RouteTableAssociation70C59FA6": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet1RouteTableB2C5B500",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPrivateSubnet1Subnet536B997A",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPrivateSubnet1RouteTableB2C5B500": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPrivateSubnet1Subnet536B997A": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.96.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPrivateSubnet2DefaultRoute060D2087": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "VpcPublicSubnet2NATGateway9182C01D",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet2RouteTableA678073B",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPrivateSubnet2RouteTableA678073B": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPrivateSubnet2RouteTableAssociationA89CAD56": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet2RouteTableA678073B",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPrivateSubnet2Subnet3788AAA1",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPrivateSubnet2Subnet3788AAA1": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.128.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPrivateSubnet3DefaultRoute94B74F0D": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "VpcPublicSubnet3NATGateway7640CD1D",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet3RouteTableD98824C7",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPrivateSubnet3RouteTableAssociation16BDDC43": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet3RouteTableD98824C7",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPrivateSubnet3SubnetF258B56E",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPrivateSubnet3RouteTableD98824C7": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPrivateSubnet3SubnetF258B56E": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.160.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnet1DefaultRoute3DA9E72A": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet1RouteTable6C95E38E",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnet1EIPD7E02669": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "VpcPublicSubnet1NATGateway4D7517AA": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "VpcPublicSubnet1EIPD7E02669",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet1Subnet5C2D37C4",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "VpcPublicSubnet1RouteTable6C95E38E": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnet1RouteTableAssociation97140677": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet1RouteTable6C95E38E",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet1Subnet5C2D37C4",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnet1Subnet5C2D37C4": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnet2DefaultRoute97F91067": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet2RouteTable94F7E489",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnet2EIP3C605A87": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "VpcPublicSubnet2NATGateway9182C01D": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "VpcPublicSubnet2EIP3C605A87",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet2Subnet691E08A3",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "VpcPublicSubnet2RouteTable94F7E489": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnet2RouteTableAssociationDD5762D8": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet2RouteTable94F7E489",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet2Subnet691E08A3",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnet2Subnet691E08A3": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.32.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnet3DefaultRoute4697774F": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet3RouteTable93458DBB",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnet3EIP3A666A23": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet3",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "VpcPublicSubnet3NATGateway7640CD1D": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "VpcPublicSubnet3EIP3A666A23",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet3SubnetBE12F0B6",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet3",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "VpcPublicSubnet3RouteTable93458DBB": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnet3RouteTableAssociation1F1EDF02": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet3RouteTable93458DBB",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet3SubnetBE12F0B6",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnet3SubnetBE12F0B6": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.64.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "TestStack/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcVPCGWBF912B6E": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
     },
   },
   "Rules": Object {
@@ -1633,28 +2154,28 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
 exports[`Test snapshot of examples autoscaling 1`] = `
 Object {
   "Outputs": Object {
-    "ClusterName": Object {
+    "LowCostECSClusterName647E1020": Object {
       "Value": Object {
         "Ref": "ClusterEB0386A7",
       },
     },
-    "PublicIpAddress": Object {
+    "LowCostECSPublicIpAddressA02E4592": Object {
       "Value": Object {
-        "Ref": "HostInstanceIp",
+        "Ref": "LowCostECSHostInstanceIp2CB96CE8",
       },
     },
-    "ServiceName": Object {
+    "LowCostECSServiceNameB1505605": Object {
       "Value": Object {
         "Fn::GetAtt": Array [
-          "ServiceD69D759B",
+          "LowCostECSService95E677AB",
           "Name",
         ],
       },
     },
-    "certbotStateMachineName": Object {
+    "LowCostECScertbotStateMachineNameEF0D4588": Object {
       "Value": Object {
         "Fn::GetAtt": Array [
-          "StateMachine2E01A3A5",
+          "LowCostECSStateMachine236A22ED",
           "Name",
         ],
       },
@@ -1668,243 +2189,6 @@ Object {
     },
   },
   "Resources": Object {
-    "ARecordtest1rajyannet8E51D089": Object {
-      "Properties": Object {
-        "HostedZoneId": "DUMMY",
-        "Name": "test1.rajyan.net.",
-        "ResourceRecords": Array [
-          Object {
-            "Ref": "HostInstanceIp",
-          },
-        ],
-        "TTL": "1800",
-        "Type": "A",
-      },
-      "Type": "AWS::Route53::RecordSet",
-    },
-    "ARecordtest2rajyannet5EBC02CB": Object {
-      "Properties": Object {
-        "HostedZoneId": "DUMMY",
-        "Name": "test2.rajyan.net.",
-        "ResourceRecords": Array [
-          Object {
-            "Ref": "HostInstanceIp",
-          },
-        ],
-        "TTL": "1800",
-        "Type": "A",
-      },
-      "Type": "AWS::Route53::RecordSet",
-    },
-    "CertbotScheduleRuleBCE26D73": Object {
-      "Properties": Object {
-        "ScheduleExpression": "rate(60 days)",
-        "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Ref": "StateMachine2E01A3A5",
-            },
-            "Id": "Target0",
-            "RoleArn": Object {
-              "Fn::GetAtt": Array [
-                "StateMachineEventsRoleDBCDECD1",
-                "Arn",
-              ],
-            },
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "CertbotTaskDefinitionE960D6F7": Object {
-      "Properties": Object {
-        "ContainerDefinitions": Array [
-          Object {
-            "Command": Array [
-              "certonly",
-              "--verbose",
-              "--preferred-challenges=dns-01",
-              "--dns-route53",
-              "--dns-route53-propagation-seconds=300",
-              "--non-interactive",
-              "--agree-tos",
-              "--expand",
-              "-m",
-              "kitakita7617@gmail.com",
-              "--cert-name",
-              "test1.rajyan.net",
-              "-d",
-              "test1.rajyan.net",
-              "-d",
-              "test2.rajyan.net",
-            ],
-            "Essential": true,
-            "Image": "certbot/dns-route53:v1.29.0",
-            "LogConfiguration": Object {
-              "LogDriver": "awslogs",
-              "Options": Object {
-                "awslogs-group": Object {
-                  "Ref": "LogGroupF5B46931",
-                },
-                "awslogs-region": "test-region",
-                "awslogs-stream-prefix": "v1.29.0",
-              },
-            },
-            "MemoryReservation": 64,
-            "MountPoints": Array [
-              Object {
-                "ContainerPath": "/etc/letsencrypt",
-                "ReadOnly": false,
-                "SourceVolume": "certVolume",
-              },
-            ],
-            "Name": "certbot",
-          },
-        ],
-        "ExecutionRoleArn": Object {
-          "Fn::GetAtt": Array [
-            "CertbotTaskDefinitionExecutionRole2F04CE67",
-            "Arn",
-          ],
-        },
-        "Family": "LowCostECSStackCertbotTaskDefinitionE5EFEBED",
-        "NetworkMode": "bridge",
-        "RequiresCompatibilities": Array [
-          "EC2",
-        ],
-        "TaskRoleArn": Object {
-          "Fn::GetAtt": Array [
-            "CertbotTaskDefinitionTaskRoleE5A17CA8",
-            "Arn",
-          ],
-        },
-        "Volumes": Array [
-          Object {
-            "EFSVolumeConfiguration": Object {
-              "FilesystemId": Object {
-                "Ref": "FileSystem8A8E25C0",
-              },
-            },
-            "Name": "certVolume",
-          },
-        ],
-      },
-      "Type": "AWS::ECS::TaskDefinition",
-    },
-    "CertbotTaskDefinitionExecutionRole2F04CE67": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "LogGroupF5B46931",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3",
-        "Roles": Array [
-          Object {
-            "Ref": "CertbotTaskDefinitionExecutionRole2F04CE67",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "route53:ListHostedZones",
-                "route53:GetChange",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            Object {
-              "Action": "route53:ChangeResourceRecordSets",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":route53:::hostedzone/DUMMY",
-                  ],
-                ],
-              },
-            },
-            Object {
-              "Action": "elasticfilesystem:ClientWrite",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "FileSystem8A8E25C0",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9",
-        "Roles": Array [
-          Object {
-            "Ref": "CertbotTaskDefinitionTaskRoleE5A17CA8",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CertbotTaskDefinitionTaskRoleE5A17CA8": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "ClusterEB0386A7": Object {
       "Type": "AWS::ECS::Cluster",
     },
@@ -1919,7 +2203,7 @@ Object {
           Object {
             "Key": "Name",
             "PropagateAtLaunch": true,
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
         "VPCZoneIdentifier": Array [
@@ -2061,14 +2345,14 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
         "Timeout": 310,
       },
       "Type": "AWS::Lambda::Function",
     },
-    "ClusterHostInstanceCapacityDrainECSHookFunctionAllowInvokeLowCostECSStackClusterHostInstanceCapacityLifecycleHookDrainHookTopicFADE73FE7DA1F73C": Object {
+    "ClusterHostInstanceCapacityDrainECSHookFunctionAllowInvokeTestStackClusterHostInstanceCapacityLifecycleHookDrainHookTopicF2E65AC531E91D26": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
@@ -2115,7 +2399,7 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -2282,7 +2566,7 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -2356,7 +2640,7 @@ def pick(dct, *keys):
     },
     "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF": Object {
       "Properties": Object {
-        "GroupDescription": "LowCostECSStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
+        "GroupDescription": "TestStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
         "SecurityGroupEgress": Array [
           Object {
             "CidrIp": "0.0.0.0/0",
@@ -2397,7 +2681,7 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
         "VpcId": Object {
@@ -2406,9 +2690,9 @@ def pick(dct, *keys):
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "ClusterHostInstanceCapacityInstanceSecurityGroupfromLowCostECSStackFileSystemSecurityGroup61CD2DA52049FDF81316": Object {
+    "ClusterHostInstanceCapacityInstanceSecurityGroupfromTestStackLowCostECSFileSystemSecurityGroup3BACAC07204908F72F6E": Object {
       "Properties": Object {
-        "Description": "from LowCostECSStackFileSystemSecurityGroup61CD2DA5:2049",
+        "Description": "from TestStackLowCostECSFileSystemSecurityGroup3BACAC07:2049",
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
@@ -2419,7 +2703,7 @@ def pick(dct, *keys):
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": Object {
           "Fn::GetAtt": Array [
-            "FileSystemSecurityGroupBFA44C6B",
+            "LowCostECSFileSystemSecurityGroup7C1A7991",
             "GroupId",
           ],
         },
@@ -2463,7 +2747,7 @@ sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.16
 sudo service iptables save
 echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
 INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region test-region --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region test-region --filter Name=tag:Name,Values=TestStackLowCostECSHostInstanceIpCECE5013 --query 'Addresses[].AllocationId' --output text | head)
 docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-region --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
               ],
             ],
@@ -2513,7 +2797,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -2547,7 +2831,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -2575,39 +2859,276 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::AutoScaling::ScheduledAction",
     },
-    "EmailSubscriptionBC065AF0": Object {
+    "LowCostECSARecordtest1rajyannet97B482C0": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "test1.rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "LowCostECSHostInstanceIp2CB96CE8",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "LowCostECSARecordtest2rajyannet8F8185B4": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "test2.rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "LowCostECSHostInstanceIp2CB96CE8",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "LowCostECSCertbotScheduleRule604ECD25": Object {
+      "Properties": Object {
+        "ScheduleExpression": "rate(60 days)",
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Ref": "LowCostECSStateMachine236A22ED",
+            },
+            "Id": "Target0",
+            "RoleArn": Object {
+              "Fn::GetAtt": Array [
+                "LowCostECSStateMachineEventsRoleAB571CF6",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "LowCostECSCertbotTaskDefinitionAD2990AC": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Command": Array [
+              "certonly",
+              "--verbose",
+              "--preferred-challenges=dns-01",
+              "--dns-route53",
+              "--dns-route53-propagation-seconds=300",
+              "--non-interactive",
+              "--agree-tos",
+              "--expand",
+              "-m",
+              "kitakita7617@gmail.com",
+              "--cert-name",
+              "test1.rajyan.net",
+              "-d",
+              "test1.rajyan.net",
+              "-d",
+              "test2.rajyan.net",
+            ],
+            "Essential": true,
+            "Image": "certbot/dns-route53:v1.29.0",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LowCostECSLogGroup73926EAE",
+                },
+                "awslogs-region": "test-region",
+                "awslogs-stream-prefix": "v1.29.0",
+              },
+            },
+            "MemoryReservation": 64,
+            "MountPoints": Array [
+              Object {
+                "ContainerPath": "/etc/letsencrypt",
+                "ReadOnly": false,
+                "SourceVolume": "certVolume",
+              },
+            ],
+            "Name": "certbot",
+          },
+        ],
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E",
+            "Arn",
+          ],
+        },
+        "Family": "TestStackLowCostECSCertbotTaskDefinition977C5973",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EC2",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00",
+            "Arn",
+          ],
+        },
+        "Volumes": Array [
+          Object {
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "LowCostECSFileSystem847967FC",
+              },
+            },
+            "Name": "certVolume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LowCostECSCertbotTaskDefinitionExecutionRoleDefaultPolicy39733254": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LowCostECSLogGroup73926EAE",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LowCostECSCertbotTaskDefinitionExecutionRoleDefaultPolicy39733254",
+        "Roles": Array [
+          Object {
+            "Ref": "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LowCostECSCertbotTaskDefinitionTaskRoleDefaultPolicy222DE000": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "route53:ListHostedZones",
+                "route53:GetChange",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "route53:ChangeResourceRecordSets",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":route53:::hostedzone/DUMMY",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "elasticfilesystem:ClientWrite",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LowCostECSFileSystem847967FC",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LowCostECSCertbotTaskDefinitionTaskRoleDefaultPolicy222DE000",
+        "Roles": Array [
+          Object {
+            "Ref": "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LowCostECSEmailSubscription5C24A57F": Object {
       "Properties": Object {
         "Endpoint": "kitakita7617@gmail.com",
         "Protocol": "email",
         "TopicArn": Object {
-          "Ref": "TopicBFC7AF6E",
+          "Ref": "LowCostECSTopicE71E72ED",
         },
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "FileSystem8A8E25C0": Object {
+    "LowCostECSFileSystem847967FC": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "Encrypted": true,
         "FileSystemTags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/FileSystem",
+            "Value": "TestStack/LowCostECS/FileSystem",
           },
         ],
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Delete",
     },
-    "FileSystemEfsMountTarget1586453F0": Object {
+    "LowCostECSFileSystemEfsMountTarget1BBA308EB": Object {
       "Properties": Object {
         "FileSystemId": Object {
-          "Ref": "FileSystem8A8E25C0",
+          "Ref": "LowCostECSFileSystem847967FC",
         },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
+              "LowCostECSFileSystemSecurityGroup7C1A7991",
               "GroupId",
             ],
           },
@@ -2618,15 +3139,15 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "FileSystemEfsMountTarget24B8EBB43": Object {
+    "LowCostECSFileSystemEfsMountTarget2D5EF7BBC": Object {
       "Properties": Object {
         "FileSystemId": Object {
-          "Ref": "FileSystem8A8E25C0",
+          "Ref": "LowCostECSFileSystem847967FC",
         },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
+              "LowCostECSFileSystemSecurityGroup7C1A7991",
               "GroupId",
             ],
           },
@@ -2637,15 +3158,15 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "FileSystemEfsMountTarget37C2F9139": Object {
+    "LowCostECSFileSystemEfsMountTarget3A37833C2": Object {
       "Properties": Object {
         "FileSystemId": Object {
-          "Ref": "FileSystem8A8E25C0",
+          "Ref": "LowCostECSFileSystem847967FC",
         },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
+              "LowCostECSFileSystemSecurityGroup7C1A7991",
               "GroupId",
             ],
           },
@@ -2656,22 +3177,22 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "FileSystemSecurityGroupBFA44C6B": Object {
+    "LowCostECSFileSystemSecurityGroup7C1A7991": Object {
       "Properties": Object {
-        "GroupDescription": "LowCostECSStack/FileSystemSecurityGroup",
+        "GroupDescription": "TestStack/LowCostECS/FileSystemSecurityGroup",
         "VpcId": Object {
           "Ref": "Vpc8378EB38",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "FileSystemSecurityGroupfromLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201204972FE26F8": Object {
+    "LowCostECSFileSystemSecurityGroupfromTestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B92049FDC55036": Object {
       "Properties": Object {
-        "Description": "from LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "Description": "from TestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B9:2049",
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "FileSystemSecurityGroupBFA44C6B",
+            "LowCostECSFileSystemSecurityGroup7C1A7991",
             "GroupId",
           ],
         },
@@ -2686,9 +3207,9 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "FileSystemSecurityGrouptoLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC520120495D8E9EBD": Object {
+    "LowCostECSFileSystemSecurityGrouptoTestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B92049E8C52016": Object {
       "Properties": Object {
-        "Description": "to LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "Description": "to TestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B9:2049",
         "DestinationSecurityGroupId": Object {
           "Fn::GetAtt": Array [
             "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
@@ -2698,7 +3219,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "FileSystemSecurityGroupBFA44C6B",
+            "LowCostECSFileSystemSecurityGroup7C1A7991",
             "GroupId",
           ],
         },
@@ -2707,18 +3228,18 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "HostInstanceIp": Object {
+    "LowCostECSHostInstanceIp2CB96CE8": Object {
       "Properties": Object {
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStackHostInstanceIp5CA32C2B",
+            "Value": "TestStackLowCostECSHostInstanceIpCECE5013",
           },
         ],
       },
       "Type": "AWS::EC2::EIP",
     },
-    "LogGroupF5B46931": Object {
+    "LowCostECSLogGroup73926EAE": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "RetentionInDays": 731,
@@ -2726,7 +3247,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Delete",
     },
-    "NginxTaskDefinition76C3FF98": Object {
+    "LowCostECSNginxTaskDefinition8A338F1E": Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
           Object {
@@ -2754,7 +3275,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "LogDriver": "awslogs",
               "Options": Object {
                 "awslogs-group": Object {
-                  "Ref": "LogGroupF5B46931",
+                  "Ref": "LowCostECSLogGroup73926EAE",
                 },
                 "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "nginx-proxy",
@@ -2793,7 +3314,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           aws configure set output text && \\
           EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
                     Object {
-                      "Ref": "StateMachine2E01A3A5",
+                      "Ref": "LowCostECSStateMachine236A22ED",
                     },
                     " --query executionArn) && \\
           until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
@@ -2815,7 +3336,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "LogDriver": "awslogs",
               "Options": Object {
                 "awslogs-group": Object {
-                  "Ref": "LogGroupF5B46931",
+                  "Ref": "LowCostECSLogGroup73926EAE",
                 },
                 "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "latest",
@@ -2827,18 +3348,18 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         ],
         "ExecutionRoleArn": Object {
           "Fn::GetAtt": Array [
-            "NginxTaskDefinitionExecutionRoleF9920D6F",
+            "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2",
             "Arn",
           ],
         },
-        "Family": "LowCostECSStackNginxTaskDefinitionA38AB494",
+        "Family": "TestStackLowCostECSNginxTaskDefinition774FD726",
         "NetworkMode": "bridge",
         "RequiresCompatibilities": Array [
           "EC2",
         ],
         "TaskRoleArn": Object {
           "Fn::GetAtt": Array [
-            "NginxTaskDefinitionTaskRole4E6E78AD",
+            "LowCostECSNginxTaskDefinitionTaskRole6B655856",
             "Arn",
           ],
         },
@@ -2846,7 +3367,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           Object {
             "EFSVolumeConfiguration": Object {
               "FilesystemId": Object {
-                "Ref": "FileSystem8A8E25C0",
+                "Ref": "LowCostECSFileSystem847967FC",
               },
             },
             "Name": "certVolume",
@@ -2855,7 +3376,24 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC": Object {
+    "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LowCostECSNginxTaskDefinitionExecutionRoleDefaultPolicyEF05BBD9": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -2892,7 +3430,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "LogGroupF5B46931",
+                  "LowCostECSLogGroup73926EAE",
                   "Arn",
                 ],
               },
@@ -2900,16 +3438,16 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC",
+        "PolicyName": "LowCostECSNginxTaskDefinitionExecutionRoleDefaultPolicyEF05BBD9",
         "Roles": Array [
           Object {
-            "Ref": "NginxTaskDefinitionExecutionRoleF9920D6F",
+            "Ref": "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "NginxTaskDefinitionExecutionRoleF9920D6F": Object {
+    "LowCostECSNginxTaskDefinitionTaskRole6B655856": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -2926,24 +3464,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "NginxTaskDefinitionTaskRole4E6E78AD": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED": Object {
+    "LowCostECSNginxTaskDefinitionTaskRoleDefaultPolicy06672263": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -2952,7 +3473,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "FileSystem8A8E25C0",
+                  "LowCostECSFileSystem847967FC",
                   "Arn",
                 ],
               },
@@ -2976,7 +3497,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "StateMachine2E01A3A5",
+                              "Ref": "LowCostECSStateMachine236A22ED",
                             },
                           ],
                         },
@@ -2991,7 +3512,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Action": "states:StartExecution",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "StateMachine2E01A3A5",
+                "Ref": "LowCostECSStateMachine236A22ED",
               },
             },
             Object {
@@ -3021,16 +3542,16 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED",
+        "PolicyName": "LowCostECSNginxTaskDefinitionTaskRoleDefaultPolicy06672263",
         "Roles": Array [
           Object {
-            "Ref": "NginxTaskDefinitionTaskRole4E6E78AD",
+            "Ref": "LowCostECSNginxTaskDefinitionTaskRole6B655856",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "ServiceD69D759B": Object {
+    "LowCostECSService95E677AB": Object {
       "Properties": Object {
         "Cluster": Object {
           "Ref": "ClusterEB0386A7",
@@ -3052,15 +3573,15 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "LaunchType": "EC2",
         "SchedulingStrategy": "REPLICA",
         "TaskDefinition": Object {
-          "Ref": "NginxTaskDefinition76C3FF98",
+          "Ref": "LowCostECSNginxTaskDefinition8A338F1E",
         },
       },
       "Type": "AWS::ECS::Service",
     },
-    "StateMachine2E01A3A5": Object {
+    "LowCostECSStateMachine236A22ED": Object {
       "DependsOn": Array [
-        "StateMachineRoleDefaultPolicyDF1E6607",
-        "StateMachineRoleB840431D",
+        "LowCostECSStateMachineRoleDefaultPolicy7D009A46",
+        "LowCostECSStateMachineRole6D7317FD",
       ],
       "Properties": Object {
         "DefinitionString": Object {
@@ -3078,13 +3599,13 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                   "Arn",
                 ],
               },
-              "","TaskDefinition":"LowCostECSStackCertbotTaskDefinitionE5EFEBED","LaunchType":"EC2"}},"SendEmailOnFailure":{"Next":"Fail","Type":"Task","Resource":"arn:",
+              "","TaskDefinition":"TestStackLowCostECSCertbotTaskDefinition977C5973","LaunchType":"EC2"}},"SendEmailOnFailure":{"Next":"Fail","Type":"Task","Resource":"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
               ":states:::sns:publish","Parameters":{"TopicArn":"",
               Object {
-                "Ref": "TopicBFC7AF6E",
+                "Ref": "LowCostECSTopicE71E72ED",
               },
               "","Message.$":"$"}},"Fail":{"Type":"Fail"}}}",
             ],
@@ -3092,14 +3613,14 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         },
         "RoleArn": Object {
           "Fn::GetAtt": Array [
-            "StateMachineRoleB840431D",
+            "LowCostECSStateMachineRole6D7317FD",
             "Arn",
           ],
         },
       },
       "Type": "AWS::StepFunctions::StateMachine",
     },
-    "StateMachineEventsRoleDBCDECD1": Object {
+    "LowCostECSStateMachineEventsRoleAB571CF6": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -3116,7 +3637,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "StateMachineEventsRoleDefaultPolicyFB602CA9": Object {
+    "LowCostECSStateMachineEventsRoleDefaultPolicy71755946": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -3124,22 +3645,22 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Action": "states:StartExecution",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "StateMachine2E01A3A5",
+                "Ref": "LowCostECSStateMachine236A22ED",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "StateMachineEventsRoleDefaultPolicyFB602CA9",
+        "PolicyName": "LowCostECSStateMachineEventsRoleDefaultPolicy71755946",
         "Roles": Array [
           Object {
-            "Ref": "StateMachineEventsRoleDBCDECD1",
+            "Ref": "LowCostECSStateMachineEventsRoleAB571CF6",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "StateMachineRoleB840431D": Object {
+    "LowCostECSStateMachineRole6D7317FD": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -3156,7 +3677,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "StateMachineRoleDefaultPolicyDF1E6607": Object {
+    "LowCostECSStateMachineRoleDefaultPolicy7D009A46": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -3175,7 +3696,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -3189,7 +3710,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -3203,7 +3724,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -3217,7 +3738,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -3237,7 +3758,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                                   "Fn::Split": Array [
                                     ":",
                                     Object {
-                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                      "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                                     },
                                   ],
                                 },
@@ -3261,7 +3782,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                                   "Fn::Split": Array [
                                     ":",
                                     Object {
-                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                      "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                                     },
                                   ],
                                 },
@@ -3289,13 +3810,13 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Resource": Array [
                 Object {
                   "Fn::GetAtt": Array [
-                    "CertbotTaskDefinitionTaskRoleE5A17CA8",
+                    "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00",
                     "Arn",
                   ],
                 },
                 Object {
                   "Fn::GetAtt": Array [
-                    "CertbotTaskDefinitionExecutionRole2F04CE67",
+                    "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E",
                     "Arn",
                   ],
                 },
@@ -3325,22 +3846,22 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Action": "sns:Publish",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "TopicBFC7AF6E",
+                "Ref": "LowCostECSTopicE71E72ED",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "StateMachineRoleDefaultPolicyDF1E6607",
+        "PolicyName": "LowCostECSStateMachineRoleDefaultPolicy7D009A46",
         "Roles": Array [
           Object {
-            "Ref": "StateMachineRoleB840431D",
+            "Ref": "LowCostECSStateMachineRole6D7317FD",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TopicBFC7AF6E": Object {
+    "LowCostECSTopicE71E72ED": Object {
       "Type": "AWS::SNS::Topic",
     },
     "Vpc8378EB38": Object {
@@ -3352,7 +3873,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc",
+            "Value": "TestStack/Vpc",
           },
         ],
       },
@@ -3363,7 +3884,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc",
+            "Value": "TestStack/Vpc",
           },
         ],
       },
@@ -3389,7 +3910,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet1",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet1",
           },
         ],
         "VpcId": Object {
@@ -3425,7 +3946,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           },
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet1",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet1",
           },
         ],
         "VpcId": Object {
@@ -3465,7 +3986,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet2",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet2",
           },
         ],
         "VpcId": Object {
@@ -3490,7 +4011,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           },
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet2",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet2",
           },
         ],
         "VpcId": Object {
@@ -3519,7 +4040,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet3",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet3",
           },
         ],
         "VpcId": Object {
@@ -3555,7 +4076,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           },
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet3",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet3",
           },
         ],
         "VpcId": Object {
@@ -3609,28 +4130,28 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
 exports[`Test snapshot of examples minimum 1`] = `
 Object {
   "Outputs": Object {
-    "ClusterName": Object {
+    "LowCostECSClusterName647E1020": Object {
       "Value": Object {
         "Ref": "ClusterEB0386A7",
       },
     },
-    "PublicIpAddress": Object {
+    "LowCostECSPublicIpAddressA02E4592": Object {
       "Value": Object {
-        "Ref": "HostInstanceIp",
+        "Ref": "LowCostECSHostInstanceIp2CB96CE8",
       },
     },
-    "ServiceName": Object {
+    "LowCostECSServiceNameB1505605": Object {
       "Value": Object {
         "Fn::GetAtt": Array [
-          "ServiceD69D759B",
+          "LowCostECSService95E677AB",
           "Name",
         ],
       },
     },
-    "certbotStateMachineName": Object {
+    "LowCostECScertbotStateMachineNameEF0D4588": Object {
       "Value": Object {
         "Fn::GetAtt": Array [
-          "StateMachine2E01A3A5",
+          "LowCostECSStateMachine236A22ED",
           "Name",
         ],
       },
@@ -3644,227 +4165,6 @@ Object {
     },
   },
   "Resources": Object {
-    "ARecordrajyannetCBEE3AC8": Object {
-      "Properties": Object {
-        "HostedZoneId": "DUMMY",
-        "Name": "rajyan.net.",
-        "ResourceRecords": Array [
-          Object {
-            "Ref": "HostInstanceIp",
-          },
-        ],
-        "TTL": "1800",
-        "Type": "A",
-      },
-      "Type": "AWS::Route53::RecordSet",
-    },
-    "CertbotScheduleRuleBCE26D73": Object {
-      "Properties": Object {
-        "ScheduleExpression": "rate(60 days)",
-        "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Ref": "StateMachine2E01A3A5",
-            },
-            "Id": "Target0",
-            "RoleArn": Object {
-              "Fn::GetAtt": Array [
-                "StateMachineEventsRoleDBCDECD1",
-                "Arn",
-              ],
-            },
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "CertbotTaskDefinitionE960D6F7": Object {
-      "Properties": Object {
-        "ContainerDefinitions": Array [
-          Object {
-            "Command": Array [
-              "certonly",
-              "--verbose",
-              "--preferred-challenges=dns-01",
-              "--dns-route53",
-              "--dns-route53-propagation-seconds=300",
-              "--non-interactive",
-              "--agree-tos",
-              "--expand",
-              "-m",
-              "kitakita7617@gmail.com",
-              "--cert-name",
-              "rajyan.net",
-              "-d",
-              "rajyan.net",
-            ],
-            "Essential": true,
-            "Image": "certbot/dns-route53:v1.29.0",
-            "LogConfiguration": Object {
-              "LogDriver": "awslogs",
-              "Options": Object {
-                "awslogs-group": Object {
-                  "Ref": "LogGroupF5B46931",
-                },
-                "awslogs-region": "test-region",
-                "awslogs-stream-prefix": "v1.29.0",
-              },
-            },
-            "MemoryReservation": 64,
-            "MountPoints": Array [
-              Object {
-                "ContainerPath": "/etc/letsencrypt",
-                "ReadOnly": false,
-                "SourceVolume": "certVolume",
-              },
-            ],
-            "Name": "certbot",
-          },
-        ],
-        "ExecutionRoleArn": Object {
-          "Fn::GetAtt": Array [
-            "CertbotTaskDefinitionExecutionRole2F04CE67",
-            "Arn",
-          ],
-        },
-        "Family": "LowCostECSStackCertbotTaskDefinitionE5EFEBED",
-        "NetworkMode": "bridge",
-        "RequiresCompatibilities": Array [
-          "EC2",
-        ],
-        "TaskRoleArn": Object {
-          "Fn::GetAtt": Array [
-            "CertbotTaskDefinitionTaskRoleE5A17CA8",
-            "Arn",
-          ],
-        },
-        "Volumes": Array [
-          Object {
-            "EFSVolumeConfiguration": Object {
-              "FilesystemId": Object {
-                "Ref": "FileSystem8A8E25C0",
-              },
-            },
-            "Name": "certVolume",
-          },
-        ],
-      },
-      "Type": "AWS::ECS::TaskDefinition",
-    },
-    "CertbotTaskDefinitionExecutionRole2F04CE67": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "LogGroupF5B46931",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CertbotTaskDefinitionExecutionRoleDefaultPolicyFD6D6CF3",
-        "Roles": Array [
-          Object {
-            "Ref": "CertbotTaskDefinitionExecutionRole2F04CE67",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "route53:ListHostedZones",
-                "route53:GetChange",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            Object {
-              "Action": "route53:ChangeResourceRecordSets",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":route53:::hostedzone/DUMMY",
-                  ],
-                ],
-              },
-            },
-            Object {
-              "Action": "elasticfilesystem:ClientWrite",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "FileSystem8A8E25C0",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CertbotTaskDefinitionTaskRoleDefaultPolicy693310F9",
-        "Roles": Array [
-          Object {
-            "Ref": "CertbotTaskDefinitionTaskRoleE5A17CA8",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CertbotTaskDefinitionTaskRoleE5A17CA8": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "ClusterEB0386A7": Object {
       "Type": "AWS::ECS::Cluster",
     },
@@ -3879,7 +4179,7 @@ Object {
           Object {
             "Key": "Name",
             "PropagateAtLaunch": true,
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
         "VPCZoneIdentifier": Array [
@@ -4021,14 +4321,14 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
         "Timeout": 310,
       },
       "Type": "AWS::Lambda::Function",
     },
-    "ClusterHostInstanceCapacityDrainECSHookFunctionAllowInvokeLowCostECSStackClusterHostInstanceCapacityLifecycleHookDrainHookTopicFADE73FE7DA1F73C": Object {
+    "ClusterHostInstanceCapacityDrainECSHookFunctionAllowInvokeTestStackClusterHostInstanceCapacityLifecycleHookDrainHookTopicF2E65AC531E91D26": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
@@ -4075,7 +4375,7 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -4242,7 +4542,7 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -4316,7 +4616,7 @@ def pick(dct, *keys):
     },
     "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF": Object {
       "Properties": Object {
-        "GroupDescription": "LowCostECSStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
+        "GroupDescription": "TestStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
         "SecurityGroupEgress": Array [
           Object {
             "CidrIp": "0.0.0.0/0",
@@ -4357,7 +4657,7 @@ def pick(dct, *keys):
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
         "VpcId": Object {
@@ -4366,9 +4666,9 @@ def pick(dct, *keys):
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "ClusterHostInstanceCapacityInstanceSecurityGroupfromLowCostECSStackFileSystemSecurityGroup61CD2DA52049FDF81316": Object {
+    "ClusterHostInstanceCapacityInstanceSecurityGroupfromTestStackLowCostECSFileSystemSecurityGroup3BACAC07204908F72F6E": Object {
       "Properties": Object {
-        "Description": "from LowCostECSStackFileSystemSecurityGroup61CD2DA5:2049",
+        "Description": "from TestStackLowCostECSFileSystemSecurityGroup3BACAC07:2049",
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
@@ -4379,7 +4679,7 @@ def pick(dct, *keys):
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": Object {
           "Fn::GetAtt": Array [
-            "FileSystemSecurityGroupBFA44C6B",
+            "LowCostECSFileSystemSecurityGroup7C1A7991",
             "GroupId",
           ],
         },
@@ -4422,7 +4722,7 @@ sudo iptables --insert FORWARD 1 --in-interface docker+ --destination 169.254.16
 sudo service iptables save
 echo ECS_AWSVPC_BLOCK_IMDS=true >> /etc/ecs/ecs.config
 INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)
-ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region test-region --filter Name=tag:Name,Values=LowCostECSStackHostInstanceIp5CA32C2B --query 'Addresses[].AllocationId' --output text | head)
+ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:latest ec2 describe-addresses --region test-region --filter Name=tag:Name,Values=TestStackLowCostECSHostInstanceIpCECE5013 --query 'Addresses[].AllocationId' --output text | head)
 docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-region --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation",
               ],
             ],
@@ -4472,7 +4772,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
@@ -4506,45 +4806,266 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Cluster/HostInstanceCapacity",
+            "Value": "TestStack/Cluster/HostInstanceCapacity",
           },
         ],
       },
       "Type": "AWS::SNS::Topic",
     },
-    "EmailSubscriptionBC065AF0": Object {
+    "LowCostECSARecordrajyannet400EEAE4": Object {
+      "Properties": Object {
+        "HostedZoneId": "DUMMY",
+        "Name": "rajyan.net.",
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "LowCostECSHostInstanceIp2CB96CE8",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "LowCostECSCertbotScheduleRule604ECD25": Object {
+      "Properties": Object {
+        "ScheduleExpression": "rate(60 days)",
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Ref": "LowCostECSStateMachine236A22ED",
+            },
+            "Id": "Target0",
+            "RoleArn": Object {
+              "Fn::GetAtt": Array [
+                "LowCostECSStateMachineEventsRoleAB571CF6",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "LowCostECSCertbotTaskDefinitionAD2990AC": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Command": Array [
+              "certonly",
+              "--verbose",
+              "--preferred-challenges=dns-01",
+              "--dns-route53",
+              "--dns-route53-propagation-seconds=300",
+              "--non-interactive",
+              "--agree-tos",
+              "--expand",
+              "-m",
+              "kitakita7617@gmail.com",
+              "--cert-name",
+              "rajyan.net",
+              "-d",
+              "rajyan.net",
+            ],
+            "Essential": true,
+            "Image": "certbot/dns-route53:v1.29.0",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LowCostECSLogGroup73926EAE",
+                },
+                "awslogs-region": "test-region",
+                "awslogs-stream-prefix": "v1.29.0",
+              },
+            },
+            "MemoryReservation": 64,
+            "MountPoints": Array [
+              Object {
+                "ContainerPath": "/etc/letsencrypt",
+                "ReadOnly": false,
+                "SourceVolume": "certVolume",
+              },
+            ],
+            "Name": "certbot",
+          },
+        ],
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E",
+            "Arn",
+          ],
+        },
+        "Family": "TestStackLowCostECSCertbotTaskDefinition977C5973",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EC2",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00",
+            "Arn",
+          ],
+        },
+        "Volumes": Array [
+          Object {
+            "EFSVolumeConfiguration": Object {
+              "FilesystemId": Object {
+                "Ref": "LowCostECSFileSystem847967FC",
+              },
+            },
+            "Name": "certVolume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LowCostECSCertbotTaskDefinitionExecutionRoleDefaultPolicy39733254": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LowCostECSLogGroup73926EAE",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LowCostECSCertbotTaskDefinitionExecutionRoleDefaultPolicy39733254",
+        "Roles": Array [
+          Object {
+            "Ref": "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LowCostECSCertbotTaskDefinitionTaskRoleDefaultPolicy222DE000": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "route53:ListHostedZones",
+                "route53:GetChange",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "route53:ChangeResourceRecordSets",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":route53:::hostedzone/DUMMY",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "elasticfilesystem:ClientWrite",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LowCostECSFileSystem847967FC",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LowCostECSCertbotTaskDefinitionTaskRoleDefaultPolicy222DE000",
+        "Roles": Array [
+          Object {
+            "Ref": "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LowCostECSEmailSubscription5C24A57F": Object {
       "Properties": Object {
         "Endpoint": "kitakita7617@gmail.com",
         "Protocol": "email",
         "TopicArn": Object {
-          "Ref": "TopicBFC7AF6E",
+          "Ref": "LowCostECSTopicE71E72ED",
         },
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "FileSystem8A8E25C0": Object {
+    "LowCostECSFileSystem847967FC": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "Encrypted": true,
         "FileSystemTags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/FileSystem",
+            "Value": "TestStack/LowCostECS/FileSystem",
           },
         ],
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Delete",
     },
-    "FileSystemEfsMountTarget1586453F0": Object {
+    "LowCostECSFileSystemEfsMountTarget1BBA308EB": Object {
       "Properties": Object {
         "FileSystemId": Object {
-          "Ref": "FileSystem8A8E25C0",
+          "Ref": "LowCostECSFileSystem847967FC",
         },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
+              "LowCostECSFileSystemSecurityGroup7C1A7991",
               "GroupId",
             ],
           },
@@ -4555,15 +5076,15 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "FileSystemEfsMountTarget24B8EBB43": Object {
+    "LowCostECSFileSystemEfsMountTarget2D5EF7BBC": Object {
       "Properties": Object {
         "FileSystemId": Object {
-          "Ref": "FileSystem8A8E25C0",
+          "Ref": "LowCostECSFileSystem847967FC",
         },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
+              "LowCostECSFileSystemSecurityGroup7C1A7991",
               "GroupId",
             ],
           },
@@ -4574,15 +5095,15 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "FileSystemEfsMountTarget37C2F9139": Object {
+    "LowCostECSFileSystemEfsMountTarget3A37833C2": Object {
       "Properties": Object {
         "FileSystemId": Object {
-          "Ref": "FileSystem8A8E25C0",
+          "Ref": "LowCostECSFileSystem847967FC",
         },
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "FileSystemSecurityGroupBFA44C6B",
+              "LowCostECSFileSystemSecurityGroup7C1A7991",
               "GroupId",
             ],
           },
@@ -4593,22 +5114,22 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "FileSystemSecurityGroupBFA44C6B": Object {
+    "LowCostECSFileSystemSecurityGroup7C1A7991": Object {
       "Properties": Object {
-        "GroupDescription": "LowCostECSStack/FileSystemSecurityGroup",
+        "GroupDescription": "TestStack/LowCostECS/FileSystemSecurityGroup",
         "VpcId": Object {
           "Ref": "Vpc8378EB38",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "FileSystemSecurityGroupfromLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201204972FE26F8": Object {
+    "LowCostECSFileSystemSecurityGroupfromTestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B92049FDC55036": Object {
       "Properties": Object {
-        "Description": "from LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "Description": "from TestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B9:2049",
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "FileSystemSecurityGroupBFA44C6B",
+            "LowCostECSFileSystemSecurityGroup7C1A7991",
             "GroupId",
           ],
         },
@@ -4623,9 +5144,9 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "FileSystemSecurityGrouptoLowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC520120495D8E9EBD": Object {
+    "LowCostECSFileSystemSecurityGrouptoTestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B92049E8C52016": Object {
       "Properties": Object {
-        "Description": "to LowCostECSStackClusterHostInstanceCapacityInstanceSecurityGroupCAAC5201:2049",
+        "Description": "to TestStackClusterHostInstanceCapacityInstanceSecurityGroup8BDF62B9:2049",
         "DestinationSecurityGroupId": Object {
           "Fn::GetAtt": Array [
             "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
@@ -4635,7 +5156,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "FileSystemSecurityGroupBFA44C6B",
+            "LowCostECSFileSystemSecurityGroup7C1A7991",
             "GroupId",
           ],
         },
@@ -4644,18 +5165,18 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "HostInstanceIp": Object {
+    "LowCostECSHostInstanceIp2CB96CE8": Object {
       "Properties": Object {
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStackHostInstanceIp5CA32C2B",
+            "Value": "TestStackLowCostECSHostInstanceIpCECE5013",
           },
         ],
       },
       "Type": "AWS::EC2::EIP",
     },
-    "LogGroupF5B46931": Object {
+    "LowCostECSLogGroup73926EAE": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "RetentionInDays": 731,
@@ -4663,7 +5184,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Delete",
     },
-    "NginxTaskDefinition76C3FF98": Object {
+    "LowCostECSNginxTaskDefinition8A338F1E": Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
           Object {
@@ -4691,7 +5212,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "LogDriver": "awslogs",
               "Options": Object {
                 "awslogs-group": Object {
-                  "Ref": "LogGroupF5B46931",
+                  "Ref": "LowCostECSLogGroup73926EAE",
                 },
                 "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "nginx-proxy",
@@ -4730,7 +5251,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           aws configure set output text && \\
           EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn ",
                     Object {
-                      "Ref": "StateMachine2E01A3A5",
+                      "Ref": "LowCostECSStateMachine236A22ED",
                     },
                     " --query executionArn) && \\
           until [ $(aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN" --query status) != RUNNING ];
@@ -4752,7 +5273,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "LogDriver": "awslogs",
               "Options": Object {
                 "awslogs-group": Object {
-                  "Ref": "LogGroupF5B46931",
+                  "Ref": "LowCostECSLogGroup73926EAE",
                 },
                 "awslogs-region": "test-region",
                 "awslogs-stream-prefix": "latest",
@@ -4764,18 +5285,18 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         ],
         "ExecutionRoleArn": Object {
           "Fn::GetAtt": Array [
-            "NginxTaskDefinitionExecutionRoleF9920D6F",
+            "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2",
             "Arn",
           ],
         },
-        "Family": "LowCostECSStackNginxTaskDefinitionA38AB494",
+        "Family": "TestStackLowCostECSNginxTaskDefinition774FD726",
         "NetworkMode": "bridge",
         "RequiresCompatibilities": Array [
           "EC2",
         ],
         "TaskRoleArn": Object {
           "Fn::GetAtt": Array [
-            "NginxTaskDefinitionTaskRole4E6E78AD",
+            "LowCostECSNginxTaskDefinitionTaskRole6B655856",
             "Arn",
           ],
         },
@@ -4783,7 +5304,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           Object {
             "EFSVolumeConfiguration": Object {
               "FilesystemId": Object {
-                "Ref": "FileSystem8A8E25C0",
+                "Ref": "LowCostECSFileSystem847967FC",
               },
             },
             "Name": "certVolume",
@@ -4792,7 +5313,24 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC": Object {
+    "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LowCostECSNginxTaskDefinitionExecutionRoleDefaultPolicyEF05BBD9": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -4829,7 +5367,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "LogGroupF5B46931",
+                  "LowCostECSLogGroup73926EAE",
                   "Arn",
                 ],
               },
@@ -4837,16 +5375,16 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "NginxTaskDefinitionExecutionRoleDefaultPolicy6B3B5EBC",
+        "PolicyName": "LowCostECSNginxTaskDefinitionExecutionRoleDefaultPolicyEF05BBD9",
         "Roles": Array [
           Object {
-            "Ref": "NginxTaskDefinitionExecutionRoleF9920D6F",
+            "Ref": "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "NginxTaskDefinitionExecutionRoleF9920D6F": Object {
+    "LowCostECSNginxTaskDefinitionTaskRole6B655856": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -4863,24 +5401,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "NginxTaskDefinitionTaskRole4E6E78AD": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED": Object {
+    "LowCostECSNginxTaskDefinitionTaskRoleDefaultPolicy06672263": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -4889,7 +5410,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "FileSystem8A8E25C0",
+                  "LowCostECSFileSystem847967FC",
                   "Arn",
                 ],
               },
@@ -4913,7 +5434,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "StateMachine2E01A3A5",
+                              "Ref": "LowCostECSStateMachine236A22ED",
                             },
                           ],
                         },
@@ -4928,7 +5449,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Action": "states:StartExecution",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "StateMachine2E01A3A5",
+                "Ref": "LowCostECSStateMachine236A22ED",
               },
             },
             Object {
@@ -4958,16 +5479,16 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "NginxTaskDefinitionTaskRoleDefaultPolicy115221ED",
+        "PolicyName": "LowCostECSNginxTaskDefinitionTaskRoleDefaultPolicy06672263",
         "Roles": Array [
           Object {
-            "Ref": "NginxTaskDefinitionTaskRole4E6E78AD",
+            "Ref": "LowCostECSNginxTaskDefinitionTaskRole6B655856",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "ServiceD69D759B": Object {
+    "LowCostECSService95E677AB": Object {
       "Properties": Object {
         "Cluster": Object {
           "Ref": "ClusterEB0386A7",
@@ -4989,15 +5510,15 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "LaunchType": "EC2",
         "SchedulingStrategy": "REPLICA",
         "TaskDefinition": Object {
-          "Ref": "NginxTaskDefinition76C3FF98",
+          "Ref": "LowCostECSNginxTaskDefinition8A338F1E",
         },
       },
       "Type": "AWS::ECS::Service",
     },
-    "StateMachine2E01A3A5": Object {
+    "LowCostECSStateMachine236A22ED": Object {
       "DependsOn": Array [
-        "StateMachineRoleDefaultPolicyDF1E6607",
-        "StateMachineRoleB840431D",
+        "LowCostECSStateMachineRoleDefaultPolicy7D009A46",
+        "LowCostECSStateMachineRole6D7317FD",
       ],
       "Properties": Object {
         "DefinitionString": Object {
@@ -5015,13 +5536,13 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                   "Arn",
                 ],
               },
-              "","TaskDefinition":"LowCostECSStackCertbotTaskDefinitionE5EFEBED","LaunchType":"EC2"}},"SendEmailOnFailure":{"Next":"Fail","Type":"Task","Resource":"arn:",
+              "","TaskDefinition":"TestStackLowCostECSCertbotTaskDefinition977C5973","LaunchType":"EC2"}},"SendEmailOnFailure":{"Next":"Fail","Type":"Task","Resource":"arn:",
               Object {
                 "Ref": "AWS::Partition",
               },
               ":states:::sns:publish","Parameters":{"TopicArn":"",
               Object {
-                "Ref": "TopicBFC7AF6E",
+                "Ref": "LowCostECSTopicE71E72ED",
               },
               "","Message.$":"$"}},"Fail":{"Type":"Fail"}}}",
             ],
@@ -5029,14 +5550,14 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         },
         "RoleArn": Object {
           "Fn::GetAtt": Array [
-            "StateMachineRoleB840431D",
+            "LowCostECSStateMachineRole6D7317FD",
             "Arn",
           ],
         },
       },
       "Type": "AWS::StepFunctions::StateMachine",
     },
-    "StateMachineEventsRoleDBCDECD1": Object {
+    "LowCostECSStateMachineEventsRoleAB571CF6": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -5053,7 +5574,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "StateMachineEventsRoleDefaultPolicyFB602CA9": Object {
+    "LowCostECSStateMachineEventsRoleDefaultPolicy71755946": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -5061,22 +5582,22 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Action": "states:StartExecution",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "StateMachine2E01A3A5",
+                "Ref": "LowCostECSStateMachine236A22ED",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "StateMachineEventsRoleDefaultPolicyFB602CA9",
+        "PolicyName": "LowCostECSStateMachineEventsRoleDefaultPolicy71755946",
         "Roles": Array [
           Object {
-            "Ref": "StateMachineEventsRoleDBCDECD1",
+            "Ref": "LowCostECSStateMachineEventsRoleAB571CF6",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "StateMachineRoleB840431D": Object {
+    "LowCostECSStateMachineRole6D7317FD": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -5093,7 +5614,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "StateMachineRoleDefaultPolicyDF1E6607": Object {
+    "LowCostECSStateMachineRoleDefaultPolicy7D009A46": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -5112,7 +5633,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -5126,7 +5647,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -5140,7 +5661,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -5154,7 +5675,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                           "Fn::Split": Array [
                             ":",
                             Object {
-                              "Ref": "CertbotTaskDefinitionE960D6F7",
+                              "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                             },
                           ],
                         },
@@ -5174,7 +5695,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                                   "Fn::Split": Array [
                                     ":",
                                     Object {
-                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                      "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                                     },
                                   ],
                                 },
@@ -5198,7 +5719,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                                   "Fn::Split": Array [
                                     ":",
                                     Object {
-                                      "Ref": "CertbotTaskDefinitionE960D6F7",
+                                      "Ref": "LowCostECSCertbotTaskDefinitionAD2990AC",
                                     },
                                   ],
                                 },
@@ -5226,13 +5747,13 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Resource": Array [
                 Object {
                   "Fn::GetAtt": Array [
-                    "CertbotTaskDefinitionTaskRoleE5A17CA8",
+                    "LowCostECSCertbotTaskDefinitionTaskRoleA3330E00",
                     "Arn",
                   ],
                 },
                 Object {
                   "Fn::GetAtt": Array [
-                    "CertbotTaskDefinitionExecutionRole2F04CE67",
+                    "LowCostECSCertbotTaskDefinitionExecutionRole7AD5609E",
                     "Arn",
                   ],
                 },
@@ -5262,22 +5783,22 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "Action": "sns:Publish",
               "Effect": "Allow",
               "Resource": Object {
-                "Ref": "TopicBFC7AF6E",
+                "Ref": "LowCostECSTopicE71E72ED",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "StateMachineRoleDefaultPolicyDF1E6607",
+        "PolicyName": "LowCostECSStateMachineRoleDefaultPolicy7D009A46",
         "Roles": Array [
           Object {
-            "Ref": "StateMachineRoleB840431D",
+            "Ref": "LowCostECSStateMachineRole6D7317FD",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TopicBFC7AF6E": Object {
+    "LowCostECSTopicE71E72ED": Object {
       "Type": "AWS::SNS::Topic",
     },
     "Vpc8378EB38": Object {
@@ -5289,7 +5810,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc",
+            "Value": "TestStack/Vpc",
           },
         ],
       },
@@ -5300,7 +5821,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc",
+            "Value": "TestStack/Vpc",
           },
         ],
       },
@@ -5326,7 +5847,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet1",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet1",
           },
         ],
         "VpcId": Object {
@@ -5362,7 +5883,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           },
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet1",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet1",
           },
         ],
         "VpcId": Object {
@@ -5402,7 +5923,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet2",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet2",
           },
         ],
         "VpcId": Object {
@@ -5427,7 +5948,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           },
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet2",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet2",
           },
         ],
         "VpcId": Object {
@@ -5456,7 +5977,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "Tags": Array [
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet3",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet3",
           },
         ],
         "VpcId": Object {
@@ -5492,7 +6013,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           },
           Object {
             "Key": "Name",
-            "Value": "LowCostECSStack/Vpc/PublicSubnetSubnet3",
+            "Value": "TestStack/Vpc/PublicSubnetSubnet3",
           },
         ],
         "VpcId": Object {

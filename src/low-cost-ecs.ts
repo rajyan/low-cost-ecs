@@ -14,7 +14,7 @@ import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
 import * as sfn_tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
 
-export interface LowCostECSProps extends lib.StackProps {
+export interface LowCostECSProps {
   /**
    * Domain name of the hosted zone.
    */
@@ -127,7 +127,7 @@ export interface LowCostECSTaskDefinitionOptions {
   readonly volumes?: ecs.Volume[];
 }
 
-export class LowCostECS extends lib.Stack {
+export class LowCostECS extends Construct {
   readonly vpc: ec2.IVpc;
   readonly hostAutoScalingGroup: AutoScalingGroup;
   readonly certFileSystem: FileSystem;
@@ -135,11 +135,11 @@ export class LowCostECS extends lib.Stack {
   readonly service: ecs.Ec2Service;
 
   constructor(scope: Construct, id: string, props: LowCostECSProps) {
-    super(scope, id, props);
+    super(scope, id);
 
     this.vpc =
       props.vpc ??
-      new ec2.Vpc(this, 'Vpc', {
+      new ec2.Vpc(scope, 'Vpc', {
         natGateways: 0,
         subnetConfiguration: [
           {
@@ -149,7 +149,7 @@ export class LowCostECS extends lib.Stack {
         ],
       });
 
-    this.cluster = new ecs.Cluster(this, 'Cluster', {
+    this.cluster = new ecs.Cluster(scope, 'Cluster', {
       vpc: this.vpc,
       containerInsights: props.containerInsights,
     });
