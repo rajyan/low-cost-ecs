@@ -172,6 +172,7 @@ export class LowCostECS extends Construct {
     });
 
     if (props.securityGroup) {
+      this.hostAutoScalingGroup.node.tryRemoveChild('InstanceSecurityGroup');
       this.hostAutoScalingGroup.addSecurityGroup(props.securityGroup);
     } else {
       this.hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(80));

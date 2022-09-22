@@ -495,49 +495,6 @@ def pick(dct, *keys):
       },
       "Type": "AWS::IAM::Policy",
     },
-    "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF": Object {
-      "Properties": Object {
-        "GroupDescription": "TestStack/Cluster/HostInstanceCapacity/InstanceSecurityGroup",
-        "SecurityGroupEgress": Array [
-          Object {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "TestStack/Cluster/HostInstanceCapacity",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "Vpc8378EB38",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "ClusterHostInstanceCapacityInstanceSecurityGroupfromTestStackLowCostECSFileSystemSecurityGroup3BACAC07204908F72F6E": Object {
-      "Properties": Object {
-        "Description": "from TestStackLowCostECSFileSystemSecurityGroup3BACAC07:2049",
-        "FromPort": 2049,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
-            "ClusterHostInstanceCapacityInstanceSecurityGroup99FA69CF",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
-            "LowCostECSFileSystemSecurityGroup7C1A7991",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "ClusterHostInstanceCapacityLaunchConfig812B5EE6": Object {
       "DependsOn": Array [
         "ClusterHostInstanceCapacityInstanceRoleDefaultPolicy594D7A24",
