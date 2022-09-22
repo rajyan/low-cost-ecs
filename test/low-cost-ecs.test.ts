@@ -21,10 +21,12 @@ test('stack with minimum props', () => {
     Name: Match.absent(),
   });
   template.hasResourceProperties('AWS::EC2::Subnet', {
-    Tags: Match.arrayWith([{
-      Key: 'aws-cdk:subnet-type',
-      Value: 'Public',
-    }]),
+    Tags: Match.arrayWith([
+      {
+        Key: 'aws-cdk:subnet-type',
+        Value: 'Public',
+      },
+    ]),
   });
   template.resourceCountIs('AWS::EC2::Subnet', 3);
   template.resourceCountIs('AWS::EC2::NatGateway', 0);
@@ -36,9 +38,11 @@ test('stack with minimum props', () => {
     Name: 'test.rajyan.net.',
   });
   template.hasResourceProperties('AWS::EC2::EIP', {
-    Tags: [{
-      Key: 'Name',
-    }],
+    Tags: [
+      {
+        Key: 'Name',
+      },
+    ],
   });
   template.hasResourceProperties('AWS::AutoScaling::AutoScalingGroup', {
     MaxSize: '1',
@@ -59,21 +63,27 @@ test('stack with minimum props', () => {
     UpdateReplacePolicy: 'Delete',
   });
   template.hasResourceProperties('AWS::ECS::TaskDefinition', {
-    ContainerDefinitions: [{
-      Name: 'certbot',
-      Essential: true,
-      Image: 'certbot/dns-route53:v1.29.0',
-      MemoryReservation: 64,
-      MountPoints: [{
-        ContainerPath: '/etc/letsencrypt',
-        ReadOnly: false,
-        SourceVolume: 'certVolume',
-      }],
-    }],
+    ContainerDefinitions: [
+      {
+        Name: 'certbot',
+        Essential: true,
+        Image: 'certbot/dns-route53:v1.29.0',
+        MemoryReservation: 64,
+        MountPoints: [
+          {
+            ContainerPath: '/etc/letsencrypt',
+            ReadOnly: false,
+            SourceVolume: 'certVolume',
+          },
+        ],
+      },
+    ],
     NetworkMode: 'bridge',
-    Volumes: [{
-      Name: 'certVolume',
-    }],
+    Volumes: [
+      {
+        Name: 'certVolume',
+      },
+    ],
   });
   template.resourceCountIs('AWS::StepFunctions::StateMachine', 1);
 
@@ -84,15 +94,19 @@ test('stack with minimum props', () => {
         Name: 'nginx',
         Essential: true,
         MemoryReservation: 64,
-        MountPoints: [{
-          ContainerPath: '/etc/letsencrypt',
-          ReadOnly: true,
-          SourceVolume: 'certVolume',
-        }],
-        DependsOn: [{
-          Condition: 'COMPLETE',
-          ContainerName: 'aws-cli',
-        }],
+        MountPoints: [
+          {
+            ContainerPath: '/etc/letsencrypt',
+            ReadOnly: true,
+            SourceVolume: 'certVolume',
+          },
+        ],
+        DependsOn: [
+          {
+            Condition: 'COMPLETE',
+            ContainerName: 'aws-cli',
+          },
+        ],
       },
       {
         Name: 'aws-cli',
@@ -101,9 +115,11 @@ test('stack with minimum props', () => {
       },
     ],
     NetworkMode: 'bridge',
-    Volumes: [{
-      Name: 'certVolume',
-    }],
+    Volumes: [
+      {
+        Name: 'certVolume',
+      },
+    ],
   });
   template.hasResourceProperties('AWS::ECS::Service', {
     DeploymentConfiguration: {
@@ -135,12 +151,14 @@ describe('server task definition props', () => {
       hostedZoneDomain: 'test.rajyan.net',
       email: 'test@email.com',
       serverTaskDefinition: {
-        containers: [{
-          containerName: 'test',
-          image: ContainerImage.fromRegistry('test-image'),
-          memoryReservationMiB: 64,
-          essential: true,
-        }],
+        containers: [
+          {
+            containerName: 'test',
+            image: ContainerImage.fromRegistry('test-image'),
+            memoryReservationMiB: 64,
+            essential: true,
+          },
+        ],
       },
     });
     const template = Template.fromStack(stack);
@@ -172,11 +190,13 @@ describe('server task definition props', () => {
       hostedZoneDomain: 'test.rajyan.net',
       email: 'test@email.com',
       serverTaskDefinition: {
-        containers: [{
-          image: ContainerImage.fromRegistry('test-image'),
-          memoryReservationMiB: 64,
-          essential: true,
-        }],
+        containers: [
+          {
+            image: ContainerImage.fromRegistry('test-image'),
+            memoryReservationMiB: 64,
+            essential: true,
+          },
+        ],
       },
     });
     const template = Template.fromStack(stack);
@@ -208,15 +228,19 @@ describe('server task definition props', () => {
       hostedZoneDomain: 'test.rajyan.net',
       email: 'test@email.com',
       serverTaskDefinition: {
-        containers: [{
-          image: ContainerImage.fromRegistry('test-image'),
-          memoryReservationMiB: 64,
-          essential: true,
-          portMappings: [{
-            containerPort: 443,
-            hostPort: 443,
-          }],
-        }],
+        containers: [
+          {
+            image: ContainerImage.fromRegistry('test-image'),
+            memoryReservationMiB: 64,
+            essential: true,
+            portMappings: [
+              {
+                containerPort: 443,
+                hostPort: 443,
+              },
+            ],
+          },
+        ],
       },
     });
     const template = Template.fromStack(stack);
@@ -256,13 +280,19 @@ describe('server task definition props', () => {
         hostedZoneDomain: 'test.rajyan.net',
         email: 'test@email.com',
         serverTaskDefinition: {
-          containers: [{
-            containerName: 'test-not-essential',
-            image: ContainerImage.fromRegistry('test-image'),
-            essential: false,
-          }],
+          containers: [
+            {
+              containerName: 'test-not-essential',
+              image: ContainerImage.fromRegistry('test-image'),
+              essential: false,
+            },
+          ],
         },
       });
-    }).toThrow(new Error('defaultContainer is required for serverTaskDefinition. Add at least one essential container.'));
+    }).toThrow(
+      new Error(
+        'defaultContainer is required for serverTaskDefinition. Add at least one essential container.'
+      )
+    );
   });
 });
