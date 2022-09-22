@@ -382,9 +382,11 @@ public readonly serverTaskDefinition: LowCostECSTaskDefinitionOptions;
 ```
 
 - *Type:* <a href="#low-cost-ecs.LowCostECSTaskDefinitionOptions">LowCostECSTaskDefinitionOptions</a>
-- *Default:* Nginx server task definition defined in createSampleTaskDefinition()
+- *Default:* Nginx server task definition defined in sampleTaskDefinition()
 
 Task definition for the server ecs task.
+
+> [sampleTaskDefinition](sampleTaskDefinition)
 
 ---
 
