@@ -3,6 +3,14 @@
 exports[`Test snapshot of examples all props 1`] = `
 Object {
   "Outputs": Object {
+    "LowCostECSCertbotStateMachineName15495152": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LowCostECSStateMachine236A22ED",
+          "Name",
+        ],
+      },
+    },
     "LowCostECSClusterName647E1020": Object {
       "Value": Object {
         "Ref": "ClusterEB0386A7",
@@ -17,14 +25,6 @@ Object {
       "Value": Object {
         "Fn::GetAtt": Array [
           "LowCostECSService95E677AB",
-          "Name",
-        ],
-      },
-    },
-    "LowCostECScertbotStateMachineNameEF0D4588": Object {
-      "Value": Object {
-        "Fn::GetAtt": Array [
-          "LowCostECSStateMachine236A22ED",
           "Name",
         ],
       },
@@ -2111,6 +2111,14 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
 exports[`Test snapshot of examples autoscaling 1`] = `
 Object {
   "Outputs": Object {
+    "LowCostECSCertbotStateMachineName15495152": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LowCostECSStateMachine236A22ED",
+          "Name",
+        ],
+      },
+    },
     "LowCostECSClusterName647E1020": Object {
       "Value": Object {
         "Ref": "ClusterEB0386A7",
@@ -2125,14 +2133,6 @@ Object {
       "Value": Object {
         "Fn::GetAtt": Array [
           "LowCostECSService95E677AB",
-          "Name",
-        ],
-      },
-    },
-    "LowCostECScertbotStateMachineNameEF0D4588": Object {
-      "Value": Object {
-        "Fn::GetAtt": Array [
-          "LowCostECSStateMachine236A22ED",
           "Name",
         ],
       },
@@ -3204,7 +3204,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Delete",
     },
-    "LowCostECSNginxTaskDefinition8A338F1E": Object {
+    "LowCostECSServerTaskDefinitionD959764E": Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
           Object {
@@ -3235,7 +3235,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                   "Ref": "LowCostECSLogGroup73926EAE",
                 },
                 "awslogs-region": "test-region",
-                "awslogs-stream-prefix": "nginx-proxy",
+                "awslogs-stream-prefix": "sample",
               },
             },
             "MemoryReservation": 64,
@@ -3305,18 +3305,18 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         ],
         "ExecutionRoleArn": Object {
           "Fn::GetAtt": Array [
-            "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2",
+            "LowCostECSServerTaskDefinitionExecutionRole56B544B3",
             "Arn",
           ],
         },
-        "Family": "TestStackLowCostECSNginxTaskDefinition774FD726",
+        "Family": "TestStackLowCostECSServerTaskDefinition35240CEA",
         "NetworkMode": "bridge",
         "RequiresCompatibilities": Array [
           "EC2",
         ],
         "TaskRoleArn": Object {
           "Fn::GetAtt": Array [
-            "LowCostECSNginxTaskDefinitionTaskRole6B655856",
+            "LowCostECSServerTaskDefinitionTaskRole53DB453D",
             "Arn",
           ],
         },
@@ -3333,7 +3333,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2": Object {
+    "LowCostECSServerTaskDefinitionExecutionRole56B544B3": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -3350,7 +3350,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "LowCostECSNginxTaskDefinitionExecutionRoleDefaultPolicyEF05BBD9": Object {
+    "LowCostECSServerTaskDefinitionExecutionRoleDefaultPolicy96FB0053": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -3395,16 +3395,16 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "LowCostECSNginxTaskDefinitionExecutionRoleDefaultPolicyEF05BBD9",
+        "PolicyName": "LowCostECSServerTaskDefinitionExecutionRoleDefaultPolicy96FB0053",
         "Roles": Array [
           Object {
-            "Ref": "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2",
+            "Ref": "LowCostECSServerTaskDefinitionExecutionRole56B544B3",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "LowCostECSNginxTaskDefinitionTaskRole6B655856": Object {
+    "LowCostECSServerTaskDefinitionTaskRole53DB453D": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -3421,7 +3421,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "LowCostECSNginxTaskDefinitionTaskRoleDefaultPolicy06672263": Object {
+    "LowCostECSServerTaskDefinitionTaskRoleDefaultPolicyBDF632A7": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -3499,10 +3499,10 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "LowCostECSNginxTaskDefinitionTaskRoleDefaultPolicy06672263",
+        "PolicyName": "LowCostECSServerTaskDefinitionTaskRoleDefaultPolicyBDF632A7",
         "Roles": Array [
           Object {
-            "Ref": "LowCostECSNginxTaskDefinitionTaskRole6B655856",
+            "Ref": "LowCostECSServerTaskDefinitionTaskRole53DB453D",
           },
         ],
       },
@@ -3530,7 +3530,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "LaunchType": "EC2",
         "SchedulingStrategy": "REPLICA",
         "TaskDefinition": Object {
-          "Ref": "LowCostECSNginxTaskDefinition8A338F1E",
+          "Ref": "LowCostECSServerTaskDefinitionD959764E",
         },
       },
       "Type": "AWS::ECS::Service",
@@ -4087,6 +4087,14 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
 exports[`Test snapshot of examples minimum 1`] = `
 Object {
   "Outputs": Object {
+    "LowCostECSCertbotStateMachineName15495152": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LowCostECSStateMachine236A22ED",
+          "Name",
+        ],
+      },
+    },
     "LowCostECSClusterName647E1020": Object {
       "Value": Object {
         "Ref": "ClusterEB0386A7",
@@ -4101,14 +4109,6 @@ Object {
       "Value": Object {
         "Fn::GetAtt": Array [
           "LowCostECSService95E677AB",
-          "Name",
-        ],
-      },
-    },
-    "LowCostECScertbotStateMachineNameEF0D4588": Object {
-      "Value": Object {
-        "Fn::GetAtt": Array [
-          "LowCostECSStateMachine236A22ED",
           "Name",
         ],
       },
@@ -5141,7 +5141,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Delete",
     },
-    "LowCostECSNginxTaskDefinition8A338F1E": Object {
+    "LowCostECSServerTaskDefinitionD959764E": Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
           Object {
@@ -5172,7 +5172,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
                   "Ref": "LowCostECSLogGroup73926EAE",
                 },
                 "awslogs-region": "test-region",
-                "awslogs-stream-prefix": "nginx-proxy",
+                "awslogs-stream-prefix": "sample",
               },
             },
             "MemoryReservation": 64,
@@ -5242,18 +5242,18 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         ],
         "ExecutionRoleArn": Object {
           "Fn::GetAtt": Array [
-            "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2",
+            "LowCostECSServerTaskDefinitionExecutionRole56B544B3",
             "Arn",
           ],
         },
-        "Family": "TestStackLowCostECSNginxTaskDefinition774FD726",
+        "Family": "TestStackLowCostECSServerTaskDefinition35240CEA",
         "NetworkMode": "bridge",
         "RequiresCompatibilities": Array [
           "EC2",
         ],
         "TaskRoleArn": Object {
           "Fn::GetAtt": Array [
-            "LowCostECSNginxTaskDefinitionTaskRole6B655856",
+            "LowCostECSServerTaskDefinitionTaskRole53DB453D",
             "Arn",
           ],
         },
@@ -5270,7 +5270,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2": Object {
+    "LowCostECSServerTaskDefinitionExecutionRole56B544B3": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -5287,7 +5287,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "LowCostECSNginxTaskDefinitionExecutionRoleDefaultPolicyEF05BBD9": Object {
+    "LowCostECSServerTaskDefinitionExecutionRoleDefaultPolicy96FB0053": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -5332,16 +5332,16 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "LowCostECSNginxTaskDefinitionExecutionRoleDefaultPolicyEF05BBD9",
+        "PolicyName": "LowCostECSServerTaskDefinitionExecutionRoleDefaultPolicy96FB0053",
         "Roles": Array [
           Object {
-            "Ref": "LowCostECSNginxTaskDefinitionExecutionRoleBA8577F2",
+            "Ref": "LowCostECSServerTaskDefinitionExecutionRole56B544B3",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "LowCostECSNginxTaskDefinitionTaskRole6B655856": Object {
+    "LowCostECSServerTaskDefinitionTaskRole53DB453D": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -5358,7 +5358,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::IAM::Role",
     },
-    "LowCostECSNginxTaskDefinitionTaskRoleDefaultPolicy06672263": Object {
+    "LowCostECSServerTaskDefinitionTaskRoleDefaultPolicyBDF632A7": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -5436,10 +5436,10 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "LowCostECSNginxTaskDefinitionTaskRoleDefaultPolicy06672263",
+        "PolicyName": "LowCostECSServerTaskDefinitionTaskRoleDefaultPolicyBDF632A7",
         "Roles": Array [
           Object {
-            "Ref": "LowCostECSNginxTaskDefinitionTaskRole6B655856",
+            "Ref": "LowCostECSServerTaskDefinitionTaskRole53DB453D",
           },
         ],
       },
@@ -5467,7 +5467,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
         "LaunchType": "EC2",
         "SchedulingStrategy": "REPLICA",
         "TaskDefinition": Object {
-          "Ref": "LowCostECSNginxTaskDefinition8A338F1E",
+          "Ref": "LowCostECSServerTaskDefinitionD959764E",
         },
       },
       "Type": "AWS::ECS::Service",
