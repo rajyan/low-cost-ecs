@@ -117,6 +117,7 @@ export interface LowCostECSProps {
    * Task definition for the server ecs task.
    *
    * @default - Nginx server task definition defined in sampleTaskDefinition()
+   * @see sampleTaskDefinition
    */
   readonly serverTaskDefinition?: LowCostECSTaskDefinitionOptions;
 }
