@@ -158,12 +158,9 @@ export class LowCostECS extends Construct {
     });
 
     this.hostAutoScalingGroup = this.cluster.addCapacity('HostInstanceCapacity', {
-      machineImage: ecs.EcsOptimizedImage.amazonLinux2(
-        ecs.AmiHardwareType.STANDARD,
-        {
-          cachedInContext: true,
-        },
-      ),
+      machineImage: ecs.EcsOptimizedImage.amazonLinux2(ecs.AmiHardwareType.STANDARD, {
+        cachedInContext: true,
+      }),
       instanceType: new ec2.InstanceType(props.hostInstanceType ?? 't2.micro'),
       spotPrice: props.hostInstanceSpotPrice,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
@@ -178,21 +175,15 @@ export class LowCostECS extends Construct {
     } else {
       this.hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(80));
       this.hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(443));
-      this.hostAutoScalingGroup.connections.allowFrom(
-        ec2.Peer.anyIpv6(),
-        ec2.Port.tcp(80),
-      );
-      this.hostAutoScalingGroup.connections.allowFrom(
-        ec2.Peer.anyIpv6(),
-        ec2.Port.tcp(443),
-      );
+      this.hostAutoScalingGroup.connections.allowFrom(ec2.Peer.anyIpv6(), ec2.Port.tcp(80));
+      this.hostAutoScalingGroup.connections.allowFrom(ec2.Peer.anyIpv6(), ec2.Port.tcp(443));
     }
 
     /**
      * Add managed policy to allow ssh through ssm manager
      */
     this.hostAutoScalingGroup.role.addManagedPolicy(
-      ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
+      ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore')
     );
     /**
      * Add policy to associate elastic ip on startup
@@ -202,7 +193,7 @@ export class LowCostECS extends Construct {
         effect: Effect.ALLOW,
         actions: ['ec2:DescribeAddresses', 'ec2:AssociateAddress'],
         resources: ['*'],
-      }),
+      })
     );
 
     const hostInstanceIp = new ec2.CfnEIP(this, 'HostInstanceIp');
@@ -213,7 +204,7 @@ export class LowCostECS extends Construct {
     this.hostAutoScalingGroup.addUserData(
       'INSTANCE_ID=$(curl --silent http://169.254.169.254/latest/meta-data/instance-id)',
       `ALLOCATION_ID=$(docker run --net=host amazon/aws-cli:${awsCliTag} ec2 describe-addresses --region ${this.hostAutoScalingGroup.env.region} --filter Name=tag:Name,Values=${tagUniqueId} --query 'Addresses[].AllocationId' --output text | head)`,
-      `docker run --net=host amazon/aws-cli:${awsCliTag} ec2 associate-address --region ${this.hostAutoScalingGroup.env.region} --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation`,
+      `docker run --net=host amazon/aws-cli:${awsCliTag} ec2 associate-address --region ${this.hostAutoScalingGroup.env.region} --instance-id "$INSTANCE_ID" --allocation-id "$ALLOCATION_ID" --allow-reassociation`
     );
 
     this.certFileSystem = new FileSystem(this, 'FileSystem', {
@@ -241,7 +232,7 @@ export class LowCostECS extends Construct {
           zone: hostedZone,
           recordName: record,
           target: route53.RecordTarget.fromIpAddresses(hostInstanceIp.ref),
-        }),
+        })
     );
 
     /**
@@ -255,60 +246,49 @@ export class LowCostECS extends Construct {
         removalPolicy: props.removalPolicy ?? lib.RemovalPolicy.DESTROY,
       });
 
-    const certbotTaskDefinition = new ecs.Ec2TaskDefinition(
-      this,
-      'CertbotTaskDefinition',
-    );
+    const certbotTaskDefinition = new ecs.Ec2TaskDefinition(this, 'CertbotTaskDefinition');
     certbotTaskDefinition.addToTaskRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ['route53:ListHostedZones', 'route53:GetChange'],
         resources: ['*'],
-      }),
+      })
     );
     certbotTaskDefinition.addToTaskRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ['route53:ChangeResourceRecordSets'],
         resources: [hostedZone.hostedZoneArn],
-      }),
+      })
     );
 
     const certbotTag = props.certbotDockerTag ?? 'v1.29.0';
-    const certbotContainer = certbotTaskDefinition.addContainer(
-      'CertbotContainer',
-      {
-        image: ecs.ContainerImage.fromRegistry(
-          `certbot/dns-route53:${certbotTag}`,
-        ),
-        containerName: 'certbot',
-        memoryReservationMiB: 64,
-        command: [
-          'certonly',
-          '--verbose',
-          '--preferred-challenges=dns-01',
-          '--dns-route53',
-          '--dns-route53-propagation-seconds=300',
-          '--non-interactive',
-          '--agree-tos',
-          '--expand',
-          '-m',
-          props.email,
-          '--cert-name',
-          records[0],
-          ...records.flatMap((domain) => ['-d', domain]),
-        ],
-        logging: ecs.LogDriver.awsLogs({
-          logGroup,
-          streamPrefix: certbotTag,
-        }),
-      },
-    );
+    const certbotContainer = certbotTaskDefinition.addContainer('CertbotContainer', {
+      image: ecs.ContainerImage.fromRegistry(`certbot/dns-route53:${certbotTag}`),
+      containerName: 'certbot',
+      memoryReservationMiB: 64,
+      command: [
+        'certonly',
+        '--verbose',
+        '--preferred-challenges=dns-01',
+        '--dns-route53',
+        '--dns-route53-propagation-seconds=300',
+        '--non-interactive',
+        '--agree-tos',
+        '--expand',
+        '-m',
+        props.email,
+        '--cert-name',
+        records[0],
+        ...records.flatMap((domain) => ['-d', domain]),
+      ],
+      logging: ecs.LogDriver.awsLogs({
+        logGroup,
+        streamPrefix: certbotTag,
+      }),
+    });
 
-    this.certFileSystem.grant(
-      certbotTaskDefinition.taskRole,
-      'elasticfilesystem:ClientWrite',
-    );
+    this.certFileSystem.grant(certbotTaskDefinition.taskRole, 'elasticfilesystem:ClientWrite');
     certbotTaskDefinition.addVolume({
       name: 'certVolume',
       efsVolumeConfiguration: {
@@ -342,7 +322,7 @@ export class LowCostECS extends Construct {
       new sfn_tasks.SnsPublish(this, 'SendEmailOnFailure', {
         topic: this.topic,
         message: sfn.TaskInput.fromJsonPathAt('$'),
-      }).next(new sfn.Fail(this, 'Fail')),
+      }).next(new sfn.Fail(this, 'Fail'))
     );
     certbotRunTask.addRetry({
       interval: lib.Duration.seconds(20),
@@ -352,25 +332,24 @@ export class LowCostECS extends Construct {
     });
 
     new Rule(this, 'CertbotScheduleRule', {
-      schedule: Schedule.rate(
-        lib.Duration.days(props.certbotScheduleInterval ?? 60),
-      ),
+      schedule: Schedule.rate(lib.Duration.days(props.certbotScheduleInterval ?? 60)),
       targets: [new SfnStateMachine(certbotStateMachine)],
     });
 
     /**
      * Server ECS task
      */
-    this.serverTaskDefinition = this.createTaskDefinition(props.serverTaskDefinition ?? this.sampleTaskDefinition(records, logGroup));
+    this.serverTaskDefinition = this.createTaskDefinition(
+      props.serverTaskDefinition ?? this.sampleTaskDefinition(records, logGroup)
+    );
 
     if (!this.serverTaskDefinition.defaultContainer) {
-      throw new Error('defaultContainer is required for serverTaskDefinition. Add at least one essential container.');
+      throw new Error(
+        'defaultContainer is required for serverTaskDefinition. Add at least one essential container.'
+      );
     }
 
-    this.certFileSystem.grant(
-      this.serverTaskDefinition.taskRole,
-      'elasticfilesystem:ClientMount',
-    );
+    this.certFileSystem.grant(this.serverTaskDefinition.taskRole, 'elasticfilesystem:ClientMount');
     this.serverTaskDefinition.addVolume({
       name: 'certVolume',
       efsVolumeConfiguration: {
@@ -413,7 +392,7 @@ export class LowCostECS extends Construct {
     });
     certbotStateMachine.grantExecution(
       this.serverTaskDefinition.taskRole,
-      'states:DescribeExecution',
+      'states:DescribeExecution'
     );
     certbotStateMachine.grantStartExecution(this.serverTaskDefinition.taskRole);
 
@@ -430,19 +409,26 @@ export class LowCostECS extends Construct {
     });
 
     new lib.CfnOutput(this, 'PublicIpAddress', { value: hostInstanceIp.ref });
-    new lib.CfnOutput(this, 'CertbotStateMachineName', { value: certbotStateMachine.stateMachineName });
+    new lib.CfnOutput(this, 'CertbotStateMachineName', {
+      value: certbotStateMachine.stateMachineName,
+    });
     new lib.CfnOutput(this, 'ClusterName', { value: this.cluster.clusterName });
     new lib.CfnOutput(this, 'ServiceName', { value: this.service.serviceName });
   }
 
-  private createTaskDefinition(taskDefinitionOptions: LowCostECSTaskDefinitionOptions) : ecs.Ec2TaskDefinition {
+  private createTaskDefinition(
+    taskDefinitionOptions: LowCostECSTaskDefinitionOptions
+  ): ecs.Ec2TaskDefinition {
     const serverTaskDefinition = new ecs.Ec2TaskDefinition(
       this,
       'ServerTaskDefinition',
-      taskDefinitionOptions.taskDefinition,
+      taskDefinitionOptions.taskDefinition
     );
     taskDefinitionOptions.containers.forEach((containerDefinition, index) => {
-      serverTaskDefinition.addContainer(containerDefinition.containerName ?? `container${index}`, containerDefinition);
+      serverTaskDefinition.addContainer(
+        containerDefinition.containerName ?? `container${index}`,
+        containerDefinition
+      );
     });
     taskDefinitionOptions.volumes?.forEach((volume) => serverTaskDefinition.addVolume(volume));
     return serverTaskDefinition;
@@ -450,35 +436,37 @@ export class LowCostECS extends Construct {
 
   private sampleTaskDefinition(
     records: string[],
-    logGroup: ILogGroup,
+    logGroup: ILogGroup
   ): LowCostECSTaskDefinitionOptions {
     return {
-      containers: [{
-        image: ecs.ContainerImage.fromAsset(
-          path.join(__dirname, '../examples/containers/nginx'),
-        ),
-        containerName: 'nginx',
-        memoryReservationMiB: 64,
-        essential: true,
-        environment: {
-          SERVER_NAME: records.join(' '),
-          CERT_NAME: records[0],
-        },
-        logging: ecs.LogDrivers.awsLogs({
-          logGroup: logGroup,
-          streamPrefix: 'sample',
-        }),
-        portMappings: [{
-          hostPort: 80,
-          containerPort: 80,
-          protocol: ecs.Protocol.TCP,
-        },
+      containers: [
         {
-          hostPort: 443,
-          containerPort: 443,
-          protocol: ecs.Protocol.TCP,
-        }],
-      }],
+          image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../examples/containers/nginx')),
+          containerName: 'nginx',
+          memoryReservationMiB: 64,
+          essential: true,
+          environment: {
+            SERVER_NAME: records.join(' '),
+            CERT_NAME: records[0],
+          },
+          logging: ecs.LogDrivers.awsLogs({
+            logGroup: logGroup,
+            streamPrefix: 'sample',
+          }),
+          portMappings: [
+            {
+              hostPort: 80,
+              containerPort: 80,
+              protocol: ecs.Protocol.TCP,
+            },
+            {
+              hostPort: 443,
+              containerPort: 443,
+              protocol: ecs.Protocol.TCP,
+            },
+          ],
+        },
+      ],
     };
   }
 }

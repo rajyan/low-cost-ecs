@@ -10,18 +10,8 @@ const project = new awscdk.AwsCdkConstructLibrary({
   license: 'MIT',
   cdkVersion: '2.37.0',
   defaultReleaseBranch: 'main',
-  keywords: [
-    'cdk',
-    'ecs',
-    'stepfunctions',
-    'route53',
-    'certbot',
-    'loadbalancer',
-  ],
-  devDeps: [
-    'aws-cdk',
-    'ts-node',
-  ],
+  keywords: ['cdk', 'ecs', 'stepfunctions', 'route53', 'certbot', 'loadbalancer'],
+  devDeps: ['aws-cdk', 'ts-node'],
   stability: 'experimental',
 
   python: {
@@ -35,6 +25,13 @@ const project = new awscdk.AwsCdkConstructLibrary({
     workflowOptions: {
       schedule: UpgradeDependenciesSchedule.WEEKLY,
       labels: ['auto-approve'],
+    },
+  },
+  prettier: true,
+  prettierOptions: {
+    settings: {
+      printWidth: 100,
+      singleQuote: true,
     },
   },
   projenrcTs: true,

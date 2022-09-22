@@ -21,25 +21,35 @@ export const allProps = new LowCostECS(stack, 'LowCostECS', {
   containerInsights: true,
   hostInstanceSpotPrice: '0.010',
   hostInstanceType: 't3.micro',
-  logGroup: LogGroup.fromLogGroupArn(stack, 'LogGroup', 'arn:aws:logs:region:account-id:log-group:test'),
+  logGroup: LogGroup.fromLogGroupArn(
+    stack,
+    'LogGroup',
+    'arn:aws:logs:region:account-id:log-group:test'
+  ),
   recordDomainNames: ['test1.rajyan.net', 'test2.rajyan.net'],
   removalPolicy: RemovalPolicy.RETAIN,
   securityGroup: SecurityGroup.fromSecurityGroupId(stack, 'SecurityGroup', 'test-sg-id'),
   serverTaskDefinition: {
-    containers: [{
-      containerName: 'test-container',
-      image: ContainerImage.fromRegistry('test-image'),
-      memoryLimitMiB: 32,
-      essential: true,
-      portMappings: [{
-        containerPort: 80,
-        hostPort: 80,
-        protocol: Protocol.TCP,
-      }],
-    }],
-    volumes: [{
-      name: 'test-volume',
-    }],
+    containers: [
+      {
+        containerName: 'test-container',
+        image: ContainerImage.fromRegistry('test-image'),
+        memoryLimitMiB: 32,
+        essential: true,
+        portMappings: [
+          {
+            containerPort: 80,
+            hostPort: 80,
+            protocol: Protocol.TCP,
+          },
+        ],
+      },
+    ],
+    volumes: [
+      {
+        name: 'test-volume',
+      },
+    ],
   },
   vpc: new Vpc(stack, 'Vpc'),
 });
