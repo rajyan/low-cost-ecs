@@ -40,7 +40,7 @@ export interface LowCostECSProps {
   readonly recordDomainNames?: string[];
 
   /**
-   * Vpc of the ECS host instance and cluster.
+   * VPC of the ECS cluster and EFS file system.
    *
    * @default - Creates vpc with only public subnets and no NAT gateways.
    */
@@ -100,7 +100,7 @@ export interface LowCostECSProps {
   readonly awsCliDockerTag?: string;
 
   /**
-   * Enable container insights or not
+   * Enable container insights or not.
    *
    * @default - undefined (container insights disabled)
    */
@@ -129,18 +129,37 @@ export interface LowCostECSTaskDefinitionOptions {
 }
 
 export class LowCostECS extends Construct {
-  readonly vpc: ec2.IVpc;
-  readonly hostAutoScalingGroup: AutoScalingGroup;
-  readonly certFileSystem: FileSystem;
-  readonly topic: Topic;
+  /**
+   * ECS cluster created in configured VPC.
+   */
   readonly cluster: ecs.Cluster;
+  /**
+   * ECS on EC2 service host instance autoscaling group.
+   */
+  readonly hostAutoScalingGroup: AutoScalingGroup;
+  /**
+   * EFS file system that the SSL/TLS certificates are installed.
+   */
+  readonly certFileSystem: FileSystem;
+  /**
+   * SNS topic used to notify certbot renewal failure.
+   */
+  readonly topic: Topic;
+  /**
+   * Server task definition generated from LowCostECSTaskDefinitionOptions.
+   */
   readonly serverTaskDefinition: ecs.Ec2TaskDefinition;
+  /**
+   * ECS service of the server with desiredCount: 1, minHealthyPercent: 0, maxHealthyPercent: 100.
+   *
+   * @link https://github.com/rajyan/low-cost-ecs#limitations
+   */
   readonly service: ecs.Ec2Service;
 
   constructor(scope: Construct, id: string, props: LowCostECSProps) {
     super(scope, id);
 
-    this.vpc =
+    const vpc =
       props.vpc ??
       new ec2.Vpc(scope, 'Vpc', {
         natGateways: 0,
@@ -153,7 +172,7 @@ export class LowCostECS extends Construct {
       });
 
     this.cluster = new ecs.Cluster(scope, 'Cluster', {
-      vpc: this.vpc,
+      vpc: vpc,
       containerInsights: props.containerInsights,
     });
 
@@ -208,10 +227,10 @@ export class LowCostECS extends Construct {
     );
 
     this.certFileSystem = new FileSystem(this, 'FileSystem', {
-      vpc: this.vpc,
+      vpc,
       encrypted: true,
       securityGroup: new ec2.SecurityGroup(this, 'FileSystemSecurityGroup', {
-        vpc: this.vpc,
+        vpc: vpc,
         allowAllOutbound: false,
       }),
       removalPolicy: props.removalPolicy ?? lib.RemovalPolicy.DESTROY,
@@ -409,9 +428,7 @@ export class LowCostECS extends Construct {
     });
 
     new lib.CfnOutput(this, 'PublicIpAddress', { value: hostInstanceIp.ref });
-    new lib.CfnOutput(this, 'CertbotStateMachineName', {
-      value: certbotStateMachine.stateMachineName,
-    });
+    new lib.CfnOutput(this, 'StateMachineName', { value: certbotStateMachine.stateMachineName });
     new lib.CfnOutput(this, 'ClusterName', { value: this.cluster.clusterName });
     new lib.CfnOutput(this, 'ServiceName', { value: this.service.serviceName });
   }
