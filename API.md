@@ -85,13 +85,12 @@ Any object.
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#low-cost-ecs.LowCostECS.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
-| <code><a href="#low-cost-ecs.LowCostECS.property.certFileSystem">certFileSystem</a></code> | <code>aws-cdk-lib.aws_efs.FileSystem</code> | *No description.* |
-| <code><a href="#low-cost-ecs.LowCostECS.property.cluster">cluster</a></code> | <code>aws-cdk-lib.aws_ecs.Cluster</code> | *No description.* |
-| <code><a href="#low-cost-ecs.LowCostECS.property.hostAutoScalingGroup">hostAutoScalingGroup</a></code> | <code>aws-cdk-lib.aws_autoscaling.AutoScalingGroup</code> | *No description.* |
-| <code><a href="#low-cost-ecs.LowCostECS.property.serverTaskDefinition">serverTaskDefinition</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2TaskDefinition</code> | *No description.* |
-| <code><a href="#low-cost-ecs.LowCostECS.property.service">service</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2Service</code> | *No description.* |
-| <code><a href="#low-cost-ecs.LowCostECS.property.topic">topic</a></code> | <code>aws-cdk-lib.aws_sns.Topic</code> | *No description.* |
-| <code><a href="#low-cost-ecs.LowCostECS.property.vpc">vpc</a></code> | <code>aws-cdk-lib.aws_ec2.IVpc</code> | *No description.* |
+| <code><a href="#low-cost-ecs.LowCostECS.property.certFileSystem">certFileSystem</a></code> | <code>aws-cdk-lib.aws_efs.FileSystem</code> | EFS file system that the SSL/TLS certificates are installed. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.cluster">cluster</a></code> | <code>aws-cdk-lib.aws_ecs.Cluster</code> | ECS cluster created in configured VPC. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.hostAutoScalingGroup">hostAutoScalingGroup</a></code> | <code>aws-cdk-lib.aws_autoscaling.AutoScalingGroup</code> | ECS on EC2 service host instance autoscaling group. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.serverTaskDefinition">serverTaskDefinition</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2TaskDefinition</code> | Server task definition generated from LowCostECSTaskDefinitionOptions. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.service">service</a></code> | <code>aws-cdk-lib.aws_ecs.Ec2Service</code> | ECS service of the server with desiredCount: 1, minHealthyPercent: 0, maxHealthyPercent: 100. |
+| <code><a href="#low-cost-ecs.LowCostECS.property.topic">topic</a></code> | <code>aws-cdk-lib.aws_sns.Topic</code> | SNS topic used to notify certbot renewal failure. |
 
 ---
 
@@ -115,6 +114,8 @@ public readonly certFileSystem: FileSystem;
 
 - *Type:* aws-cdk-lib.aws_efs.FileSystem
 
+EFS file system that the SSL/TLS certificates are installed.
+
 ---
 
 ##### `cluster`<sup>Required</sup> <a name="cluster" id="low-cost-ecs.LowCostECS.property.cluster"></a>
@@ -124,6 +125,8 @@ public readonly cluster: Cluster;
 ```
 
 - *Type:* aws-cdk-lib.aws_ecs.Cluster
+
+ECS cluster created in configured VPC.
 
 ---
 
@@ -135,6 +138,8 @@ public readonly hostAutoScalingGroup: AutoScalingGroup;
 
 - *Type:* aws-cdk-lib.aws_autoscaling.AutoScalingGroup
 
+ECS on EC2 service host instance autoscaling group.
+
 ---
 
 ##### `serverTaskDefinition`<sup>Required</sup> <a name="serverTaskDefinition" id="low-cost-ecs.LowCostECS.property.serverTaskDefinition"></a>
@@ -144,6 +149,8 @@ public readonly serverTaskDefinition: Ec2TaskDefinition;
 ```
 
 - *Type:* aws-cdk-lib.aws_ecs.Ec2TaskDefinition
+
+Server task definition generated from LowCostECSTaskDefinitionOptions.
 
 ---
 
@@ -155,6 +162,10 @@ public readonly service: Ec2Service;
 
 - *Type:* aws-cdk-lib.aws_ecs.Ec2Service
 
+ECS service of the server with desiredCount: 1, minHealthyPercent: 0, maxHealthyPercent: 100.
+
+> [https://github.com/rajyan/low-cost-ecs#limitations](https://github.com/rajyan/low-cost-ecs#limitations)
+
 ---
 
 ##### `topic`<sup>Required</sup> <a name="topic" id="low-cost-ecs.LowCostECS.property.topic"></a>
@@ -165,15 +176,7 @@ public readonly topic: Topic;
 
 - *Type:* aws-cdk-lib.aws_sns.Topic
 
----
-
-##### `vpc`<sup>Required</sup> <a name="vpc" id="low-cost-ecs.LowCostECS.property.vpc"></a>
-
-```typescript
-public readonly vpc: IVpc;
-```
-
-- *Type:* aws-cdk-lib.aws_ec2.IVpc
+SNS topic used to notify certbot renewal failure.
 
 ---
 
@@ -205,9 +208,9 @@ const lowCostECSProps: LowCostECSProps = { ... }
 | <code><a href="#low-cost-ecs.LowCostECSProps.property.logGroup">logGroup</a></code> | <code>aws-cdk-lib.aws_logs.ILogGroup</code> | Log group of the certbot task and the aws-cli task. |
 | <code><a href="#low-cost-ecs.LowCostECSProps.property.recordDomainNames">recordDomainNames</a></code> | <code>string[]</code> | Domain names for A records to elastic ip of ECS host instance. |
 | <code><a href="#low-cost-ecs.LowCostECSProps.property.removalPolicy">removalPolicy</a></code> | <code>aws-cdk-lib.RemovalPolicy</code> | Removal policy for the file system and log group (if using default). |
-| <code><a href="#low-cost-ecs.LowCostECSProps.property.securityGroup">securityGroup</a></code> | <code>aws-cdk-lib.aws_ec2.ISecurityGroup</code> | Security group of the ECS host instance. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.securityGroups">securityGroups</a></code> | <code>aws-cdk-lib.aws_ec2.ISecurityGroup[]</code> | Security group of the ECS host instance. |
 | <code><a href="#low-cost-ecs.LowCostECSProps.property.serverTaskDefinition">serverTaskDefinition</a></code> | <code><a href="#low-cost-ecs.LowCostECSTaskDefinitionOptions">LowCostECSTaskDefinitionOptions</a></code> | Task definition for the server ecs task. |
-| <code><a href="#low-cost-ecs.LowCostECSProps.property.vpc">vpc</a></code> | <code>aws-cdk-lib.aws_ec2.IVpc</code> | Vpc of the ECS host instance and cluster. |
+| <code><a href="#low-cost-ecs.LowCostECSProps.property.vpc">vpc</a></code> | <code>aws-cdk-lib.aws_ec2.IVpc</code> | VPC of the ECS cluster and EFS file system. |
 
 ---
 
@@ -362,13 +365,13 @@ Removal policy for the file system and log group (if using default).
 
 ---
 
-##### `securityGroup`<sup>Optional</sup> <a name="securityGroup" id="low-cost-ecs.LowCostECSProps.property.securityGroup"></a>
+##### `securityGroups`<sup>Optional</sup> <a name="securityGroups" id="low-cost-ecs.LowCostECSProps.property.securityGroups"></a>
 
 ```typescript
-public readonly securityGroup: ISecurityGroup;
+public readonly securityGroups: ISecurityGroup[];
 ```
 
-- *Type:* aws-cdk-lib.aws_ec2.ISecurityGroup
+- *Type:* aws-cdk-lib.aws_ec2.ISecurityGroup[]
 - *Default:* Creates security group with allowAllOutbound and ingress rule (ipv4, ipv6) => (tcp 80, 443).
 
 Security group of the ECS host instance.
@@ -399,7 +402,7 @@ public readonly vpc: IVpc;
 - *Type:* aws-cdk-lib.aws_ec2.IVpc
 - *Default:* Creates vpc with only public subnets and no NAT gateways.
 
-Vpc of the ECS host instance and cluster.
+VPC of the ECS cluster and EFS file system.
 
 ---
 
