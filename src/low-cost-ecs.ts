@@ -51,7 +51,7 @@ export interface LowCostECSProps {
    *
    * @default - Creates security group with allowAllOutbound and ingress rule (ipv4, ipv6) => (tcp 80, 443).
    */
-  readonly securityGroup?: ec2.ISecurityGroup;
+  readonly securityGroups?: ec2.ISecurityGroup[];
 
   /**
    * Instance type of the ECS host instance.
@@ -188,9 +188,9 @@ export class LowCostECS extends Construct {
       maxCapacity: 1,
     });
 
-    if (props.securityGroup) {
+    if (props.securityGroups) {
       this.hostAutoScalingGroup.node.tryRemoveChild('InstanceSecurityGroup');
-      this.hostAutoScalingGroup.addSecurityGroup(props.securityGroup);
+      props.securityGroups.forEach((sg) => this.hostAutoScalingGroup.addSecurityGroup(sg));
     } else {
       this.hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(80));
       this.hostAutoScalingGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(443));
