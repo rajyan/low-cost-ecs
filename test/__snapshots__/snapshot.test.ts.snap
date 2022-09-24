@@ -3,14 +3,6 @@
 exports[`Test snapshot of examples all props 1`] = `
 Object {
   "Outputs": Object {
-    "LowCostECSCertbotStateMachineName15495152": Object {
-      "Value": Object {
-        "Fn::GetAtt": Array [
-          "LowCostECSStateMachine236A22ED",
-          "Name",
-        ],
-      },
-    },
     "LowCostECSClusterName647E1020": Object {
       "Value": Object {
         "Ref": "ClusterEB0386A7",
@@ -25,6 +17,14 @@ Object {
       "Value": Object {
         "Fn::GetAtt": Array [
           "LowCostECSService95E677AB",
+          "Name",
+        ],
+      },
+    },
+    "LowCostECSStateMachineName718AB644": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LowCostECSStateMachine236A22ED",
           "Name",
         ],
       },
@@ -2111,14 +2111,6 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
 exports[`Test snapshot of examples autoscaling 1`] = `
 Object {
   "Outputs": Object {
-    "LowCostECSCertbotStateMachineName15495152": Object {
-      "Value": Object {
-        "Fn::GetAtt": Array [
-          "LowCostECSStateMachine236A22ED",
-          "Name",
-        ],
-      },
-    },
     "LowCostECSClusterName647E1020": Object {
       "Value": Object {
         "Ref": "ClusterEB0386A7",
@@ -2133,6 +2125,14 @@ Object {
       "Value": Object {
         "Fn::GetAtt": Array [
           "LowCostECSService95E677AB",
+          "Name",
+        ],
+      },
+    },
+    "LowCostECSStateMachineName718AB644": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LowCostECSStateMachine236A22ED",
           "Name",
         ],
       },
@@ -4087,14 +4087,6 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
 exports[`Test snapshot of examples minimum 1`] = `
 Object {
   "Outputs": Object {
-    "LowCostECSCertbotStateMachineName15495152": Object {
-      "Value": Object {
-        "Fn::GetAtt": Array [
-          "LowCostECSStateMachine236A22ED",
-          "Name",
-        ],
-      },
-    },
     "LowCostECSClusterName647E1020": Object {
       "Value": Object {
         "Ref": "ClusterEB0386A7",
@@ -4109,6 +4101,14 @@ Object {
       "Value": Object {
         "Fn::GetAtt": Array [
           "LowCostECSService95E677AB",
+          "Name",
+        ],
+      },
+    },
+    "LowCostECSStateMachineName718AB644": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LowCostECSStateMachine236A22ED",
           "Name",
         ],
       },

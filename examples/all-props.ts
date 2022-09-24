@@ -28,7 +28,7 @@ export const allProps = new LowCostECS(stack, 'LowCostECS', {
   ),
   recordDomainNames: ['test1.rajyan.net', 'test2.rajyan.net'],
   removalPolicy: RemovalPolicy.RETAIN,
-  securityGroup: SecurityGroup.fromSecurityGroupId(stack, 'SecurityGroup', 'test-sg-id'),
+  securityGroups: [SecurityGroup.fromSecurityGroupId(stack, 'SecurityGroup', 'test-sg-id')],
   serverTaskDefinition: {
     containers: [
       {
