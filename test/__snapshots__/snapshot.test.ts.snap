@@ -5,7 +5,7 @@ Object {
   "Outputs": Object {
     "LowCostECSClusterName647E1020": Object {
       "Value": Object {
-        "Ref": "testtest",
+        "Ref": "ClusterEB0386A7",
       },
     },
     "LowCostECSPublicIpAddressA02E4592": Object {
