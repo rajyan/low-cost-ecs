@@ -43,10 +43,4 @@ project.gitignore.exclude(...excludes);
 
 project.tsconfigDev.addInclude('examples/**/*.ts');
 
-// Remove '--updateSnapshot' from test task
-// Work around until https://github.com/projen/projen/issues/1144 is solved
-const testTask = project.tasks.tryFind('test');
-const newTestCommand = testTask!.steps[0]!.exec!.replace(' --updateSnapshot', '');
-testTask!.reset(newTestCommand);
-
 project.synth();
