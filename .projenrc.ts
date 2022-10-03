@@ -1,7 +1,8 @@
 import { awscdk } from 'projen';
-import { UpgradeDependenciesSchedule } from 'projen/lib/javascript';
+import { UpdateSnapshot, UpgradeDependenciesSchedule } from 'projen/lib/javascript';
 
 const project = new awscdk.AwsCdkConstructLibrary({
+  // publish
   author: 'Yohta Kimura',
   authorAddress: 'kitakita7617@gmail.com',
   name: 'low-cost-ecs',
@@ -13,11 +14,11 @@ const project = new awscdk.AwsCdkConstructLibrary({
   keywords: ['cdk', 'ecs', 'stepfunctions', 'route53', 'certbot', 'loadbalancer'],
   devDeps: ['aws-cdk', 'ts-node'],
   stability: 'experimental',
-
-  python: {
+  publishToPypi: {
     distName: 'low-cost-ecs',
     module: 'low_cost_ecs',
   },
+  // workflows
   autoApproveOptions: {
     allowedUsernames: ['rajyan'],
   },
@@ -27,12 +28,16 @@ const project = new awscdk.AwsCdkConstructLibrary({
       labels: ['auto-approve'],
     },
   },
+  // dev settings
   prettier: true,
   prettierOptions: {
     settings: {
       printWidth: 100,
       singleQuote: true,
     },
+  },
+  jestOptions: {
+    updateSnapshot: UpdateSnapshot.NEVER,
   },
   projenrcTs: true,
 });
@@ -42,11 +47,5 @@ project.npmignore?.exclude(...excludes);
 project.gitignore.exclude(...excludes);
 
 project.tsconfigDev.addInclude('examples/**/*.ts');
-
-// Remove '--updateSnapshot' from test task
-// Work around until https://github.com/projen/projen/issues/1144 is solved
-const testTask = project.tasks.tryFind('test');
-const newTestCommand = testTask!.steps[0]!.exec!.replace(' --updateSnapshot', '');
-testTask!.reset(newTestCommand);
 
 project.synth();
