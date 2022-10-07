@@ -7,8 +7,6 @@
 
 A CDK construct that provides an easy and [low-cost](#cost) ECS on EC2 server setup without a load balancer.
 
-**This construct is for development purposes only**. See [Limitations](#limitations).
-
 # Why
 
 ECS may often seem expensive when used for personal development purposes, due to the cost of the load balancer.
@@ -19,7 +17,7 @@ This construct aims to automate these works and make it easy to deploy resources
 
 # Try it out!
 
-The easiest way to try the construct is to clone this repository and deploy the sample server.
+The easiest way to try the construct is to clone this repository and deploy the sample Nginx server.
 Edit settings in `examples/minimum.ts` and deploy the cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) is required.
 
 ```
@@ -29,7 +27,7 @@ yarn install
 cdk deploy
 ```
 
-Access the configured `recordDomainNames` and see that the Nginx sample server has been deployed.
+Access the configured `recordDomainNames` and see that the sample Nginx server has been deployed.
 
 # Installation
 
