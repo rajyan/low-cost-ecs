@@ -11,8 +11,8 @@ test('stack with minimum props', () => {
     },
   });
   new LowCostECS(stack, 'LowCostECS', {
-    hostedZoneDomain: 'test.rajyan.net',
-    email: 'test@email.com',
+    hostedZoneDomain: 'test.example.com',
+    email: 'test@example.com',
   });
   const template = Template.fromStack(stack);
 
