@@ -11,9 +11,9 @@ const stack = new Stack(app, 'TestStack', {
 });
 
 export const autoscaling = new LowCostECS(stack, 'LowCostECS', {
-  hostedZoneDomain: 'rajyan.net',
-  recordDomainNames: ['test1.rajyan.net', 'test2.rajyan.net'],
-  email: 'kitakita7617@gmail.com',
+  hostedZoneDomain: 'example.com',
+  recordDomainNames: ['test1.example.com', 'test2.example.com'],
+  email: 'test@example.com',
   hostInstanceSpotPrice: '0.0050',
 });
 autoscaling.hostAutoScalingGroup.scaleOnSchedule('IncreaseAtMorning', {
