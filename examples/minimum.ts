@@ -10,6 +10,6 @@ const stack = new Stack(app, 'TestStack', {
 });
 
 export const minimum = new LowCostECS(stack, 'LowCostECS', {
-  hostedZoneDomain: 'rajyan.net',
-  email: 'kitakita7617@gmail.com',
+  hostedZoneDomain: 'example.com',
+  email: 'test@example.com',
 });
