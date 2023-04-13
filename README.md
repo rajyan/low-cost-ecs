@@ -51,8 +51,8 @@ class SampleStack extends Stack {
         const serverTaskDefinition = { /** Your task definition */ };
 
         new LowCostECS(this, 'LowCostECS', {
-            hostedZoneDomain: "rajyan.net",
-            email: "kitakita7617@gmail.com",
+            hostedZoneDomain: "example.com",
+            email: "test@example.com",
             vpc: vpc,
             securityGroup: securityGroup,
             serverTaskDefinition: serverTaskDefinition
