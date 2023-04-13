@@ -26,7 +26,7 @@ export const allProps = new LowCostECS(stack, 'LowCostECS', {
     'LogGroup',
     'arn:aws:logs:region:account-id:log-group:test'
   ),
-  recordDomainNames: ['test1.rajyan.net', 'test2.rajyan.net'],
+  recordDomainNames: ['test1.example.com', 'test2.example.com'],
   removalPolicy: RemovalPolicy.RETAIN,
   securityGroups: [SecurityGroup.fromSecurityGroupId(stack, 'SecurityGroup', 'test-sg-id')],
   serverTaskDefinition: {
