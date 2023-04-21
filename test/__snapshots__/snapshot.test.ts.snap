@@ -629,10 +629,10 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
       },
       "Type": "AWS::Logs::ResourcePolicy",
     },
-    "LowCostECSARecordtest1rajyannet97B482C0": Object {
+    "LowCostECSARecordtest1examplecomFE60934A": Object {
       "Properties": Object {
         "HostedZoneId": "DUMMY",
-        "Name": "test1.rajyan.net.",
+        "Name": "test1.example.com.",
         "ResourceRecords": Array [
           Object {
             "Ref": "LowCostECSHostInstanceIp2CB96CE8",
@@ -643,10 +643,10 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
       },
       "Type": "AWS::Route53::RecordSet",
     },
-    "LowCostECSARecordtest2rajyannet8F8185B4": Object {
+    "LowCostECSARecordtest2examplecomA18ECC29": Object {
       "Properties": Object {
         "HostedZoneId": "DUMMY",
-        "Name": "test2.rajyan.net.",
+        "Name": "test2.example.com.",
         "ResourceRecords": Array [
           Object {
             "Ref": "LowCostECSHostInstanceIp2CB96CE8",
@@ -692,13 +692,13 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
               "--agree-tos",
               "--expand",
               "-m",
-              "kitakita7617@gmail.com",
+              "test@example.com",
               "--cert-name",
-              "test1.rajyan.net",
+              "test1.example.com",
               "-d",
-              "test1.rajyan.net",
+              "test1.example.com",
               "-d",
-              "test2.rajyan.net",
+              "test2.example.com",
             ],
             "Essential": true,
             "Image": "certbot/dns-route53:testTag",
@@ -861,7 +861,7 @@ docker run --net=host amazon/aws-cli:testTag ec2 associate-address --region test
     },
     "LowCostECSEmailSubscription5C24A57F": Object {
       "Properties": Object {
-        "Endpoint": "kitakita7617@gmail.com",
+        "Endpoint": "test@example.com",
         "Protocol": "email",
         "TopicArn": Object {
           "Ref": "LowCostECSTopicE71E72ED",
@@ -2816,10 +2816,10 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::AutoScaling::ScheduledAction",
     },
-    "LowCostECSARecordtest1rajyannet97B482C0": Object {
+    "LowCostECSARecordtest1examplecomFE60934A": Object {
       "Properties": Object {
         "HostedZoneId": "DUMMY",
-        "Name": "test1.rajyan.net.",
+        "Name": "test1.example.com.",
         "ResourceRecords": Array [
           Object {
             "Ref": "LowCostECSHostInstanceIp2CB96CE8",
@@ -2830,10 +2830,10 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::Route53::RecordSet",
     },
-    "LowCostECSARecordtest2rajyannet8F8185B4": Object {
+    "LowCostECSARecordtest2examplecomA18ECC29": Object {
       "Properties": Object {
         "HostedZoneId": "DUMMY",
-        "Name": "test2.rajyan.net.",
+        "Name": "test2.example.com.",
         "ResourceRecords": Array [
           Object {
             "Ref": "LowCostECSHostInstanceIp2CB96CE8",
@@ -2879,13 +2879,13 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "--agree-tos",
               "--expand",
               "-m",
-              "kitakita7617@gmail.com",
+              "test@example.com",
               "--cert-name",
-              "test1.rajyan.net",
+              "test1.example.com",
               "-d",
-              "test1.rajyan.net",
+              "test1.example.com",
               "-d",
-              "test2.rajyan.net",
+              "test2.example.com",
             ],
             "Essential": true,
             "Image": "certbot/dns-route53:v1.29.0",
@@ -3055,7 +3055,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
     },
     "LowCostECSEmailSubscription5C24A57F": Object {
       "Properties": Object {
-        "Endpoint": "kitakita7617@gmail.com",
+        "Endpoint": "test@example.com",
         "Protocol": "email",
         "TopicArn": Object {
           "Ref": "LowCostECSTopicE71E72ED",
@@ -3217,11 +3217,11 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
             "Environment": Array [
               Object {
                 "Name": "SERVER_NAME",
-                "Value": "test1.rajyan.net test2.rajyan.net",
+                "Value": "test1.example.com test2.example.com",
               },
               Object {
                 "Name": "CERT_NAME",
-                "Value": "test1.rajyan.net",
+                "Value": "test1.example.com",
               },
             ],
             "Essential": true,
@@ -4769,10 +4769,10 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
       },
       "Type": "AWS::SNS::Topic",
     },
-    "LowCostECSARecordrajyannet400EEAE4": Object {
+    "LowCostECSARecordexamplecom511A9BB8": Object {
       "Properties": Object {
         "HostedZoneId": "DUMMY",
-        "Name": "rajyan.net.",
+        "Name": "example.com.",
         "ResourceRecords": Array [
           Object {
             "Ref": "LowCostECSHostInstanceIp2CB96CE8",
@@ -4818,11 +4818,11 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
               "--agree-tos",
               "--expand",
               "-m",
-              "kitakita7617@gmail.com",
+              "test@example.com",
               "--cert-name",
-              "rajyan.net",
+              "example.com",
               "-d",
-              "rajyan.net",
+              "example.com",
             ],
             "Essential": true,
             "Image": "certbot/dns-route53:v1.29.0",
@@ -4992,7 +4992,7 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
     },
     "LowCostECSEmailSubscription5C24A57F": Object {
       "Properties": Object {
-        "Endpoint": "kitakita7617@gmail.com",
+        "Endpoint": "test@example.com",
         "Protocol": "email",
         "TopicArn": Object {
           "Ref": "LowCostECSTopicE71E72ED",
@@ -5154,11 +5154,11 @@ docker run --net=host amazon/aws-cli:latest ec2 associate-address --region test-
             "Environment": Array [
               Object {
                 "Name": "SERVER_NAME",
-                "Value": "rajyan.net",
+                "Value": "example.com",
               },
               Object {
                 "Name": "CERT_NAME",
-                "Value": "rajyan.net",
+                "Value": "example.com",
               },
             ],
             "Essential": true,
