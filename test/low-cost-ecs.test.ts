@@ -11,7 +11,7 @@ test('stack with minimum props', () => {
     },
   });
   new LowCostECS(stack, 'LowCostECS', {
-    hostedZoneDomain: 'test.rajyan.net',
+    hostedZoneDomain: 'test.example.com',
     email: 'test@email.com',
   });
   const template = Template.fromStack(stack);
@@ -35,7 +35,7 @@ test('stack with minimum props', () => {
   // host instance
   template.hasResourceProperties('AWS::Route53::RecordSet', {
     HostedZoneId: 'DUMMY',
-    Name: 'test.rajyan.net.',
+    Name: 'test.example.com.',
   });
   template.hasResourceProperties('AWS::EC2::EIP', {
     Tags: [
@@ -148,7 +148,7 @@ describe('server task definition props', () => {
       },
     });
     new LowCostECS(stack, 'LowCostECS', {
-      hostedZoneDomain: 'test.rajyan.net',
+      hostedZoneDomain: 'test.example.com',
       email: 'test@email.com',
       serverTaskDefinition: {
         containers: [
@@ -187,7 +187,7 @@ describe('server task definition props', () => {
       },
     });
     new LowCostECS(stack, 'LowCostECS', {
-      hostedZoneDomain: 'test.rajyan.net',
+      hostedZoneDomain: 'test.example.com',
       email: 'test@email.com',
       serverTaskDefinition: {
         containers: [
@@ -225,7 +225,7 @@ describe('server task definition props', () => {
       },
     });
     new LowCostECS(stack, 'LowCostECS', {
-      hostedZoneDomain: 'test.rajyan.net',
+      hostedZoneDomain: 'test.example.com',
       email: 'test@email.com',
       serverTaskDefinition: {
         containers: [
@@ -277,7 +277,7 @@ describe('server task definition props', () => {
     });
     expect(() => {
       new LowCostECS(stack, 'LowCostECS', {
-        hostedZoneDomain: 'test.rajyan.net',
+        hostedZoneDomain: 'test.example.com',
         email: 'test@email.com',
         serverTaskDefinition: {
           containers: [

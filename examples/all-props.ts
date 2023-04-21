@@ -13,8 +13,8 @@ const stack = new Stack(app, 'TestStack', {
 });
 
 export const allProps = new LowCostECS(stack, 'LowCostECS', {
-  hostedZoneDomain: 'rajyan.net',
-  email: 'kitakita7617@gmail.com',
+  hostedZoneDomain: 'example.com',
+  email: 'test@example.com',
   awsCliDockerTag: 'testTag',
   certbotDockerTag: 'testTag',
   certbotScheduleInterval: 10,
@@ -26,7 +26,7 @@ export const allProps = new LowCostECS(stack, 'LowCostECS', {
     'LogGroup',
     'arn:aws:logs:region:account-id:log-group:test'
   ),
-  recordDomainNames: ['test1.rajyan.net', 'test2.rajyan.net'],
+  recordDomainNames: ['test1.example.com', 'test2.example.com'],
   removalPolicy: RemovalPolicy.RETAIN,
   securityGroups: [SecurityGroup.fromSecurityGroupId(stack, 'SecurityGroup', 'test-sg-id')],
   serverTaskDefinition: {
