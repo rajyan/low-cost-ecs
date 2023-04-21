@@ -1,7 +1,7 @@
 import { Stack } from 'aws-cdk-lib';
 import { Match, Template } from 'aws-cdk-lib/assertions';
 import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
-import { LowCostECS } from '../lib';
+import { LowCostECS } from '../src';
 
 test('stack with minimum props', () => {
   const stack = new Stack(undefined, 'TestStack', {
