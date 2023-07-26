@@ -18,16 +18,23 @@ This construct aims to automate these works and make it easy to deploy resources
 # Try it out!
 
 The easiest way to try the construct is to clone this repository and deploy the sample Nginx server.
-Edit settings in `examples/minimum.ts` and deploy the cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) is required.
+Edit settings in [`examples/minimum.ts`](https://github.com/rajyan/low-cost-ecs/blob/main/examples/minimum.ts) and deploy the cdk construct. [Public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html) is required.
 
+1. Clone and install packages
 ```
 git clone https://github.com/rajyan/low-cost-ecs.git
 yarn install
-# edit settings in bin/low-cost-ecs.ts
+```
+
+2. Edit email and domain in example.ts
+https://github.com/rajyan/low-cost-ecs/blob/3d1bbf7ef4b59d0f4e9d3cd9cb90584977b71c0a/examples/minimum.ts#L1-L15
+
+3. Deploy!
+```
 cdk deploy
 ```
 
-Access the configured `recordDomainNames` and see that the sample Nginx server has been deployed.
+Access the configured `hostedZoneDomain` and see that the sample Nginx server has been deployed.
 
 # Installation
 
