@@ -30,3 +30,4 @@ cdk.context.json
 yarn-error.log
 /.gitattributes
 /.projenrc.ts
+/projenrc
